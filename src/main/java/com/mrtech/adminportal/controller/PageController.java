@@ -21,10 +21,10 @@ public class PageController {
 	    return "studenthome"; // loads studenthome.html
 	}
 	
-	@GetMapping("/studentlist")
-	public String studentlistPage(Model model) {
-	    return "studentlist"; // loads studenthome.html
-	}
+//	@GetMapping("/studentlist")
+//	public String studentlistPage(Model model) {
+//	    return "studentlist"; // loads studenthome.html
+//	}
 	
     @GetMapping("/student")
     public String studentPage(Model model) {
@@ -46,5 +46,11 @@ public class PageController {
         long totalStudents = studentService.getTotalStudents();
         model.addAttribute("totalStudents", totalStudents);
         return "dashboard"; // This should match your dashboard.html filename
+    }
+    @GetMapping("/studentlist")
+    public String studentlistpage(Model model) {
+        long totalStudents = studentService.getTotalStudents();
+        model.addAttribute("totalStudents", totalStudents);
+        return "studentlist"; // This should match your studentlist.html filename
     }
 }
