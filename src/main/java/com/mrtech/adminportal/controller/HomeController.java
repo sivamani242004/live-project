@@ -19,7 +19,7 @@ public class HomeController {
    //     return "dashboard"; // refers to templates/dashboard.html
   //  }
     
-    @GetMapping("/dashboard")
+    @GetMapping("/dashboard1")
     public String dashboard(Model model, HttpSession session) {
         String username = (String) session.getAttribute("username");
         if (username == null) {

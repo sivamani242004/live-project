@@ -32,11 +32,6 @@ public class StudentController {
         return new ResponseEntity<>(studentRepository.save(student), HttpStatus.CREATED);
     }
     
-    @GetMapping("/getstudents")
-    public List<Student> getAllStudents() {
-        return studentRepository.findAll();
-    }
-    
     @GetMapping("/search")
     @CrossOrigin(origins = "*")
     public ResponseEntity<List<Student>> searchStudents(@RequestParam("keyword") String keyword) {
@@ -55,7 +50,6 @@ public class StudentController {
         Optional<Student> student = studentRepository.findById(id);
         return student.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
-    
     @PutMapping("/{id}")
     public ResponseEntity<Student> updateStudent(@PathVariable int id, @RequestBody Student updatedData) {
         return studentRepository.findById(id).map(existing -> {
