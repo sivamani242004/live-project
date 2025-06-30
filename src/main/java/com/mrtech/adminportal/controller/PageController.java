@@ -21,6 +21,11 @@ public class PageController {
 	    return "studenthome"; // loads studenthome.html
 	}
 	
+	@GetMapping("/studentlist")
+	public String studentlistPage(Model model) {
+	    return "studentlist"; // loads studenthome.html
+	}
+	
     @GetMapping("/student")
     public String studentPage(Model model) {
         model.addAttribute("username", "Admin"); // Optional if you want to show username

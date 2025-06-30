@@ -50,6 +50,11 @@ public class StudentController {
         Optional<Student> student = studentRepository.findById(id);
         return student.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
+    @GetMapping("/getstudents")
+    public ResponseEntity<List<Student>> getAllStudents() {
+        List<Student> students = studentRepository.findAll();
+        return ResponseEntity.ok(students);
+    }
     @PutMapping("/{id}")
     public ResponseEntity<Student> updateStudent(@PathVariable int id, @RequestBody Student updatedData) {
         return studentRepository.findById(id).map(existing -> {
