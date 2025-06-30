@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MR Technologies - Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 h-screen flex font-sans">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-indigo-800 text-white flex flex-col p-5 space-y-4">
+    <h2 class="text-2xl font-bold mb-8">MR Technologies</h2>
+    <nav class="flex flex-col gap-4">
+      <a href="/dashboard" class="hover:bg-indigo-600 p-2 rounded">Dashboard</a>
+      <a href="/courses" class="hover:bg-indigo-600 p-2 rounded">Courses</a>
+      <a href="/studenthome" class="hover:bg-indigo-600 p-2 rounded">Students</a>
+      <a href="/payments" class="hover:bg-indigo-600 p-2 rounded">Payments</a>
+      <a href="/reports" class="hover:bg-indigo-600 p-2 rounded">Reports</a>
+    </nav>
+    <button onclick="logout()" class="mt-auto text-left text-red-300 hover:text-white">Logout</button>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col">
+    
+    <!-- Header -->
+    <header class="bg-white shadow p-4 flex justify-between items-center">
+      <h1 class="text-xl font-semibold text-gray-700">Dashboard Overview</h1>
+      <p class="text-sm text-gray-500">
+        Welcome, <span class="font-bold text-indigo-600" th:text="${username}">Guest</span>
+      </p>
+    </header>
+
+    <!-- Content -->
+    <main class="p-6 bg-gray-100 flex-1 overflow-y-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+          <h3 class="text-lg font-semibold text-indigo-700">Total Students</h3>
+          <p class="text-2xl mt-2">67</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+          <h3 class="text-lg font-semibold text-indigo-700">Total Fees Collected</h3>
+          <p class="text-2xl mt-2">₹2,45,500</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+          <h3 class="text-lg font-semibold text-indigo-700">Upcoming Due Payments</h3>
+          <p class="text-2xl mt-2">₹47,000</p>
+        </div>
+      </div>
+
+      <div class="mt-10">
+        <div class="bg-white p-6 rounded-lg shadow text-center text-gray-400">
+          [📊 Fee Collection Chart will appear here]
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function logout() {
+      window.location.href = "/login";
+    }
+  </script>
+</body>
+</html>

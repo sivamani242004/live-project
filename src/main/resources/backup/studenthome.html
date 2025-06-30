@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Home - MR Technologies</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+
+  <div class="max-w-6xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-indigo-700">Student Home</h2>
+      <button onclick="openRegistration()" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">
+        + Register New Student
+      </button>
+    </div>
+
+    <div class="mb-6">
+      <input id="searchInput" type="text" placeholder="Search by Name or Mobile"
+             class="w-full border p-3 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+    </div>
+
+    <div id="studentResults" class="space-y-4">
+      <!-- Matching student cards will appear here -->
+    </div>
+  </div>
+
+  <script>
+    function openRegistration() {
+      window.location.href = "/student"; // assuming this loads student.html
+    }
+
+    document.getElementById("searchInput").addEventListener("input", function () {
+      const keyword = this.value.trim();
+      if (keyword.length < 2) {
+        document.getElementById("studentResults").innerHTML = "";
+        return;
+      }
+
+      fetch("http://localhost:8080/api/students/search?keyword=" + keyword)
+        .then(res => res.json())
+        .then(data => {
+          let html = "";
+          if (data.length === 0) {
+            html = `<div class="text-gray-500">No students found.</div>`;
+          } else {
+            html = data.map(student => `
+              <div class="bg-white p-4 rounded shadow-md">
+                <h3 class="text-lg font-semibold text-indigo-700">${student.name}</h3>
+                <p><strong>Mobile:</strong> ${student.mobile}</p>
+                <p><strong>Email:</strong> ${student.email}</p>
+                <p><strong>Course:</strong> ${student.course}</p>
+              </div>
+            `).join("");
+          }
+          document.getElementById("studentResults").innerHTML = html;
+        })
+        .catch(err => {
+          document.getElementById("studentResults").innerHTML = "<div class='text-red-500'>Error fetching student data.</div>";
+        });
+    });
+  </script>
+
+</body>
+</html>
