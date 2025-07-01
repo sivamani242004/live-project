@@ -127,8 +127,8 @@
    const mobileRegex = /^[1-9][0-9]{9}$/;
 
    if (!mobileRegex.test(mobile)) {
-     errorSpan.textContent =
-       "❌ Invalid mobile number. It must be 10 digits and should not start with 0.";
+     alert("❌ Invalid mobile number. It must be 10 digits and should not start with 0.");
+   
      return false;
    }
 
