@@ -24,8 +24,8 @@
         
       </div>
       <div>
-        <label class="block mb-1 font-medium" for="mobile">Mobile Number</label>
-        <input type="tel" name="mobile" id="mobile" class="w-full border rounded px-4 py-2" required>
+        <label class="block mb-1 font-medium" for="mobile" >Mobile Number</label>
+        <input type="tel" name="mobile" id="mobile" class="w-full border rounded px-4 py-2"  required>
         <span id="error" class="text-red-500 text-sm"></span>
       </div>
       <div>
@@ -111,8 +111,10 @@
       .catch(err => alert("❌ Error fetching data: " + err.message));
 
     // Submit form handler
-    document.getElementById("editForm").addEventListener("submit", function (e) {
-      e.preventDefault();
+  document.getElementById("editForm").addEventListener("submit", function (e) {
+  if (!validateMobileNumber()) return; // call validation manually
+  e.preventDefault();
+
 
       const formData = new FormData(this);
       const student = Object.fromEntries(formData);
@@ -129,21 +131,21 @@
         })
         .catch(err => alert("❌ Error: " + err.message));
     });
-//     function validateMobileNumber() {
-//   const mobile = document.getElementById("mobile").value.trim();
-//   const errorSpan = document.getElementById("error");
+        function validateMobileNumber() {
+      const mobile = document.getElementById("mobile").value.trim();
+      const errorSpan = document.getElementById("error");
 
-//   const mobileRegex = /^[1-9][0-9]{9}$/;
+      const mobileRegex = /^[1-9][0-9]{9}$/;
 
-//   if (!mobileRegex.test(mobile)) {
-//     errorSpan.textContent =
-//       "❌ Invalid mobile number. It must be 10 digits and should not start with 0.";
-//     return false;
-//   }
+      if (!mobileRegex.test(mobile)) {
+        
+        alert("❌ Invalid mobile number. It must be 10 digits and should not start with 0.");
+        return false;
+      }
 
-//   errorSpan.textContent = ""; // ✅ Clear error
-//   return true;
-// }
+      errorSpan.textContent = ""; // ✅ Clear error
+      return true;
+    }
   </script>
 </body>
 </html>
