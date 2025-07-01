@@ -10,7 +10,7 @@
   <div class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-md">
     <h2 class="text-2xl font-bold text-indigo-700 mb-6 text-center">Student Registration Form</h2>
 
-    <form id="studentForm" class="space-y-4">
+    <form onsubmit="return validateMobileNumber()" id="studentForm" class="space-y-4" >
       <div>
         <label class="block font-medium text-gray-700">Full Name</label>
         <input type="text" name="name" required class="w-full border p-2 rounded-md" placeholder="Enter full name" />
@@ -21,11 +21,12 @@
           <label class="block font-medium text-gray-700">Email</label>
           <input type="email" name="email" required class="w-full border p-2 rounded-md" placeholder="example@mail.com" />
         </div>
-        <div>
-          <label class="block font-medium text-gray-700">Mobile Number</label>
-          <input type="tel" name="mobile" required class="w-full border p-2 rounded-md" placeholder="1234567890" />
-        </div>
-      </div>
+       <div>
+  <label class="block font-medium text-gray-700" for="mobile">Mobile Number</label>
+  <input type="tel" id="mobile" name="mobile" required class="w-full border p-2 rounded-md" placeholder="1234567890" />
+  <span id="error" class="text-red-500 text-sm"></span>
+</div>
+
 
       <div class="grid md:grid-cols-2 gap-4">
         <div>
@@ -94,23 +95,48 @@
   </div>
 
   <script>
-    document.getElementById("studentForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      const studentData = Object.fromEntries(formData);
+   document.getElementById("studentForm").addEventListener("submit", function (e) {
+  e.preventDefault();
 
-      fetch("http://localhost:8080/api/students", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(studentData)
-      })
-      .then(res => {
-        if (!res.ok) throw new Error("Failed to register");
-        return res.json();
-      })
-      .then(data => alert("✅ Student Registered Successfully!"))
-      .catch(err => alert("❌ Error: " + err.message));
-    });
+  // ✅ Step 1: Validate mobile number before sending data
+   if (!validateMobileNumber()) {
+     return; // ❌ Stop if validation fails
+   }
+
+  // ✅ Step 2: Collect and send form data
+  const formData = new FormData(this);
+  const studentData = Object.fromEntries(formData);
+
+  fetch("http://localhost:8080/api/students", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(studentData),
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error("Failed to register");
+      return res.json();
+    })
+    .then((data) => alert("✅ Student Registered Successfully!"))
+    .catch((err) => alert("❌ Error: " + err.message));
+});
+
+ function validateMobileNumber() {
+   const mobile = document.getElementById("mobile").value.trim();
+   const errorSpan = document.getElementById("error");
+
+   const mobileRegex = /^[1-9][0-9]{9}$/;
+
+   if (!mobileRegex.test(mobile)) {
+     errorSpan.textContent =
+       "❌ Invalid mobile number. It must be 10 digits and should not start with 0.";
+     return false;
+   }
+
+   errorSpan.textContent = ""; // ✅ Clear error
+   return true;
+ }
+
+
   </script>
 
 </body>
