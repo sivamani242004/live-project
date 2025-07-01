@@ -27,43 +27,112 @@
       <tbody id="studentTable" class="divide-y divide-gray-100">
         <!-- Rows will be populated here -->
       </tbody>
+      <div id="pagination" class="mt-4 flex justify-center items-center"></div>
+
     </table>
   </div>
 
- <script>
- function editStudent(studentId) {
-     // Redirect to edit form
-      	window.location.href = "/student/edit/" + studentId;
-   }
-  // Fetch and display all students
-  fetch("http://localhost:8080/api/students/getstudents")
-    .then(res => res.json())
-    .then(data => {
-      const tbody = document.getElementById("studentTable");
-      tbody.innerHTML = "";
+<script>
+  let allStudents = [];
+  let currentPage = 1;
+  const studentsPerPage = 5;
 
-      data.forEach(student => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td class="px-4 py-2">${student.id}</td>
-          <td class="px-4 py-2">${student.name}</td>
-          <td class="px-4 py-2">${student.email}</td>
-          <td class="px-4 py-2">${student.mobile}</td>
-          <td class="px-4 py-2">${student.course}</td>
-          <td class="px-4 py-2 space-x-2">
-          <button onclick="editStudent(${student.id})"
-              class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 text-sm rounded">
-      			  Edit
-    	  </button>
-            <button onclick="deleteStudent(${student.id})" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button>
-          </td>
-        `;
-        tbody.appendChild(row);
-      });
+  function editStudent(studentId) {
+    window.location.href = "/student/edit/" + studentId;
+  }
+
+  function deleteStudent(id) {
+    if (!confirm("Are you sure you want to delete this student?")) return;
+
+    fetch(`http://localhost:8080/api/students/${id}`, {
+      method: "DELETE"
     })
-    .catch(err => alert("❌ Failed to load students: " + err.message));
+    .then(res => {
+      if (!res.ok) throw new Error("Failed to delete");
+      alert("✅ Student deleted successfully");
+      fetchStudents(); // Reload data
+    })
+    .catch(err => alert("❌ Error: " + err.message));
+  }
 
-  // Fetch and update total student count
+  function fetchStudents() {
+    fetch("http://localhost:8080/api/students/getstudents")
+      .then(res => res.json())
+      .then(data => {
+        allStudents = data;
+        renderStudents();
+        renderPaginationButtons();
+      })
+      .catch(err => alert("❌ Failed to load students: " + err.message));
+  }
+
+  function renderStudents() {
+    const tbody = document.getElementById("studentTable");
+    tbody.innerHTML = "";
+
+    const start = (currentPage - 1) * studentsPerPage;
+    const end = start + studentsPerPage;
+    const currentStudents = allStudents.slice(start, end);
+
+    currentStudents.forEach(student => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td class="px-4 py-2">${student.id}</td>
+        <td class="px-4 py-2">${student.name}</td>
+        <td class="px-4 py-2">${student.email}</td>
+        <td class="px-4 py-2">${student.mobile}</td>
+        <td class="px-4 py-2">${student.course}</td>
+        <td class="px-4 py-2 space-x-2">
+          <button onclick="editStudent(${student.id})" class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 text-sm rounded">Edit</button>
+          <button onclick="deleteStudent(${student.id})" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-sm rounded">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  function renderPaginationButtons() {
+    const paginationDiv = document.getElementById("pagination");
+    paginationDiv.innerHTML = "";
+
+    const totalPages = Math.ceil(allStudents.length / studentsPerPage);
+
+    const prevButton = document.createElement("button");
+    prevButton.textContent = "← Previous";
+    prevButton.className = "bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-1 rounded mx-2 disabled:opacity-50";
+    prevButton.disabled = currentPage === 1;
+    prevButton.onclick = () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderStudents();
+        renderPaginationButtons();
+      }
+    };
+
+    const nextButton = document.createElement("button");
+    nextButton.textContent = "Next →";
+    nextButton.className = "bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-1 rounded mx-2 disabled:opacity-50";
+    nextButton.disabled = currentPage === totalPages;
+    nextButton.onclick = () => {
+      if (currentPage < totalPages) {
+        currentPage++;
+        renderStudents();
+        renderPaginationButtons();
+      }
+    };
+
+    paginationDiv.appendChild(prevButton);
+
+    // Optional: Show current page info
+    const pageInfo = document.createElement("span");
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    pageInfo.className = "mx-2 text-gray-700 font-medium";
+    paginationDiv.appendChild(pageInfo);
+
+    paginationDiv.appendChild(nextButton);
+  }
+
+  // Fetch student count
   fetch("http://localhost:8080/api/students/count")
     .then(res => res.json())
     .then(count => {
@@ -74,53 +143,9 @@
     })
     .catch(err => console.error("❌ Failed to load count:", err));
 
-  // Delete student
-  function deleteStudent(id) {
-    if (!confirm("Are you sure you want to delete this student?")) return;
-
-    fetch(`http://localhost:8080/api/students/${id}`, {
-      method: "DELETE"
-    })
-      .then(res => {
-        if (!res.ok) throw new Error("Failed to delete");
-        alert("✅ Student deleted successfully");
-        location.reload(); // refresh page after delete
-      })
-      .catch(err => alert("❌ Error: " + err.message));
-  }
-  fetch("http://localhost:8080/api/students/search?keyword=" + keyword)
-  .then(res => res.json())
-  .then(data => {
-    let html = "";
-    if (data.length === 0) {
-      html = `<div class="text-gray-500">No students found.</div>`;
-    } else {
-      html = data.map(student => `
-        <div class="bg-white p-4 rounded shadow-md relative border border-gray-200">
-          <div class="absolute top-4 right-4 flex gap-2">
-            <button onclick="editStudent(${student.id})"
-                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 text-sm rounded">
-              Edit
-            </button>
-            <button onclick="deleteStudent(${student.id})"
-                    class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 text-sm rounded">
-              Delete
-            </button>
-          </div>
-          <h3 class="text-lg font-semibold text-indigo-700">${student.name}</h3>
-          <p><strong>Mobile:</strong> ${student.mobile}</p>
-          <p><strong>Email:</strong> ${student.email}</p>
-          <p><strong>Course:</strong> ${student.course}</p>
-        </div>
-      `).join("");
-    }
-    document.getElementById("studentResults").innerHTML = html;
-  })
-  .catch(err => {
-    document.getElementById("studentResults").innerHTML =
-      "<div class='text-red-500'>Error fetching student data.</div>";
-  });
+  fetchStudents();
 </script>
+
 
 
 </body>
