@@ -27,7 +27,8 @@
       <tbody id="studentTable" class="divide-y divide-gray-100">
         <!-- Rows will be populated here -->
       </tbody>
-      <div id="pagination" class="mt-4 flex justify-center items-center"></div>
+      <div id="pagination" class="mt-6 flex justify-center items-center space-x-2 text-sm"></div>
+
 
     </table>
   </div>
@@ -92,45 +93,88 @@
   }
 
   function renderPaginationButtons() {
-    const paginationDiv = document.getElementById("pagination");
-    paginationDiv.innerHTML = "";
+	  const paginationDiv = document.getElementById("pagination");
+	  paginationDiv.innerHTML = "";
 
-    const totalPages = Math.ceil(allStudents.length / studentsPerPage);
+	  const totalPages = Math.ceil(allStudents.length / studentsPerPage);
 
-    const prevButton = document.createElement("button");
-    prevButton.textContent = "← Previous";
-    prevButton.className = "bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-1 rounded mx-2 disabled:opacity-50";
-    prevButton.disabled = currentPage === 1;
-    prevButton.onclick = () => {
-      if (currentPage > 1) {
-        currentPage--;
-        renderStudents();
-        renderPaginationButtons();
-      }
-    };
+	  // First Page
+	  const firstBtn = document.createElement("button");
+	  firstBtn.innerHTML = "&laquo;";
+	  firstBtn.disabled = currentPage === 1;
+	  firstBtn.className = "bg-gray-200 px-2 py-1 rounded hover:bg-gray-300";
+	  firstBtn.onclick = () => {
+	    currentPage = 1;
+	    renderStudents();
+	    renderPaginationButtons();
+	  };
+	  paginationDiv.appendChild(firstBtn);
 
-    const nextButton = document.createElement("button");
-    nextButton.textContent = "Next →";
-    nextButton.className = "bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-1 rounded mx-2 disabled:opacity-50";
-    nextButton.disabled = currentPage === totalPages;
-    nextButton.onclick = () => {
-      if (currentPage < totalPages) {
-        currentPage++;
-        renderStudents();
-        renderPaginationButtons();
-      }
-    };
+	  // Previous Page
+	  const prevBtn = document.createElement("button");
+	  prevBtn.innerHTML = "&lt;";
+	  prevBtn.disabled = currentPage === 1;
+	  prevBtn.className = "bg-gray-200 px-2 py-1 rounded hover:bg-gray-300";
+	  prevBtn.onclick = () => {
+	    if (currentPage > 1) {
+	      currentPage--;
+	      renderStudents();
+	      renderPaginationButtons();
+	    }
+	  };
+	  paginationDiv.appendChild(prevBtn);
 
-    paginationDiv.appendChild(prevButton);
+	  // Page Number Input
+	  const pageInput = document.createElement("input");
+	  pageInput.type = "number";
+	  pageInput.min = 1;
+	  pageInput.max = totalPages;
+	  pageInput.value = currentPage;
+	  pageInput.className = "border px-2 py-1 w-12 text-center";
+	  pageInput.onchange = () => {
+	    const newPage = parseInt(pageInput.value);
+	    if (newPage >= 1 && newPage <= totalPages) {
+	      currentPage = newPage;
+	      renderStudents();
+	      renderPaginationButtons();
+	    } else {
+	      pageInput.value = currentPage; // reset invalid input
+	    }
+	  };
+	  paginationDiv.appendChild(pageInput);
 
-    // Optional: Show current page info
-    const pageInfo = document.createElement("span");
-    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-    pageInfo.className = "mx-2 text-gray-700 font-medium";
-    paginationDiv.appendChild(pageInfo);
+	  // Total Pages Text
+	  const pageInfo = document.createElement("span");
+	  pageInfo.textContent = ` of ${totalPages}`;
+	  pageInfo.className = "text-gray-600";
+	  paginationDiv.appendChild(pageInfo);
 
-    paginationDiv.appendChild(nextButton);
-  }
+	  // Next Page
+	  const nextBtn = document.createElement("button");
+	  nextBtn.innerHTML = "&gt;";
+	  nextBtn.disabled = currentPage === totalPages;
+	  nextBtn.className = "bg-gray-200 px-2 py-1 rounded hover:bg-gray-300";
+	  nextBtn.onclick = () => {
+	    if (currentPage < totalPages) {
+	      currentPage++;
+	      renderStudents();
+	      renderPaginationButtons();
+	    }
+	  };
+	  paginationDiv.appendChild(nextBtn);
+
+	  // Last Page
+	  const lastBtn = document.createElement("button");
+	  lastBtn.innerHTML = "&raquo;";
+	  lastBtn.disabled = currentPage === totalPages;
+	  lastBtn.className = "bg-gray-200 px-2 py-1 rounded hover:bg-gray-300";
+	  lastBtn.onclick = () => {
+	    currentPage = totalPages;
+	    renderStudents();
+	    renderPaginationButtons();
+	  };
+	  paginationDiv.appendChild(lastBtn);
+	}
 
   // Fetch student count
   fetch("http://localhost:8080/api/students/count")
