@@ -14,11 +14,7 @@ public class HomeController {
         return "home"; // maps to templates/home.html
     }
 
-  //  @GetMapping("/dashboard1")
-  //  public String dashboard1(Model model, HttpSession session) {
-   //     return "dashboard"; // refers to templates/dashboard.html
-  //  }
-    
+
     @GetMapping("/dashboard1")
     public String dashboard(Model model, HttpSession session) {
         String username = (String) session.getAttribute("username");
@@ -28,7 +24,20 @@ public class HomeController {
         model.addAttribute("username", username); // This line makes it available in Thymeleaf
         return "dashboard"; // maps to src/main/resources/templates/dashboard.html
     }
+    
+//    @GetMapping("/dashboard1")
+//    public String studenthome(Model model, HttpSession session) {
+//        String username = (String) session.getAttribute("username");
+//        if (username == null) {
+//            return "redirect:/login";
+//        }
+//        model.addAttribute("username", username); // This line makes it available in Thymeleaf
+//        return "studenthome"; // maps to src/main/resources/templates/dashboard.html
+//    }
 
+    
+    
+    
     @GetMapping("/login")
     public String login() {
         return "login"; // maps to templates/login.html

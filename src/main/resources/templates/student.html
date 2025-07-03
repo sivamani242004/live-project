@@ -5,10 +5,35 @@
   <title>Student Registration - MR Technologies</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen p-8">
+<body class="bg-gray-100 h-screen flex font-sans">
 
-  <div class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-md">
-    <h2 class="text-2xl font-bold text-indigo-700 mb-6 text-center">Student Registration Form</h2>
+  <!-- Sidebar -->
+  <aside class="w-64 bg-indigo-800 text-white flex flex-col p-5 space-y-4">
+    <h2 class="text-2xl font-bold mb-8">MR Technologies</h2>
+    <nav class="flex flex-col gap-4">
+      <a href="/dashboard" class="hover:bg-indigo-600 p-2 rounded">Dashboard</a>
+      <a href="/courses" class="hover:bg-indigo-600 p-2 rounded">Courses</a>
+      <a href="/studenthome" class="hover:bg-indigo-600 p-2 rounded">Students</a>
+      <a href="/payments" class="hover:bg-indigo-600 p-2 rounded">Payments</a>
+      <a href="/reports" class="hover:bg-indigo-600 p-2 rounded">Reports</a>
+    </nav>
+    <button onclick="logout()" class="mt-auto text-left text-red-300 hover:text-white">Logout</button>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col">
+    
+    <!-- Header -->
+    <header class="bg-white shadow p-4 flex justify-between items-center">
+      <h1 class="text-xl font-semibold text-gray-700" style="color: rgb(16, 16, 167); font-size: 25px;">Student Registration Form</h1>
+      <p class="text-sm text-gray-500">
+        Welcome, <span class="font-bold text-indigo-600" th:text="${username}">Guest</span>
+      </p>
+    </header>
+
+
+  <div class=" mx-auto bg-white p-8 rounded-lg shadow-md" style="margin-top: 10px; width: 95%;">
+    <!-- <h2 class="text-2xl font-bold text-indigo-700 mb-6 text-center">Student Registration Form</h2> -->
 
     <form onsubmit="return validateMobileNumber()" id="studentForm" class="space-y-4" >
       <div>
@@ -87,7 +112,7 @@
       </div>
 
       <div class="text-center">
-        <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition">
+        <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition" style="margin-left: 85%; width: 40%;">
           Register Student
         </button>
       </div>
