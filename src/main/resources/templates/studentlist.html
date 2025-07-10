@@ -92,13 +92,13 @@
       })
       .catch(err => alert("❌ Failed to load students: " + err.message));
   }
-
+    // pagination 
   function renderStudents() {
     const tbody = document.getElementById("studentTable");
     tbody.innerHTML = "";
 
-    const start = (currentPage - 1) * studentsPerPage;
-    const end = start + studentsPerPage;
+    const start = (currentPage - 1) * studentsPerPage;  //to display the students at the starting page 
+    const end = start + studentsPerPage;  // to display the students at the ending page 
     const currentStudents = allStudents.slice(start, end);
 
     currentStudents.forEach(student => {
@@ -122,7 +122,7 @@
 	  const paginationDiv = document.getElementById("pagination");
 	  paginationDiv.innerHTML = "";
 
-	  const totalPages = Math.ceil(allStudents.length / studentsPerPage);
+	  const totalPages = Math.ceil(allStudents.length / studentsPerPage);  // total students / per page students count
 
 	  // First Page
 	  const firstBtn = document.createElement("button");

@@ -20,11 +20,16 @@ public class PageController {
 	public String studentHomePage(Model model) {
 	    return "studenthome"; // loads studenthome.html
 	}
+	@GetMapping("/courses")
+	public String CoursesPage(Model model) {
+	    return "courses"; // loads studenthome.html
+	}
 	
 //	@GetMapping("/studentlist")
 //	public String studentlistPage(Model model) {
 //	    return "studentlist"; // loads studenthome.html
 //	}
+	
 	
     @GetMapping("/student")
     public String studentPage(Model model) {
