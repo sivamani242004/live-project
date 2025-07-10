@@ -1,0 +1,212 @@
+     /* General Styles */
+   * {
+       margin: 0;
+       padding: 0;
+       box-sizing: border-box;
+       font-family: Arial, sans-serif;
+   }
+
+   body {
+       background-color: #f0f0f0;
+   }
+
+   /*Main content css starts*/
+
+
+   /* Wrapper for Form */
+   .wrapper {
+       width: 90%;
+       max-width: 1400px;
+       background: white;
+       padding: 40px;
+       border-radius: 12px;
+       box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.2);
+       text-align: center;
+       margin: 30px auto;
+   }
+
+   /* Form Container */
+   form {
+       display: flex;
+       flex-wrap: wrap;
+       gap: 15px;
+       justify-content: space-between;
+       width: 100%;
+       height: 50%;
+       margin-top: 30px;
+       margin-bottom: 20px;
+   }
+
+   /* Form Groups */
+   .form-group {
+       display: flex;
+       flex-direction: column;
+       min-width: 220px;
+       flex: 1;
+       text-align: left;
+   }
+
+   /* Labels */
+   .form-group label {
+       font-weight: bold;
+       font-size: 16px;
+       margin-bottom: 8px;
+       color: #000;
+   }
+
+   /* Input Fields */
+   .form-group input {
+       padding: 10px;
+       border: 2px solid #0e8faf;
+       border-radius: 6px;
+       font-size: 16px;
+       width: 100%;
+       box-sizing: border-box;
+       transition: border 0.3s ease-in-out;
+   }
+
+   /* Button Styling */
+   /* button {
+       background-color: #0931c0;
+       color: white;
+       border: none;
+       font-weight: bold;
+       padding: 12px 20px;
+       border-radius: 8px;
+       font-size: 16px;
+       cursor: pointer;
+       transition: background 0.3s ease, transform 0.3s ease;
+       height: 44px;
+   } */
+
+   /* Button Styling */
+   button {
+       background-color: #072aab;
+       color: white;
+       border: none;
+       cursor: pointer;
+       font-weight: bold;
+       padding: 12px 20px;
+       border-radius: 8px;
+       transition: all 0.3s ease;
+       font-size: 16px;
+       height: 44px;
+       margin-top: 24px;
+       /* 👈 This is the new line */
+   }
+   .sub-btn:hover{
+    background: linear-gradient(135deg, #0b33d2, #0d0dcb);
+    transform: scale(1.1);
+    box-shadow: 0px 6px 12px rgba(30, 10, 215, 0.5);
+   }
+
+   /* Success Message */
+   #message {
+       font-size: 14px;
+       color: green;
+       margin-top: 10px;
+   }
+
+   /* Course List Container */
+   .course-list {
+    width: 100%;
+    max-width: 900px;
+    padding: 25px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    margin: 30px auto;
+    text-align: center;
+    background-color: white;
+}
+
+/* Title */
+.course-list h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* Table Styling */
+table {
+    
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+/* Table Headers */
+th {
+    background-color: #2306a5;
+    color: white;
+    padding: 12px;
+    font-size: 12px;
+    text-transform: uppercase;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+th:last-child {
+    border-right: none;
+}
+
+/* Table Data */
+td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    color: #333;
+}
+
+/* Alternate Row Background */
+tbody tr:nth-child(even) {
+    background-color: #f1f9fc;
+}
+
+/* Row Hover */
+tbody tr:hover {
+    background-color: rgba(14, 143, 175, 0.2);
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* Delete Button */
+.delete-btn {
+    background: linear-gradient(135deg, #d00000, #a00000);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    box-shadow: 0px 4px 8px rgba(255, 0, 0, 0.3);
+}
+
+.delete-btn:hover {
+    background: linear-gradient(135deg, #ff0000, #c00000);
+    transform: scale(1.1);
+    box-shadow: 0px 6px 12px rgba(255, 0, 0, 0.5);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .course-list {
+        padding: 20px;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    th,
+    td {
+        padding: 8px;
+    }
+
+    .delete-btn {
+        padding: 5px 10px;
+        font-size: 10px;
+    }
+}
