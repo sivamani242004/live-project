@@ -130,8 +130,55 @@
         }
 
         // Set select dropdowns
-        document.getElementById("qualification").value = student.qualification || "";
-        document.getElementById("courseDropdown").value = student.course || "";
+        fetch("http://localhost:8080/api/courses/all")
+        .then((response) => response.json())
+        .then((courses) => {
+          const dropdown = document.getElementById("courseDropdown");
+          dropdown.innerHTML = '<option value="">Select</option>'; // reset
+
+          courses.forEach((course) => {
+            const option = document.createElement("option");
+            option.value = course.courseid;
+            option.textContent = `${course.coursename} (${course.duration} days)`;
+
+            // 👇 preselect the student's course
+            if (student.course && (course.courseid === student.course || course.courseid === student.course.courseid)) {
+              option.selected = true;
+            }
+
+            dropdown.appendChild(option);
+          });
+        })
+        .catch((err) => {
+          console.error("Failed to load courses", err);
+          const dropdown = document.getElementById("courseDropdown");
+          dropdown.innerHTML = '<option value="">Failed to load courses</option>';
+        });
+        fetch("http://localhost:8080/api/courses/all")
+        .then((response) => response.json())
+        .then((courses) => {
+          const dropdown = document.getElementById("courseDropdown");
+          dropdown.innerHTML = '<option value="">Select</option>'; // reset
+
+          courses.forEach((course) => {
+            const option = document.createElement("option");
+            option.value = course.courseid;
+            option.textContent = `${course.coursename} (${course.duration} days)`;
+
+            // 👇 preselect the student's course
+            if (student.course && (course.courseid === student.course || course.courseid === student.course.courseid)) {
+              option.selected = true;
+            }
+
+            dropdown.appendChild(option);
+          });
+        })
+        .catch((err) => {
+          console.error("Failed to load courses", err);
+          const dropdown = document.getElementById("courseDropdown");
+          dropdown.innerHTML = '<option value="">Failed to load courses</option>';
+        });
+
 
       })
       .catch(err => alert("❌ Error fetching data: " + err.message));

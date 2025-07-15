@@ -172,8 +172,9 @@ fetch("http://localhost:8080/api/courses/all")
 
     courses.forEach((course) => {
       const option = document.createElement("option");
-      option.value = course.courseid;
+      option.value = course.coursename; // ✅ Send course name instead
       option.textContent = `${course.coursename} (${course.duration} days)`;
+
       dropdown.appendChild(option);
     });
   })
