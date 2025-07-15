@@ -16,6 +16,7 @@ document.getElementById("courseForm").addEventListener("submit", function(e) {
         })
         .then(response => response.json())
         .then(data => {
+			alert("course added successfully");
             document.getElementById("message").textContent = "Course added successfully!";
             document.getElementById("courseForm").reset();
             fetchCourses(); // refresh the course list

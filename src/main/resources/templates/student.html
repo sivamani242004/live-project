@@ -91,13 +91,11 @@
 
         <div>
           <label class="block font-medium text-gray-700">Course</label>
-          <select name="course" required class="w-full border p-2 rounded-md">
-            <option value="">Select</option>
-            <option value="Java Full Stack">Java Full Stack</option>
-            <option value="Python Full Stack">Python Full Stack</option>
-            <option value="Data Science">Data Science</option>
+          <select name="course" id="courseDropdown" required class="w-full border p-2 rounded-md">
+           <option value="">Loading...</option>
           </select>
-        </div>
+       </div>
+
       </div>
 
       <div class="grid md:grid-cols-2 gap-4">
@@ -161,6 +159,30 @@
    
    return true;
  }
+ 
+ 
+ //fetch courses
+ 
+ // Populate course dropdown from backend
+fetch("http://localhost:8080/api/courses/all")
+  .then((response) => response.json())
+  .then((courses) => {
+    const dropdown = document.getElementById("courseDropdown");
+    dropdown.innerHTML = '<option value="">Select</option>'; // clear & reset
+
+    courses.forEach((course) => {
+      const option = document.createElement("option");
+      option.value = course.courseid;
+      option.textContent = `${course.coursename} (${course.duration} days)`;
+      dropdown.appendChild(option);
+    });
+  })
+  .catch((err) => {
+    console.error("Failed to load courses", err);
+    const dropdown = document.getElementById("courseDropdown");
+    dropdown.innerHTML = '<option value="">Failed to load courses</option>';
+  });
+
 
 
   </script>
