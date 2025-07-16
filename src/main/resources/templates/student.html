@@ -101,7 +101,7 @@
       <div class="grid md:grid-cols-2 gap-4">
         <div>
           <label class="block font-medium text-gray-700">Duration</label>
-          <input type="text" name="duration" required class="w-full border p-2 rounded-md" placeholder="e.g., 3 months" />
+          <input type="text" name="duration" readonly required class="w-full border p-2 rounded-md" placeholder="e.g., 3 months" />
         </div>
 
         <div>
@@ -164,6 +164,7 @@
  //fetch courses
  
  // Populate course dropdown from backend
+ let courseMap = new Map(); // Store courseName → duration mapping
 fetch("http://localhost:8080/api/courses/all")
   .then((response) => response.json())
   .then((courses) => {
@@ -171,19 +172,32 @@ fetch("http://localhost:8080/api/courses/all")
     dropdown.innerHTML = '<option value="">Select</option>'; // clear & reset
 
     courses.forEach((course) => {
+    	courseMap.set(course.coursename, course.duration);
+    	
       const option = document.createElement("option");
       option.value = course.coursename; // ✅ Send course name instead
-      option.textContent = `${course.coursename} (${course.duration} days)`;
+      option.textContent = `${course.coursename}`;
 
       dropdown.appendChild(option);
     });
   })
   .catch((err) => {
     console.error("Failed to load courses", err);
-    const dropdown = document.getElementById("courseDropdown");
-    dropdown.innerHTML = '<option value="">Failed to load courses</option>';
+    document.getElementById("courseDropdown").innerHTML =
+      '<option value="">Failed to load courses</option>';
   });
+//Listen to course selection and auto-fill duration
+document.getElementById("courseDropdown").addEventListener("change", function () {
+  const selectedCourse = this.value;
+  const duration = courseMap.get(selectedCourse);
 
+  if (duration) {
+    document.querySelector("input[name='duration']").value = duration + " days";
+  } else {
+    document.querySelector("input[name='duration']").value = "";
+  }
+});
+	
 
 
   </script>
