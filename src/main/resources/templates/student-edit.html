@@ -135,6 +135,7 @@
 
 
         // Set select dropdowns
+         let courseMap = new Map(); // Store courseName → duration mapping
         fetch("http://localhost:8080/api/courses/all")
         .then((response) => response.json())
         .then((courses) => {
@@ -142,9 +143,11 @@
           dropdown.innerHTML = '<option value="">Select</option>'; // reset
 
           courses.forEach((course) => {
+        	  courseMap.set(course.coursename, course.duration);
+
             const option = document.createElement("option");
             option.value = course.coursename;
-            option.textContent = `${course.coursename} (${course.duration} days)`;
+            option.textContent = `${course.coursename}`;
 
             // 👇 preselect the student's course
             if (
@@ -159,9 +162,20 @@
           });
         })
         .catch((err) => {
-          console.error("Failed to load courses", err);
-          const dropdown = document.getElementById("courseDropdown");
-          dropdown.innerHTML = '<option value="">Failed to load courses</option>';
+            console.error("Failed to load courses", err);
+            document.getElementById("courseDropdown").innerHTML =
+              '<option value="">Failed to load courses</option>';
+          });
+        //Listen to course selection and auto-fill duration
+        document.getElementById("courseDropdown").addEventListener("change", function () {
+          const selectedCourse = this.value;
+          const duration = courseMap.get(selectedCourse);
+
+          if (duration) {
+            document.querySelector("input[name='duration']").value = duration + " days";
+          } else {
+            document.querySelector("input[name='duration']").value = "";
+          }
         });
 
 
