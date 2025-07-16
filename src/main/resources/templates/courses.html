@@ -273,7 +273,7 @@ tbody tr:hover {
                 </div>
                 <div class="form-group">
     				<label for="fee">Course Fee:</label> <!-- corrected id -->
-    				<input type="number" id="fee" name="fee" required>
+    				<input type="number" id="Coursefee" name="Coursefee" required>
 				</div>
                 <button class="sub-btn" type="submit"   style="background-color: #1f48d9; color: white; width: 150px; margin-left: 40%;" id="onclick" script src="./static/js/courses.js">Add Course</button>
             </form>
@@ -288,7 +288,7 @@ tbody tr:hover {
                         <th>Course ID</th>
                         <th>Course Name</th>
                         <th>Duration (days)</th>
-                        <th>Fee</th>
+                        <th>Coursefee</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -311,7 +311,7 @@ tbody tr:hover {
             courseid: document.getElementById("courseid").value,
             coursename: document.getElementById("coursename").value,
             duration: parseInt(document.getElementById("duration").value),
-            fee: parseFloat(document.getElementById("fee").value)
+            coursefee: parseFloat(document.getElementById("Coursefee").value)
         };
 
         fetch("/api/courses/add", {
@@ -346,7 +346,7 @@ tbody tr:hover {
                         <td>${course.courseid}</td>
                         <td>${course.coursename}</td>
                         <td>${course.duration}</td>
-                        <td>${course.fee}</td>
+                        <td>${course.coursefee}</td>
                         <td><button class="delete-btn" onclick="deleteCourse('${course.courseid}')">Delete</button></td>
                     `;
                     tbody.appendChild(row);

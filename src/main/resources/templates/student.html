@@ -99,29 +99,30 @@
       </div>
       
       <div>
-          <label class="block font-medium text-gray-700">Course Amount</label>
-          <input type="number" name="CourseAmount" required class="w-full border p-2 rounded-md" placeholder="course fees" />
-        </div>
+		  <label class="block font-medium text-gray-700">Course Amount</label>
+		  <input type="number" name="coursefee" id="Coursefee" required class="w-full border p-2 rounded-md" placeholder="course fees" />
+		</div>
+		
+		<div>
+		  <label class="block font-medium text-gray-700">Discount</label>
+		  <input type="number" name="discount" required class="w-full border p-2 rounded-md" placeholder="discount amount" />
+		</div>
+		
+		<div>
+		  <label class="block font-medium text-gray-700">Total Amount</label>
+		  <input type="number" name="totalfee" required class="w-full border p-2 rounded-md" placeholder="course fees-discount amount" />
+		</div>
+		
+		<div>
+		  <label class="block font-medium text-gray-700">Term-I fees</label>
+		  <input type="number" name="term_1" required class="w-full border p-2 rounded-md" placeholder="Term- 1 fees" />
+		</div>
+		
+		<div>
+		  <label class="block font-medium text-gray-700">Due Amount</label>
+		  <input type="number" name="duefee" required class="w-full border p-2 rounded-md" placeholder="Total amount - Term fees" />
+		</div>
 
-        <div>
-          <label class="block font-medium text-gray-700">Discount</label>
-          <input type="number" name="Discount" required class="w-full border p-2 rounded-md" placeholder="discount amount" />
-        </div>
-        
-         <div>
-          <label class="block font-medium text-gray-700">Total Amount</label>
-          <input type="number" name="TotalAmount" required class="w-full border p-2 rounded-md" placeholder="course fees-discount amount" />
-        </div>
-        
-         <div>
-          <label class="block font-medium text-gray-700">Term-I fees</label>
-          <input type="number" name="Term-I" required class="w-full border p-2 rounded-md"  placeholder="Term- 1 fees"/>
-        </div>
-        
-         <div>
-          <label class="block font-medium text-gray-700">Due Amount</label>
-          <input type="number" name="DueAmount" required class="w-full border p-2 rounded-md" placeholder="Total amount- Term fees" />
-        </div>
 
       <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition">
        Student Registration
@@ -183,7 +184,11 @@ fetch("http://localhost:8080/api/courses/all")
     dropdown.innerHTML = '<option value="">Select</option>'; // clear & reset
 
     courses.forEach((course) => {
-    	courseMap.set(course.coursename, course.duration);
+    	courseMap.set(course.coursename, {
+    		  duration: course.duration,
+    		  coursefee: course.coursefee,
+    		});
+
     	
       const option = document.createElement("option");
       option.value = course.coursename; // ✅ Send course name instead
@@ -200,14 +205,17 @@ fetch("http://localhost:8080/api/courses/all")
 //Listen to course selection and auto-fill duration
 document.getElementById("courseDropdown").addEventListener("change", function () {
   const selectedCourse = this.value;
-  const duration = courseMap.get(selectedCourse);
+  const courseData = courseMap.get(selectedCourse);
 
-  if (duration) {
-    document.querySelector("input[name='duration']").value = duration + " days";
+  if (courseData) {
+    document.querySelector("input[name='duration']").value = courseData.duration + " days";
+    document.querySelector("input[name='coursefee']").value = courseData.coursefee;
   } else {
     document.querySelector("input[name='duration']").value = "";
+    document.querySelector("input[name='coursefee']").value = "";
   }
 });
+
 	
 
 
