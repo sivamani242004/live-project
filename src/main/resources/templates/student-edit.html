@@ -128,6 +128,11 @@
           const radio = document.querySelector(`input[name="gender"][value="${student.gender}"]`);
           if (radio) radio.checked = true;
         }
+        if (student.qualification) {
+        	  const qualificationSelect = document.getElementById("qualification");
+        	  qualificationSelect.value = student.qualification;
+        	}
+
 
         // Set select dropdowns
         fetch("http://localhost:8080/api/courses/all")
@@ -138,39 +143,19 @@
 
           courses.forEach((course) => {
             const option = document.createElement("option");
-            option.value = course.courseid;
+            option.value = course.coursename;
             option.textContent = `${course.coursename} (${course.duration} days)`;
 
             // 👇 preselect the student's course
-            if (student.course && (course.courseid === student.course || course.courseid === student.course.courseid)) {
-              option.selected = true;
-            }
+            if (
+                    student.course === course.courseid ||
+                    student.course === course.coursename ||
+                    (student.course && student.course.courseid === course.courseid)
+                  ) {
+                    option.selected = true;
+                  }
 
-            dropdown.appendChild(option);
-          });
-        })
-        .catch((err) => {
-          console.error("Failed to load courses", err);
-          const dropdown = document.getElementById("courseDropdown");
-          dropdown.innerHTML = '<option value="">Failed to load courses</option>';
-        });
-        fetch("http://localhost:8080/api/courses/all")
-        .then((response) => response.json())
-        .then((courses) => {
-          const dropdown = document.getElementById("courseDropdown");
-          dropdown.innerHTML = '<option value="">Select</option>'; // reset
-
-          courses.forEach((course) => {
-            const option = document.createElement("option");
-            option.value = course.courseid;
-            option.textContent = `${course.coursename} (${course.duration} days)`;
-
-            // 👇 preselect the student's course
-            if (student.course && (course.courseid === student.course || course.courseid === student.course.courseid)) {
-              option.selected = true;
-            }
-
-            dropdown.appendChild(option);
+                  dropdown.appendChild(option);
           });
         })
         .catch((err) => {
@@ -221,29 +206,6 @@
       errorSpan.textContent = ""; // ✅ Clear error
       return true;
     }
-    
-    
-        //fetch courses
-        
-        // Populate course dropdown from backend
-       fetch("http://localhost:8080/api/courses/all")
-         .then((response) => response.json())
-         .then((courses) => {
-           const dropdown = document.getElementById("courseDropdown");
-           dropdown.innerHTML = '<option value="">Select</option>'; // clear & reset
-
-           courses.forEach((course) => {
-             const option = document.createElement("option");
-             option.value = course.courseid;
-             option.textContent = `${course.coursename} (${course.duration} days)`;
-             dropdown.appendChild(option);
-           });
-         })
-         .catch((err) => {
-           console.error("Failed to load courses", err);
-           const dropdown = document.getElementById("courseDropdown");
-           dropdown.innerHTML = '<option value="">Failed to load courses</option>';
-         });
   </script>
 </body>
 </html>
