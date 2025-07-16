@@ -68,6 +68,11 @@ public class StudentController {
             existing.setCourse(updatedData.getCourse());
             existing.setDuration(updatedData.getDuration());
             existing.setJoiningDate(updatedData.getJoiningDate());
+            existing.setCoursefee(updatedData.getCoursefee());     
+            existing.setDiscount(updatedData.getDiscount());       
+            existing.setTotalfee(updatedData.getTotalfee());       
+            existing.setTerm_1(updatedData.getTerm_1());           
+            existing.setDuefee(updatedData.getDuefee());
             studentRepository.save(existing);
             return ResponseEntity.ok(existing);
         }).orElse(ResponseEntity.notFound().build());

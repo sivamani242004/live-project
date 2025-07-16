@@ -22,7 +22,12 @@
 		    private String qualification;
 			private String duration;
 		    private String joiningDate;
-		    // Getters and Setters
+		    private String coursefee;
+		    private String discount;
+		    private String totalfee;
+		    private String term_1;  
+		    private String duefee;
+		    // Getters and Setters //Term-I
 		
 		    public int getId() {
 		        return id;
@@ -110,6 +115,41 @@
 		
 		    public void setJoiningDate(String joiningDate) {
 		        this.joiningDate = joiningDate;
+		    }
+		    public String getCoursefee() {
+		        return coursefee;
+		    }
+		
+		    public void setCoursefee(String coursefee) {
+		        this.coursefee = coursefee;
+		    }
+		    public String getDiscount() {
+		        return discount;
+		    }
+		
+		    public void setDiscount(String discount) {
+		        this.discount = discount;
+		    }
+		    public String getTotalfee() {
+		        return totalfee;
+		    }
+		
+		    public void setTotalfee(String totalfee) {
+		        this.totalfee = totalfee;
+		    }
+		    public String getTerm_1() {
+		        return term_1;
+		    }
+		
+		    public void setTerm_1(String term_1) {
+		        this.term_1 = term_1;
+		    }
+		    public String getDuefee() {
+		        return duefee;
+		    }
+		
+		    public void setDuefee(String duefee) {
+		        this.duefee = duefee;
 		    }
 		
 		}

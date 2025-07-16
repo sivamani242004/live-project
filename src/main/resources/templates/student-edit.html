@@ -96,6 +96,31 @@
         <label class="block mb-1 font-medium">Joining Date</label>
         <input type="date" name="joiningDate" id="joiningDate" class="w-full border rounded px-4 py-2" required>
       </div>
+      <div>
+  <label class="block font-medium text-gray-700">Course Amount</label>
+  <input type="number" name="coursefee" id="coursefee" required class="w-full border p-2 rounded-md" placeholder="course fees" />
+</div>
+
+<div>
+  <label class="block font-medium text-gray-700">Discount</label>
+  <input type="number" name="discount" id="discount" required class="w-full border p-2 rounded-md" placeholder="discount amount" />
+</div>
+
+<div>
+  <label class="block font-medium text-gray-700">Total Amount</label>
+  <input type="number" name="totalfee" id="totalfee"required class="w-full border p-2 rounded-md" placeholder="course fees-discount amount" />
+</div>
+
+<div>
+  <label class="block font-medium text-gray-700">Term-I fees</label>
+  <input type="number" name="term_1" id="term_1" required class="w-full border p-2 rounded-md" placeholder="Term- 1 fees" />
+</div>
+
+<div>
+  <label class="block font-medium text-gray-700">Due Amount</label>
+  <input type="number" name="duefee" id="duefee" required class="w-full border p-2 rounded-md" placeholder="Total amount - Term fees" />
+</div>
+
 
       <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition">
         ✅ Update Student
@@ -143,7 +168,10 @@
           dropdown.innerHTML = '<option value="">Select</option>'; // reset
 
           courses.forEach((course) => {
-        	  courseMap.set(course.coursename, course.duration);
+        	  courseMap.set(course.coursename, {
+        		  duration: course.duration,
+        		  coursefee: course.coursefee,
+        		});
 
             const option = document.createElement("option");
             option.value = course.coursename;
@@ -168,15 +196,18 @@
           });
         //Listen to course selection and auto-fill duration
         document.getElementById("courseDropdown").addEventListener("change", function () {
-          const selectedCourse = this.value;
-          const duration = courseMap.get(selectedCourse);
+        	  const selectedCourse = this.value;
+        	  const courseData = courseMap.get(selectedCourse);
 
-          if (duration) {
-            document.querySelector("input[name='duration']").value = duration + " days";
-          } else {
-            document.querySelector("input[name='duration']").value = "";
-          }
-        });
+        	  if (courseData) {
+        	    document.querySelector("input[name='duration']").value = courseData.duration + " days";
+        	    document.querySelector("input[name='coursefee']").value = courseData.coursefee;
+        	  } else {
+        	    document.querySelector("input[name='duration']").value = "";
+        	    document.querySelector("input[name='coursefee']").value = "";
+        	  }
+        	});
+
 
 
       })

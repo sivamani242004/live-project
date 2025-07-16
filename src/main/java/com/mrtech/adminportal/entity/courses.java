@@ -11,7 +11,7 @@ public class courses {
 
     private String coursename;
     private int duration;
-    private int fee;
+    private int coursefee;
 
 
     // Getters and Setters
@@ -38,11 +38,11 @@ public class courses {
     public void setDuration(int duration) {
         this.duration = duration;
     }
-    public int getFee() {
-        return fee;
+    public int getCoursefee() {
+        return coursefee;
     }
 
-    public void setFee(int fee) {
-        this.fee = fee;
+    public void setCoursefee(int coursefee) {
+        this.coursefee = coursefee;
     }
 }
