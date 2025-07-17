@@ -252,6 +252,35 @@
       errorSpan.textContent = ""; // ✅ Clear error
       return true;
     }
+    
+    
+     // Auto-calculate Total Amount = Course Amount - Discount
+        document.getElementById("coursefee").addEventListener("input", calculateTotalFee);
+        document.getElementById("discount").addEventListener("input", calculateTotalFee);
+
+        function calculateTotalFee() {
+          const courseFee = parseFloat(document.getElementById("coursefee").value) || 0;
+          const discount = parseFloat(document.getElementById("discount").value) || 0;
+
+          const total = courseFee - discount;
+          document.getElementById("totalfee").value = total >= 0 ? total : 0;
+        }
+
+
+    // due amount = total amount - term-1 fee
+
+document.getElementById("term_1").addEventListener("input", calculateDueAmount);
+document.getElementById("totalfee").addEventListener("input", calculateDueAmount);
+
+function calculateDueAmount() {
+  const total = parseFloat(document.getElementById("totalfee").value) || 0;
+  const term1 = parseFloat(document.getElementById("term_1").value) || 0;
+
+  const due = total - term1;
+  document.getElementById("duefee").value = due >= 0 ? due : 0;
+}
+
+
   </script>
 </body>
 </html>

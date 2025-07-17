@@ -217,7 +217,34 @@ document.getElementById("courseDropdown").addEventListener("change", function ()
   }
 });
 
+	//total fee= course amount -discount amount
 	
+	// Auto-calculate Total Amount = Course Amount - Discount
+document.getElementById("Coursefee").addEventListener("input", calculateTotalFee);
+document.querySelector("input[name='discount']").addEventListener("input", calculateTotalFee);
+
+function calculateTotalFee() {
+  const courseFee = parseFloat(document.getElementById("Coursefee").value) || 0;
+  const discount = parseFloat(document.querySelector("input[name='discount']").value) || 0;
+
+  const total = courseFee - discount;
+  document.querySelector("input[name='totalfee']").value = total >= 0 ? total : 0;
+}
+
+
+// due amount = total amount - term-1 fee
+
+document.querySelector("input[name='term_1']").addEventListener("input", calculateDueAmount);
+document.querySelector("input[name='totalfee']").addEventListener("input", calculateDueAmount);
+
+function calculateDueAmount() {
+  const total = parseFloat(document.querySelector("input[name='totalfee']").value) || 0;
+  const term1 = parseFloat(document.querySelector("input[name='term_1']").value) || 0;
+
+  const due = total - term1;
+  document.querySelector("input[name='duefee']").value = due >= 0 ? due : 0;
+}
+
 
 
   </script>
