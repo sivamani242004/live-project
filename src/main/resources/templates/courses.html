@@ -9,6 +9,7 @@
 
 <style>
      /* General Styles */
+     /*mahesh*/
    * {
        margin: 0;
        padding: 0;
@@ -328,6 +329,7 @@ tbody tr:hover {
             fetchCourses(); // refresh the course list
         })
         .catch(error => {
+        	//error msg
             console.error("Error adding course:", error);
             document.getElementById("message").textContent = "Error adding course.";
         });
