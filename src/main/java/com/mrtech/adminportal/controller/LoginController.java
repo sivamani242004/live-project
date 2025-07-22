@@ -33,4 +33,14 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password..");
         }
     }
+    @GetMapping("/username")
+    public ResponseEntity<?> getUsername(HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        if (username != null) {
+            return ResponseEntity.ok(username);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+        }
+    }
+
 }
