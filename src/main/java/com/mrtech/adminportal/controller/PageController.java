@@ -25,10 +25,6 @@ public class PageController {
 	    return "courses"; // loads studenthome.html
 	}
 	
-//	@GetMapping("/studentlist")
-//	public String studentlistPage(Model model) {
-//	    return "studentlist"; // loads studenthome.html
-//	}
 	
 	
     @GetMapping("/student")

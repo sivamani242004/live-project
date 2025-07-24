@@ -250,7 +250,7 @@ tbody tr:hover {
     <header class="bg-white shadow p-4 flex justify-between items-center" style="margin-left: 260px; padding: 20px;">
       <h1 class="text-xl font-semibold" style="color: rgb(16, 16, 167);"><a href="/dashboard"><i class="fa-solid fa-circle-left"></i></a> Courses</h1>
       <p class="text-sm text-gray-500">
-        Welcome, <span class="font-bold text-indigo-600" th:text="${username}">Guest</span>
+        Welcome, <span class="font-bold text-indigo-600" id="username">Guest</span>
       </p>
     </header>
 
@@ -376,14 +376,22 @@ tbody tr:hover {
         });
     }
 
-
+    fetch("http://localhost:8080/api/username", {
+        credentials: 'include' // ⬅ Important to send session cookie
+      })
+      .then(response => {
+        if (!response.ok) throw new Error("Not logged in");
+        return response.text();
+      })
+      .then(username => {
+        document.getElementById("username").innerText = username;
+      })
+      .catch(() => {
+        document.getElementById("username").innerText = "Guest";
+      });
     // Load existing courses on page load
     window.onload = fetchCourses;
 
     </script>
-
-
-
-
 </body>
 </html>

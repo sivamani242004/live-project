@@ -21,21 +21,11 @@ public class HomeController {
         if (username == null) {
             return "redirect:/login";
         }
-        model.addAttribute("username", username); // This line makes it available in Thymeleaf
-        return "dashboard"; // maps to src/main/resources/templates/dashboard.html
+        model.addAttribute("username", username); // For Thymeleaf
+        return "dashboard"; // maps to dashboard.html
     }
-    
-//    @GetMapping("/dashboard1")
-//    public String studenthome(Model model, HttpSession session) {
-//        String username = (String) session.getAttribute("username");
-//        if (username == null) {
-//            return "redirect:/login";
-//        }
-//        model.addAttribute("username", username); // This line makes it available in Thymeleaf
-//        return "studenthome"; // maps to src/main/resources/templates/dashboard.html
-//    }
 
-    
+        
     
     
     @GetMapping("/login")

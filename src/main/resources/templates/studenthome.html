@@ -28,7 +28,7 @@
     <header class="bg-white shadow p-4 flex justify-between items-center">
       <h1 class="text-xl font-semibold text-gray-700" style="color: rgb(16, 16, 167); font-size: 25px;">Student Home</h1>
       <p class="text-sm text-gray-500">
-        Welcome, <span class="font-bold text-indigo-600" th:text="${username}">Guest</span>
+        Welcome, <span class="font-bold text-indigo-600" id="username">Guest</span>
       </p>
     </header>
 
@@ -122,6 +122,20 @@
             "<div class='text-red-500'>Error fetching student data.</div>";
         });
     });
+  //USERNAME
+    fetch("http://localhost:8080/api/username", {
+        credentials: 'include' // ⬅ Important to send session cookie
+      })
+      .then(response => {
+        if (!response.ok) throw new Error("Not logged in");
+        return response.text();
+      })
+      .then(username => {
+        document.getElementById("username").innerText = username;
+      })
+      .catch(() => {
+        document.getElementById("username").innerText = "Guest";
+      });
   </script>
 
 </body>
