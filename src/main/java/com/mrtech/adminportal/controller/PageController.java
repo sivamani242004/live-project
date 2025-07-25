@@ -24,7 +24,10 @@ public class PageController {
 	public String CoursesPage(Model model) {
 	    return "courses"; // loads studenthome.html
 	}
-	
+	@GetMapping("/Batch")
+	public String BatchPage(Model model) {
+	    return "Batch"; // loads studenthome.html
+	}
 	
 	
     @GetMapping("/student")

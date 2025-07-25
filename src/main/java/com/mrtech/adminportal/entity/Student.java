@@ -22,6 +22,7 @@
 		    private String qualification;
 			private String duration;
 		    private String joiningDate;
+		    private String batch;
 		    private String coursefee;
 		    private String discount;
 		    private String totalfee;
@@ -115,6 +116,13 @@
 		
 		    public void setJoiningDate(String joiningDate) {
 		        this.joiningDate = joiningDate;
+		    }
+		    public String getBatch() {
+		        return batch;
+		    }
+		
+		    public void setBatch(String batch) {
+		        this.batch = batch;
 		    }
 		    public String getCoursefee() {
 		        return coursefee;
