@@ -16,6 +16,7 @@
       <a href="/dashboard" class="hover:bg-indigo-600 p-2 rounded">Dashboard</a>
       <a href="/courses" class="hover:bg-indigo-600 p-2 rounded">Courses</a>
       <a href="/studenthome" class="hover:bg-indigo-600 p-2 rounded">Students</a>
+      <a href="/Batch" class="hover:bg-indigo-600 p-2 rounded">Batch</a>
       <a href="/payments" class="hover:bg-indigo-600 p-2 rounded">Payments</a>
       <a href="/reports" class="hover:bg-indigo-600 p-2 rounded">Reports</a>
     </nav>
@@ -79,6 +80,7 @@
           <option value="12th">12th</option>
           <option value="Diploma">Diploma</option>
           <option value="Degree">Degree</option>
+          <option value="B_tech">B-tech</option>
           <option value="PG">PG</option>
         </select>
       </div>
@@ -86,6 +88,12 @@
         <label class="block mb-1 font-medium">Joining Date</label>
         <input type="date" name="joiningDate" id="joiningDate" class="w-full border rounded px-4 py-2" required>
       </div>
+      <div>
+          <label class="block font-medium text-gray-700">Batch</label>
+          <select name="batch" id="batchDropdown" required class="w-full border p-2 rounded-md">
+           <option value="">Loading...</option>
+          </select>
+       </div>
        <div>
           <label class="block font-medium text-gray-700">Course</label>
           <select name="course" id="courseDropdown" required class="w-full border p-2 rounded-md">
@@ -135,154 +143,171 @@
   </script>
 
   <!-- Data Load and Submit -->
-  <script>
-    // Load student data
-    fetch("http://localhost:8080/api/students/" + id)
-      .then(async res => {
-        const text = await res.text();
-        if (!res.ok || !text) throw new Error("Invalid or empty response from API.");
-        const student = JSON.parse(text);
+<script>
+let courseMap = new Map(); // Global map
+let student = null; // Global student variable for reuse
 
-        // Fill form values
-        for (const key in student) {
-          const el = document.getElementById(key);
-          if (el) el.value = student[key];
+// 1️⃣ Fetch student details first
+fetch("http://localhost:8080/api/students/" + id)
+  .then(async res => {
+    const text = await res.text();
+    if (!res.ok || !text) throw new Error("Invalid or empty response from API.");
+    student = JSON.parse(text);
+
+    // Fill form fields
+    for (const key in student) {
+      const el = document.getElementById(key);
+      if (el) el.value = student[key];
+    }
+
+    // Handle radio
+    if (student.gender) {
+      const radio = document.querySelector(`input[name="gender"][value="${student.gender}"]`);
+      if (radio) radio.checked = true;
+    }
+
+    if (student.qualification) {
+      document.getElementById("qualification").value = student.qualification;
+    }
+
+    // Load dropdowns now
+    loadCourses(student.course);
+    loadBatches(student.batch);
+  })
+  .catch(err => alert("❌ Error fetching data: " + err.message));
+
+// 2️⃣ Load courses and preselect
+function loadCourses(selectedCourse) {
+  fetch("http://localhost:8080/api/courses/all")
+    .then((response) => response.json())
+    .then((courses) => {
+      const dropdown = document.getElementById("courseDropdown");
+      dropdown.innerHTML = '<option value="">Select</option>';
+
+      courses.forEach((course) => {
+        courseMap.set(course.coursename, {
+          duration: course.duration,
+          coursefee: course.coursefee,
+        });
+
+        const option = document.createElement("option");
+        option.value = course.coursename;
+        option.textContent = course.coursename;
+
+        if (
+          selectedCourse === course.courseid ||
+          selectedCourse === course.coursename ||
+          (selectedCourse && selectedCourse.courseid === course.courseid)
+        ) {
+          option.selected = true;
         }
 
-        // Handle radio
-        if (student.gender) {
-          const radio = document.querySelector(`input[name="gender"][value="${student.gender}"]`);
-          if (radio) radio.checked = true;
+        dropdown.appendChild(option);
+      });
+    })
+    .catch((err) => {
+      console.error("Failed to load courses", err);
+      document.getElementById("courseDropdown").innerHTML =
+        '<option value="">Failed to load courses</option>';
+    });
+}
+
+// 3️⃣ Course auto-fill on change
+document.getElementById("courseDropdown").addEventListener("change", function () {
+  const selectedCourse = this.value;
+  const courseData = courseMap.get(selectedCourse);
+
+  if (courseData) {
+    document.querySelector("input[name='duration']").value = courseData.duration + " days";
+    document.querySelector("input[name='coursefee']").value = courseData.coursefee;
+  } else {
+    document.querySelector("input[name='duration']").value = "";
+    document.querySelector("input[name='coursefee']").value = "";
+  }
+});
+
+// 4️⃣ Load batches and preselect
+function loadBatches(selectedBatchId) {
+  fetch("http://localhost:8080/api/batch/active")
+    .then((response) => response.json())
+    .then((batches) => {
+      const dropdown = document.getElementById("batchDropdown");
+      dropdown.innerHTML = '<option value="">Select</option>';
+
+      batches.forEach((batch) => {
+        const option = document.createElement("option");
+        option.value = batch.batchid;
+        option.textContent = `${batch.batchid} (${batch.status})`;
+
+        if (selectedBatchId === batch.batchid || selectedBatchId === batch.name) {
+          option.selected = true;
         }
-        if (student.qualification) {
-        	  const qualificationSelect = document.getElementById("qualification");
-        	  qualificationSelect.value = student.qualification;
-        	}
 
+        dropdown.appendChild(option);
+      });
+    });
+}
 
-        // Set select dropdowns
-         let courseMap = new Map(); // Store courseName → duration mapping
-        fetch("http://localhost:8080/api/courses/all")
-        .then((response) => response.json())
-        .then((courses) => {
-          const dropdown = document.getElementById("courseDropdown");
-          dropdown.innerHTML = '<option value="">Select</option>'; // reset
-
-          courses.forEach((course) => {
-        	  courseMap.set(course.coursename, {
-        		  duration: course.duration,
-        		  coursefee: course.coursefee,
-        		});
-
-            const option = document.createElement("option");
-            option.value = course.coursename;
-            option.textContent = `${course.coursename}`;
-
-            // 👇 preselect the student's course
-            if (
-                    student.course === course.courseid ||
-                    student.course === course.coursename ||
-                    (student.course && student.course.courseid === course.courseid)
-                  ) {
-                    option.selected = true;
-                  }
-
-                  dropdown.appendChild(option);
-          });
-        })
-        .catch((err) => {
-            console.error("Failed to load courses", err);
-            document.getElementById("courseDropdown").innerHTML =
-              '<option value="">Failed to load courses</option>';
-          });
-        //Listen to course selection and auto-fill duration
-        document.getElementById("courseDropdown").addEventListener("change", function () {
-        	  const selectedCourse = this.value;
-        	  const courseData = courseMap.get(selectedCourse);
-
-        	  if (courseData) {
-        	    document.querySelector("input[name='duration']").value = courseData.duration + " days";
-        	    document.querySelector("input[name='coursefee']").value = courseData.coursefee;
-        	  } else {
-        	    document.querySelector("input[name='duration']").value = "";
-        	    document.querySelector("input[name='coursefee']").value = "";
-        	  }
-        	});
-
-
-
-      })
-      .catch(err => alert("❌ Error fetching data: " + err.message));
-
-    // Submit form handler
-  document.getElementById("editForm").addEventListener("submit", function (e) {
-  if (!validateMobileNumber()) return; // call validation manually
+// 5️⃣ Submit form handler
+document.getElementById("editForm").addEventListener("submit", function (e) {
+  if (!validateMobileNumber()) return;
   e.preventDefault();
 
+  const formData = new FormData(this);
+  const student = Object.fromEntries(formData);
 
-      const formData = new FormData(this);
-      const student = Object.fromEntries(formData);
+  fetch("http://localhost:8080/api/students/" + student.id, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(student)
+  })
+    .then(res => {
+      if (!res.ok) throw new Error("Update failed");
+      alert("✅ Student updated successfully");
+      window.location.href = "/studenthome";
+    })
+    .catch(err => alert("❌ Error: " + err.message));
+});
 
-      fetch("http://localhost:8080/api/students/" + student.id, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(student)
-      })
-        .then(res => {
-          if (!res.ok) throw new Error("Update failed");
-          alert("✅ Student updated successfully");
-          window.location.href = "/studenthome";
-        })
-        .catch(err => alert("❌ Error: " + err.message));
-    });
-    
-    //mobile number validnation
-        function validateMobileNumber() {
-      const mobile = document.getElementById("mobile").value.trim();
-      const errorSpan = document.getElementById("error");
+// 6️⃣ Mobile number validation
+function validateMobileNumber() {
+  const mobile = document.getElementById("mobile").value.trim();
+  const mobileRegex = /^[1-9][0-9]{9}$/;
 
-      const mobileRegex = /^[1-9][0-9]{9}$/;
+  if (!mobileRegex.test(mobile)) {
+    alert("❌ Invalid mobile number. It must be 10 digits and should not start with 0.");
+    return false;
+  }
 
-      if (!mobileRegex.test(mobile)) {
-        
-        alert("❌ Invalid mobile number. It must be 10 digits and should not start with 0.");
-        return false;
-      }
+  return true;
+}
 
-      errorSpan.textContent = ""; // ✅ Clear error
-      return true;
-    }
-    
-    
-     // Auto-calculate Total Amount = Course Amount - Discount
-        document.getElementById("coursefee").addEventListener("input", calculateTotalFee);
-        document.getElementById("discount").addEventListener("input", calculateTotalFee);
+// 7️⃣ Total fee calculation
+document.getElementById("coursefee").addEventListener("input", calculateTotalFee);
+document.getElementById("discount").addEventListener("input", calculateTotalFee);
 
-        function calculateTotalFee() {
-          const courseFee = parseFloat(document.getElementById("coursefee").value) || 0;
-          const discount = parseFloat(document.getElementById("discount").value) || 0;
+function calculateTotalFee() {
+  const courseFee = parseFloat(document.getElementById("coursefee").value) || 0;
+  const discount = parseFloat(document.getElementById("discount").value) || 0;
+  const total = courseFee - discount;
+  document.getElementById("totalfee").value = total >= 0 ? total : 0;
+}
 
-          const total = courseFee - discount;
-          document.getElementById("totalfee").value = total >= 0 ? total : 0;
-        }
-
-
-    // due amount = total amount - term-1 fee
-
+// 8️⃣ Due fee calculation
 document.getElementById("term_1").addEventListener("input", calculateDueAmount);
 document.getElementById("totalfee").addEventListener("input", calculateDueAmount);
 
 function calculateDueAmount() {
   const total = parseFloat(document.getElementById("totalfee").value) || 0;
   const term1 = parseFloat(document.getElementById("term_1").value) || 0;
-
   const due = total - term1;
   document.getElementById("duefee").value = due >= 0 ? due : 0;
 }
-//USERNAME
+
+// 9️⃣ Username fetch
 fetch("http://localhost:8080/api/username", {
-    credentials: 'include' // ⬅ Important to send session cookie
-  })
+  credentials: 'include'
+})
   .then(response => {
     if (!response.ok) throw new Error("Not logged in");
     return response.text();
@@ -293,7 +318,7 @@ fetch("http://localhost:8080/api/username", {
   .catch(() => {
     document.getElementById("username").innerText = "Guest";
   });
+</script>
 
-  </script>
 </body>
 </html>

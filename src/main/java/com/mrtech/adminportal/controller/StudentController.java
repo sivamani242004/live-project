@@ -3,7 +3,9 @@ package com.mrtech.adminportal.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.query.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -68,6 +70,7 @@ public class StudentController {
             existing.setCourse(updatedData.getCourse());
             existing.setDuration(updatedData.getDuration());
             existing.setJoiningDate(updatedData.getJoiningDate());
+            existing.setBatch(updatedData.getBatch());
             existing.setCoursefee(updatedData.getCoursefee());     
             existing.setDiscount(updatedData.getDiscount());       
             existing.setTotalfee(updatedData.getTotalfee());       
@@ -77,7 +80,8 @@ public class StudentController {
             return ResponseEntity.ok(existing);
         }).orElse(ResponseEntity.notFound().build());
     }
-    
+   
+
 
 
 }
