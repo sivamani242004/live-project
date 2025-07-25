@@ -35,6 +35,11 @@ public class PageController {
         model.addAttribute("username", "Admin"); // Optional if you want to show username
         return "student"; // This will render student.html
     }
+    @GetMapping("/payments")
+    public String paymentPage(Model model) {
+        model.addAttribute("username", "Admin"); // Optional if you want to show username
+        return "payments"; // This will render payments.html
+    }
     
  
     @GetMapping("/student/edit/{id}")
