@@ -4,63 +4,360 @@
   <meta charset="UTF-8">
   <title>MR Technologies - Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+
+    .nav {
+      display: flex;
+      padding: 10px 0;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      background: #a7aacc;
+      color: #333;
+      width: 200px;
+      margin-left: 5px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      background: #2f41e6;
+      color: white;
+    }
+
+    .tab:hover {
+      background: #d0d0d8;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 20px;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .main {
+      margin-left: 220px;
+      margin-top: 80px;
+      padding: 20px;
+    }
+
+    .main-content {
+      background: #343fe0;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .wrapper {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      width: 95%;
+      max-width: 1100px;
+      margin: 0 auto;
+      overflow-x: auto;
+    }
+
+    h1 {
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      color: #0e11ac;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #ffffff;
+    }
+
+    thead {
+      background: #1c4ac7;
+      color: white;
+      text-transform: uppercase;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      text-align: center;
+      font-size: 14px;
+      border: 1px solid #ddd;
+    }
+
+    tbody tr:hover {
+      background: #8693be;
+      transition: background 0.3s ease-in-out;
+    }
+
+    /* Batch Payments Section */
+    .daily-payments {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      margin: 0 auto;
+    }
+
+    .daily-payments h2 {
+      text-align: center;
+      font-size: 24px;
+      color: #000;
+      margin-bottom: 20px;
+    }
+
+    .batch-selection {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .batch-selection label {
+      font-weight: bold;
+      color: #554dc9;
+    }
+
+    .batch-selection select,
+    .batch-selection button {
+      padding: 10px 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .batch-selection button {
+      background-color: #110eaf;
+      color: white;
+      cursor: pointer;
+    }
+
+    .batch-selection button:hover {
+      background-color: #1618a0;
+    }
+
+    .scroll-table {
+      max-height: 400px;
+      overflow-x: auto;
+      overflow-y: auto;
+      margin-top: 20px;
+      border: 1px solid #ccc;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 500px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+
+    .modal-content {
+      position: relative;
+    }
+
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 22px;
+      font-weight: bold;
+      color: red;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: darkred;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 h-screen flex font-sans">
+<body class="bg-gray-100 h-screen flex">
 
   <!-- Sidebar -->
- 
-  <aside class="w-64 bg-indigo-800 text-white flex flex-col p-5 space-y-4" style="position: fixed;height: 100%;" >
+  <aside class="w-64 bg-indigo-800 text-white flex flex-col p-5 space-y-4 fixed h-full">
     <h2 class="text-2xl font-bold mb-8">MR Technologies</h2>
     <nav class="flex flex-col gap-4">
       <a href="/dashboard" class="hover:bg-indigo-600 p-2 rounded">Dashboard</a>
       <a href="/courses" class="hover:bg-indigo-600 p-2 rounded">Courses</a>
       <a href="/studenthome" class="hover:bg-indigo-600 p-2 rounded">Students</a>
-      <a href="/Batch"class="hover:bg-indigo-600 p-2 rounded">Batch</a>
+      <a href="/Batch" class="hover:bg-indigo-600 p-2 rounded">Batch</a>
       <a href="/payments" class="hover:bg-indigo-600 p-2 rounded">Payments</a>
       <a href="/reports" class="hover:bg-indigo-600 p-2 rounded">Reports</a>
     </nav>
     <button onclick="logout()" class="mt-auto text-left text-red-300 hover:text-white">Logout</button>
   </aside>
 
- 
   <!-- Main Content -->
   <div class="flex-1 flex flex-col">
-    
     <!-- Header -->
-    <header class="bg-white shadow p-4 flex justify-between items-center" style="position: fixed; margin-left: 256px;width: 1000px;">
-      <h1 class="text-xl font-semibold text-gray-700" style="color: rgb(16, 16, 167); font-size: 25px; margin-left: 0px;" >Payments</h1>
+    <header class="bg-white shadow p-4 flex justify-between items-center fixed top-0 left-64 right-0 z-10">
+      <h1 class="text-xl font-semibold text-blue-700">Payments</h1>
       <p class="text-sm text-gray-500">
         Welcome, <span class="font-bold text-indigo-600" id="username">Guest</span>
       </p>
-    </header>	
-    
-    <div style="width: 100px; height: 50px; margin-top: 10%;margin-left: 50%; color:white; border-radius: 10px; background-color: blue;">
-    	<button >Batch-Payments</button> 
+    </header>
+
+    <div class="main">
+      <!-- Tabs -->
+      <div class="nav">
+        <div class="tab active" onclick="showTab('dashboard')">Daily Payments</div>
+        <div class="tab" onclick="showTab('account')">Batch Payments</div>
+      </div>
+
+      <!-- Daily Payments -->
+      <section id="dashboard" class="tab-content active">
+        <main class="main-content">
+          <div class="wrapper">
+            <h1>Daily Transactions</h1>
+            <table id=table1>
+              <thead>
+                <tr>
+                  <th>STUDENT ID</th>
+                  <th>BATCH ID</th>
+                  <th>COURSE</th>
+                  <th>FULL NAME</th>
+                  <th>PHONE</th>
+                  <th>AMOUNT PAID</th>
+                  <th>TERM</th>
+                  <th>DATE (PAID)</th>
+                </tr>
+              </thead>
+              <tbody id="transactionTable" style="font-size: 12px;"></tbody>
+            </table>
+          </div>
+        </main>
+      </section>
+
+      <!-- Batch Payments -->
+      <section id="account" class="tab-content">
+        <main class="main-content-1">
+          <div class="daily-payments">
+            <h2>Batch Payments</h2>
+            <div class="batch-selection">
+              <div class="form-group">
+                <label for="CourseType">Course Type:</label>
+                <select id="CourseType" onchange="loadStatuses()">
+                  <option value="">Select Course Type</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="BatchStatus">Status:</label>
+                <select id="BatchStatus" onchange="loadBatchCodes()">
+                  <option value="">Select Status</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="BatchCode">Batch Code:</label>
+                <select id="BatchCode">
+                  <option value="">Select Batch</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <button onclick="getDetails()">Get Details</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scrollable Table -->
+          <div class="scroll-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Student ID</th>
+                  <th>Batch Code</th>
+                  <th>Course</th>
+                  <th>Name</th>
+                  <th>Phone</th>
+                  <th>Course Fee</th>
+                  <th>Discount Applied</th>
+                  <th>Total Amount</th>
+                  <th>Fee(Paid)</th>
+                  <th>Pay</th>
+                  <th>Total Due</th>
+                  <th>Action</th>
+                  <th>Get Terms</th>
+                </tr>
+              </thead>
+              <tbody id="studentTableBody" style="font-size: 12px;"></tbody>
+            </table>
+          </div>
+        </main>
+
+        <!-- Modal -->
+        <div id="termsModal" class="modal">
+          <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Transaction Details</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Term</th>
+                  <th>Name</th>
+                  <th>Amount Paid</th>
+                  <th>Paid Date</th>
+                </tr>
+              </thead>
+              <tbody id="termsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
     </div>
-    <div style="width: 100px; height: 50px; margin-top: 10%;margin-left: 50%; color: white; border-radius: 10px; background-color: blue;">
-    	<button>Daily-Payments</button>
-    </div>
-     <!-- it is a admin portal project -->
-    
-    
-	 <script>
+  </div>
+
+  <script>
     function logout() {
       window.location.href = "/login";
     }
-    fetch("http://localhost:8080/api/username", {
-        credentials: 'include' // ⬅ Important to send session cookie
-      })
-      .then(response => {
-        if (!response.ok) throw new Error("Not logged in");
-        return response.text();
-      })
-      .then(username => {
-        document.getElementById("username").innerText = username;
-      })
-      .catch(() => {
-        document.getElementById("username").innerText = "Guest";
-      });
-  </script>
 
+    fetch("http://localhost:8080/api/username", {
+      credentials: 'include'
+    })
+    .then(response => {
+      if (!response.ok) throw new Error("Not logged in");
+      return response.text();
+    })
+    .then(username => {
+      document.getElementById("username").innerText = username;
+    })
+    .catch(() => {
+      document.getElementById("username").innerText = "Guest";
+    });
+
+    function showTab(tabId) {
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById("termsModal").style.display = "none";
+    }
+    
+   document.addEventListener("DOMContentLoaded", function () {
+       fetchDailyPayments();
+});
+
+      
+  </script>
 </body>
 </html>
