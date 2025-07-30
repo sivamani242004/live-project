@@ -363,14 +363,7 @@
               </button>
             </div>
           </div>
-        </section>
 
-        <!-- Daily Payments -->
-        <section
-          id="dashboard"
-          class="tab-content active"
-          style="margin-left: 5%"
-        >
           <main class="main-content">
             <div class="wrapper">
               <h1>Daily Transactions</h1>
@@ -507,55 +500,35 @@
       document.addEventListener("DOMContentLoaded", function () {
         fetchDailyPayments();
       });
-    </script>
-    <script>
-      document
-        .getElementById("searchInput")
-        .addEventListener("input", function () {
-          const keyword = this.value.trim();
-          if (keyword.length === 0) return;
+      
+    //fetch data
+     document.getElementById("searchInput").addEventListener("input", function () {
+  const keyword = this.value.trim();
+  console.log("Searching for:", keyword); // Debug log
 
-          fetch(
-            `http://localhost:8080/api/students/search?query=${encodeURIComponent(
-              keyword
-            )}`
-          )
-            .then((res) => {
-              if (!res.ok) throw new Error("Student not found");
-              return res.json();
-            })
-            .then((data) => {
-              // Populate fields
-              document.getElementById("courseType").value =
-                data.courseType || "";
-              document.getElementById("status").value = data.status || "";
-              document.getElementById("batchCode").value = data.batchCode || "";
-              document.getElementById("totalDue").value = data.totalDue || 0;
+  
+  //fetch data
+  fetch("http://localhost:8080/api/students/search?keyword=" + keyword)
+    .then(res => res.json())
+    .then(data => {
+      console.log("API Response:", data); // Debug log
 
-              // Populate Daily Transactions table
-              const tableBody = document.getElementById("transactionTable");
-              tableBody.innerHTML = "";
+      if (data.length === 0) {
+        alert("student not found");
+      } else {
+        const student = data[0];
+        document.getElementById("courseType").value = student.course;
+        document.getElementById("status").value = student.coursefee;
+        document.getElementById("batchCode").value = student.batch;
+        document.getElementById("totalDue").value = student.duefee;
+      }
+    })
+    .catch(error => {
+      console.error("Fetch error:", error);
+    });
+});
 
-              data.transactions.forEach((tx) => {
-                const row = `
-            <tr>
-              <td>${tx.studentId}</td>
-              <td>${tx.batchId}</td>
-              <td>${tx.course}</td>
-              <td>${tx.fullName}</td>
-              <td>${tx.phone}</td>
-              <td>₹ ${tx.amountPaid}</td>
-              <td>${tx.term}</td>
-              <td>${tx.datePaid}</td>
-            </tr>`;
-                tableBody.innerHTML += row;
-              });
-            })
-            .catch((err) => {
-              console.error(err);
-              alert("No matching student found.");
-            });
-        });  
+
     </script>
   </body>
 </html>
