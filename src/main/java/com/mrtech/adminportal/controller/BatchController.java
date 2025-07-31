@@ -57,5 +57,19 @@ public class BatchController {
 
         return filteredBatches;
     }
+    
+    //payments table
+ // ✅ Get status by batch ID (batch code)
+    @GetMapping("/status/{batchid}")
+    public ResponseEntity<?> getBatchStatus(@PathVariable String batchid) {
+        Optional<Batch> optionalBatch = batchRepo.findById(batchid);
+        if (optionalBatch.isPresent()) {
+            String status = optionalBatch.get().getStatus();
+            return ResponseEntity.ok(status);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Batch not found");
+        }
+    }
+
 
 }
