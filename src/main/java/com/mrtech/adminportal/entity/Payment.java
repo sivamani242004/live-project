@@ -1,51 +1,112 @@
 package com.mrtech.adminportal.entity;
 
-import java.time.LocalDate;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 
 @Entity
+@Table(name = "payments")
 public class Payment {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
-    private int studentId;
-    private String batchId;
-    private String course;
-    private String fullName;
-    private String phone;
-
+    private String studentName;
+    private String courseType;
+    private String batchCode;
+    private String phoneNumber;
+    private LocalDate paymentDate;
     private double amountPaid;
+    private double totalDue;
+    private String statusDisplay;//statusDisplay
+    private double remainingDue;
     private String term;
 
-    private LocalDate datePaid;
-
     // Getters and Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
 
-    public int getStudentId() { return studentId; }
-    public void setStudentId(int studentId) { this.studentId = studentId; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getBatchId() { return batchId; }
-    public void setBatchId(String batchId) { this.batchId = batchId; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getCourse() { return course; }
-    public void setCourse(String course) { this.course = course; }
+    public String getStudentName() {
+        return studentName;
+    }
 
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
 
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
+    public String getCourseType() {
+        return courseType;
+    }
 
-    public double getAmountPaid() { return amountPaid; }
-    public void setAmountPaid(double amountPaid) { this.amountPaid = amountPaid; }
+    public void setCourseType(String courseType) {
+        this.courseType = courseType;
+    }
 
-    public String getTerm() { return term; }
-    public void setTerm(String term) { this.term = term; }
+    public String getBatchCode() {
+        return batchCode;
+    }
 
-    public LocalDate getDatePaid() { return datePaid; }
-    public void setDatePaid(LocalDate datePaid) { this.datePaid = datePaid; }
+    public void setBatchCode(String batchCode) {
+        this.batchCode = batchCode;
+    }
+
+    public LocalDate getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(LocalDate paymentDate) {
+        this.paymentDate = paymentDate;
+    }
+
+    public double getAmountPaid() {
+        return amountPaid;
+    }
+
+    public void setAmountPaid(double amountPaid) {
+        this.amountPaid = amountPaid;
+    }
+
+    public double getTotalDue() {
+        return totalDue;
+    }
+
+    public void setTotalDue(double totalDue) {
+        this.totalDue = totalDue;
+    }
+
+    public double getRemainingDue() {
+        return remainingDue;
+    }
+
+    public void setRemainingDue(double remainingDue) {
+        this.remainingDue = remainingDue;
+    }
+
+    public String getTerm() {
+        return term;
+    }
+
+    public void setTerm(String term) {
+        this.term = term;
+    }
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+    public String getStatusDisplay() {
+        return statusDisplay;
+    }
+
+    public void setStatusDisplay(String statusDisplay) {
+        this.statusDisplay = statusDisplay;
+    }
 }
