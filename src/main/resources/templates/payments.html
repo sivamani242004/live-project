@@ -336,7 +336,30 @@
 
     </div>
   </div>
+		
+		<!-- date range -->
+		<div class="flex flex-wrap gap-4 justify-center mt-6">
+  <div>
+    <label class="block text-purple-700 font-semibold mb-1">From Date</label>
+    <input id="fromDate" type="date"
+      class="border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+  </div>
 
+  <div>
+    <label class="block text-purple-700 font-semibold mb-1">To Date</label>
+    <input id="toDate" type="date"
+      class="border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+  </div>
+
+  <div class="flex items-end">
+    <button onclick="filterByDate()"
+      class="bg-indigo-700 text-white px-6 py-2 rounded hover:bg-indigo-900 transition">
+      Filter
+    </button>
+  </div>
+</div>
+		
+		
   <!-- Daily Transactions Table -->
   <main class="main-content mt-10">
     <div class="wrapper">
@@ -654,6 +677,57 @@ document.getElementById("submitPaymentBtn").addEventListener("click", function (
     });
 }
 
+	function filterByDate() {
+		  const fromDate = document.getElementById("fromDate").value;
+		  const toDate = document.getElementById("toDate").value;
+
+		  if (!fromDate || !toDate) {
+		    alert("Please select both From Date and To Date.");
+		    return;
+		  }
+
+		  fetch("http://localhost:8080/api/payments")
+		    .then(response => {
+		      if (!response.ok) throw new Error("Failed to fetch payments");
+		      return response.json();
+		    })
+		    .then(payments => {
+		      const tableBody = document.getElementById("transactionTable");
+		      tableBody.innerHTML = "";
+
+		      // Filter payments by date range
+		      const filtered = payments.filter(payment => {
+		        const date = new Date(payment.paymentDate);
+		        return date >= new Date(fromDate) && date <= new Date(toDate);
+		      });
+
+		      if (filtered.length === 0) {
+		        tableBody.innerHTML = `<tr><td colspan="9">No records found in selected date range.</td></tr>`;
+		        return;
+		      }
+
+		      filtered.forEach(payment => {
+		        const row = document.createElement("tr");
+
+		        row.innerHTML = `
+		          <td>${payment.id || ""}</td>
+		          <td>${payment.batchCode || ""}</td>
+		          <td>${payment.statusDisplay || "N/A"}</td>
+		          <td>${payment.courseType || ""}</td>
+		          <td>${payment.studentName || ""}</td>
+		          <td>${payment.phoneNumber || ""}</td>
+		          <td>₹ ${payment.amountPaid.toFixed(2)}</td>
+		          <td>${payment.term || ""}</td>
+		          <td>${payment.paymentDate || ""}</td>
+		        `;
+
+		        tableBody.appendChild(row);
+		      });
+		    })
+		    .catch(error => {
+		      console.error("Error filtering payments:", error);
+		    });
+		}
 
 
     </script>
