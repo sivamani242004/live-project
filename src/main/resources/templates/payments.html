@@ -552,7 +552,9 @@
                     <th>Paid Date</th>
                   </tr>
                 </thead>
-                <tbody id="BatchTransactionTable"></tbody>
+        <tbody id="BatchTransactionTable">
+               
+             </tbody> 
               </table>
             </div>
           </div>
@@ -841,58 +843,59 @@
       }
       
       
-      //batch table
-     function getDetails() {
-  const selectedCourse = document.getElementById("CourseType").value.trim();
-  const selectedStatus = document.getElementById("BatchStatus").value.trim();
-  const selectedBatch = document.getElementById("BatchCode").value.trim();
+      function getDetails() {
+    	  const course = document.getElementById("CourseType").value.trim();
+    	  const status = document.getElementById("BatchStatus").value.trim();
+    	  const batch = document.getElementById("BatchCode").value.trim();
 
-  if (!selectedCourse || !selectedStatus || !selectedBatch) {
-    alert("Please select Course Type, Status, and Batch Code.");
-    return;
-  }
+    	  if (!course || !status || !batch) {
+    	    alert("Please select Course Type, Status, and Batch Code.");
+    	    return;
+    	  }
 
-  fetch(`/api/payments/filter?course=${selectedCourse}&status=${selectedStatus}&batch=${selectedBatch}`)
-    .then((response) => {
-      if (!response.ok) throw new Error("Failed to fetch batch payments");
-      return response.json();
-    })
-    .then((payments) => {
-      console.log("Fetched Batch Payments:", payments);
+    	  fetch(`http://localhost:8080/api/students/filter?course=${course}&status=${status}&batch=${batch}`)
+    	    .then((response) => {
+    	      if (!response.ok) throw new Error("Failed to fetch batch students");
+    	      return response.json();
+    	    })
+    	    .then((students) => {
+    	      console.log("Fetched Batch Students:", students);
 
-      const tableBody = document.getElementById("BatchTableBody"); // ✅ Correct table for batch list
-      tableBody.innerHTML = "";
+    	      const tableBody = document.getElementById("BatchTableBody");
+    	      tableBody.innerHTML = "";
 
-      if (payments.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="9">No payments found for selected batch.</td></tr>`;
-        return;
-      }
+    	      if (students.length === 0) {
+    	        tableBody.innerHTML = `<tr><td colspan="9">No students found for selected batch.</td></tr>`;
+    	        return;
+    	      }
 
-      payments.forEach((payment) => {
-        const totalDue = payment.totalDue || 0;
-        const paid = payment.amountPaid || 0;
-        const due = payment.remainingDue || totalDue - paid;
+    	      students.forEach((student) => {
+    	        const totalfee = parseInt(student.totalfee || 0);
+    	        const paid = parseInt(student.term_1 || 0);
+    	        const due = parseInt(student.duefee || (totalDue - paid));
 
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${payment.id || ""}</td>
-          <td>${payment.batchCode || ""}</td>
-          <td>${payment.courseType || ""}</td>
-          <td>${payment.studentName || ""}</td>
-          <td>${payment.phoneNumber || ""}</td>
-          <td>₹ ${(paid + due).toFixed(2)}</td>
-          <td>₹ ${paid.toFixed(2)}</td>
-          <td>₹ ${due.toFixed(2)}</td>
-          <td><button onclick="showTerms('${payment.phoneNumber}')" 
-            class="text-blue-600 underline hover:text-blue-800">View</button></td>
-        `;
-        tableBody.appendChild(row);
-      });
-    })
-    .catch((error) => {
-      console.error("Error loading batch payments:", error);
-    });
-}
+    	        const row = document.createElement("tr");
+    	        row.innerHTML = `
+    	          <td>${student.id || ""}</td>
+    	          <td>${student.batch || ""}</td>
+    	          <td>${student.course || ""}</td>
+    	          <td>${student.name || ""}</td>
+    	          <td>${student.mobile || ""}</td>
+    	          <td>₹ ${totalfee}</td>
+    	          <td>₹ ${paid}</td>
+    	          <td>₹ ${due}</td>
+    	          
+    	          
+    	          <td><button onclick="showTerms('${student.mobile}')" 
+    	            class="text-blue-600 underline hover:text-blue-800">View</button></td>
+    	        `;
+    	        tableBody.appendChild(row);
+    	      });
+    	    })
+    	    .catch((error) => {
+    	      console.error("Error loading batch students:", error);
+    	    });
+    	}
 
 
      function showTerms(phoneNumber) {

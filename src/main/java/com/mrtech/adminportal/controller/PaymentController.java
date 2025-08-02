@@ -28,13 +28,13 @@ public class PaymentController {
         return ResponseEntity.ok(paymentRepository.findAll());
     }
     
- // Don't include 'api' again in the method mapping
-    @GetMapping("/payments/filter")
-    public List<Payment> filterPayments(@RequestParam String course,
-                                        @RequestParam String status,
-                                        @RequestParam String batch) {
-        return paymentRepository.findByCourseTypeAndStatusDisplayAndBatchCode(course, status, batch);
-    }
+// // Don't include 'api' again in the method mapping
+//    @GetMapping("/payments/filter")
+//    public List<Payment> filterPayments(@RequestParam String course,
+//                                        @RequestParam String status,
+//                                        @RequestParam String batch) {
+//        return paymentRepository.findByCourseTypeAndStatusDisplayAndBatchCode(course, status, batch);
+//    }
 
 
 
