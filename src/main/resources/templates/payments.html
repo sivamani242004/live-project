@@ -237,155 +237,255 @@
           <div class="tab" onclick="showTab('account')">Batch Payments</div>
         </div>
 
-<section id="dashboard" class="tab-content active px-4 md:px-8 lg:px-10 py-6">
-  <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 max-w-7xl mx-auto">
-    <h1 class="text-3xl font-semibold text-center mb-8 text-indigo-700">Daily Payments</h1>
+        <section
+          id="dashboard"
+          class="tab-content active px-4 md:px-8 lg:px-10 py-6"
+        >
+          <div
+            class="bg-white rounded-2xl shadow-xl p-6 md:p-8 max-w-7xl mx-auto"
+          >
+            <h1 class="text-3xl font-semibold text-center mb-8 text-indigo-700">
+              Daily Payments
+            </h1>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Search -->
-      <div>
-        <label class="block text-purple-700 font-semibold mb-1">Search</label>
-        <input id="searchInput" type="text" placeholder="Enter name or ID"
-          class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
-      </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <!-- Search -->
+              <div>
+                <label class="block text-purple-700 font-semibold mb-1"
+                  >Search</label
+                >
+                <input
+                  id="searchInput"
+                  type="text"
+                  placeholder="Enter name or ID"
+                  class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
 
-      <div>
-        <label class="block text-purple-700 font-semibold mb-1">Student Name</label>
-        <input id="studentName" type="text" readonly placeholder="Student Name"
-          class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none" />
-      </div>
-      <div>
-        <label class="block text-purple-700 font-semibold mb-1">Phone number</label>
-        <input id="phoneNumber" type="text" readonly placeholder="Mobile number"
-          class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none" />
-      </div>
+              <div>
+                <label class="block text-purple-700 font-semibold mb-1"
+                  >Student Name</label
+                >
+                <input
+                  id="studentName"
+                  type="text"
+                  readonly
+                  placeholder="Student Name"
+                  class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label class="block text-purple-700 font-semibold mb-1"
+                  >Phone number</label
+                >
+                <input
+                  id="phoneNumber"
+                  type="text"
+                  readonly
+                  placeholder="Mobile number"
+                  class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none"
+                />
+              </div>
 
-      <div>
-  <label class="block text-purple-700 font-semibold mb-1">Course Type</label>
-  <input id="courseType" type="text" readonly placeholder="Course Type"
-    class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none" />
-</div>
+              <div>
+                <label class="block text-purple-700 font-semibold mb-1"
+                  >Course Type</label
+                >
+                <input
+                  id="courseType"
+                  type="text"
+                  readonly
+                  placeholder="Course Type"
+                  class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none"
+                />
+              </div>
 
-       <div>
-  <label class="block text-purple-700 font-semibold mb-1">Total Amount Paid</label>
-  <input id="totalAmountPaid" type="text" readonly placeholder="Amount Paid"
-    class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none" />
-</div>
+              <div>
+                <label class="block text-purple-700 font-semibold mb-1"
+                  >Total Amount Paid</label
+                >
+                <input
+                  id="totalAmountPaid"
+                  type="text"
+                  readonly
+                  placeholder="Amount Paid"
+                  class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none"
+                />
+              </div>
 
-      <div>
-  <label class="block text-purple-700 font-semibold mb-1">Batch Code</label>
-  <input id="batchCode" type="text" readonly placeholder="Batch Code"
-    class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none" />
-</div>
+              <div>
+                <label class="block text-purple-700 font-semibold mb-1"
+                  >Batch Code</label
+                >
+                <input
+                  id="batchCode"
+                  type="text"
+                  readonly
+                  placeholder="Batch Code"
+                  class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none"
+                />
+              </div>
 
-      <div>
-  <label class="block text-purple-700 font-semibold mb-1">Batch Status</label>
-  <input id="statusDisplay" type="text" readonly placeholder="Batch Status"
-    class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none" />
-</div>
+              <div>
+                <label class="block text-purple-700 font-semibold mb-1"
+                  >Batch Status</label
+                >
+                <input
+                  id="statusDisplay"
+                  type="text"
+                  readonly
+                  placeholder="Batch Status"
+                  class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none"
+                />
+              </div>
 
-      <div>
-        <label class="block text-purple-700 font-semibold mb-1">Payment Date</label>
-        <input type="date"
-          class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
-      </div>
+              <div>
+                <label class="block text-purple-700 font-semibold mb-1"
+                  >Payment Date</label
+                >
+                <input
+                  type="date"
+                  class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
 
-      <div>
-        <label class="block text-purple-700 font-semibold mb-1">Term Fees</label>
-        <select id="termSelect" onchange="checkOtherTerm()"
-          class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500">
-          <option value="">Select Term</option>
-          <option value="term-1">Term-1</option>
-          <option value="term-2">Term-2</option>
-          <option value="term-3">Term-3</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
+              <div>
+                <label class="block text-purple-700 font-semibold mb-1"
+                  >Term Fees</label
+                >
+                <select
+                  id="termSelect"
+                  onchange="checkOtherTerm()"
+                  class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                  <option value="">Select Term</option>
+                  <option value="term-2">Term-2</option>
+                  <option value="term-3">Term-3</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
 
-      <!-- Optional Custom Term -->
-      <div id="customTermContainer" style="display: none;">
-        <label class="block text-purple-700 font-semibold mb-1">Enter Custom Term</label>
-        <input id="customTerm" type="text" placeholder="e.g., Term-4"
-          class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
-      </div>
+              <!-- Optional Custom Term -->
+              <div id="customTermContainer" style="display: none">
+                <label class="block text-purple-700 font-semibold mb-1"
+                  >Enter Custom Term</label
+                >
+                <input
+                  id="customTerm"
+                  type="text"
+                  placeholder="e.g., Term-4"
+                  class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
 
-      <div>
-  <label class="block text-purple-700 font-semibold mb-1">Total Due Amount</label>
-  <input id="totalDue" type="number" readonly placeholder="₹ 0.00"
-    class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none" />
-</div>
-		<div>
-        <label class="block text-purple-700 font-semibold mb-1">Amount to be Paid</label>
-        <input id="amountToBePaid" type="number" placeholder="₹ 0.00"
-          class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
-      </div>
-		
-      <div>
-        <label class="block text-purple-700 font-semibold mb-1">Remaining Due</label>
-        <input id="duefee" type="number" readonly placeholder="₹ 0.00"
-          class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none" />
-      </div>
+              <div>
+                <label class="block text-purple-700 font-semibold mb-1"
+                  >Total Due Amount</label
+                >
+                <input
+                  id="totalDue"
+                  type="number"
+                  readonly
+                  placeholder="₹ 0.00"
+                  class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label class="block text-purple-700 font-semibold mb-1"
+                  >Amount to be Paid</label
+                >
+                <input
+                  id="amountToBePaid"
+                  type="number"
+                  placeholder="₹ 0.00"
+                  class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
 
+              <div>
+                <label class="block text-purple-700 font-semibold mb-1"
+                  >Remaining Due</label
+                >
+                <input
+                  id="duefee"
+                  type="number"
+                  readonly
+                  placeholder="₹ 0.00"
+                  class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-center mt-8">
+              <button
+                id="submitPaymentBtn"
+                class="bg-indigo-800 text-white px-8 py-3 rounded-xl hover:bg-indigo-900 transition"
+              >
+                Submit Payment
+              </button>
+            </div>
           </div>
 
-    <!-- Submit Button -->
-    <div class="flex justify-center mt-8">
-      <button id="submitPaymentBtn" class="bg-indigo-800 text-white px-8 py-3 rounded-xl hover:bg-indigo-900 transition">
-  Submit Payment
-</button>
+          <!-- date range -->
+          <div class="flex flex-wrap gap-4 justify-center mt-6">
+            <div>
+              <label class="block text-purple-700 font-semibold mb-1"
+                >From Date</label
+              >
+              <input
+                id="fromDate"
+                type="date"
+                class="border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
 
-    </div>
-  </div>
-		
-		<!-- date range -->
-		<div class="flex flex-wrap gap-4 justify-center mt-6">
-  <div>
-    <label class="block text-purple-700 font-semibold mb-1">From Date</label>
-    <input id="fromDate" type="date"
-      class="border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
-  </div>
+            <div>
+              <label class="block text-purple-700 font-semibold mb-1"
+                >To Date</label
+              >
+              <input
+                id="toDate"
+                type="date"
+                class="border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
 
-  <div>
-    <label class="block text-purple-700 font-semibold mb-1">To Date</label>
-    <input id="toDate" type="date"
-      class="border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
-  </div>
+            <div class="flex items-end">
+              <button
+                onclick="filterByDate()"
+                class="bg-indigo-700 text-white px-6 py-2 rounded hover:bg-indigo-900 transition"
+              >
+                Filter
+              </button>
+            </div>
+          </div>
 
-  <div class="flex items-end">
-    <button onclick="filterByDate()"
-      class="bg-indigo-700 text-white px-6 py-2 rounded hover:bg-indigo-900 transition">
-      Filter
-    </button>
-  </div>
-</div>
-		
-		
-  <!-- Daily Transactions Table -->
-  <main class="main-content mt-10">
-    <div class="wrapper">
-      <h1>Daily Transactions</h1>
-      <div class="overflow-auto">
-        <table id="table1">
-          <thead>
-            <tr>
-              <th>STUDENT ID</th>
-              <th>BATCH ID</th>
-              <th>BATCH STATUS</th>
-              <th>COURSE</th>
-              <th>FULL NAME</th>
-              <th>PHONE</th>
-              <th>AMOUNT PAID</th>
-              <th>TERM</th>
-              <th>DATE (PAID)</th>
-            </tr>
-          </thead>
-          <tbody id="transactionTable" style="font-size: 12px"></tbody>
-        </table>
-      </div>
-    </div>
-  </main>
-</section>
-
+          <!-- Daily Transactions Table -->
+          <main class="main-content mt-10">
+            <div class="wrapper">
+              <h1>Daily Transactions</h1>
+              <div class="overflow-auto">
+                <table id="table1">
+                  <thead>
+                    <tr>
+                      <th>STUDENT ID</th>
+                      <th>BATCH ID</th>
+                      <th>BATCH STATUS</th>
+                      <th>COURSE</th>
+                      <th>FULL NAME</th>
+                      <th>PHONE</th>
+                      <th>AMOUNT PAID</th>
+                      <th>TERM</th>
+                      <th>DATE (PAID)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="transactionTable" style="font-size: 12px"></tbody>
+                </table>
+              </div>
+            </div>
+          </main>
+        </section>
 
         <!-- Batch Payments -->
         <section id="account" class="tab-content">
@@ -396,9 +496,8 @@
                 <div class="form-group">
                   <label for="CourseType">Course Type:</label>
                   <select id="CourseType" onchange="loadStatuses()">
-  <option value="">Loading...</option>
-</select>
-
+                    <option value="">Loading...</option>
+                  </select>
                 </div>
                 <div class="form-group">
                   <label for="BatchStatus">Status:</label>
@@ -434,7 +533,7 @@
                     <th>Details</th>
                   </tr>
                 </thead>
-                <tbody id="studentTableBody" style="font-size: 12px"></tbody>
+                <tbody id="BatchTableBody" style="font-size: 12px"></tbody>
               </table>
             </div>
           </main>
@@ -453,7 +552,7 @@
                     <th>Paid Date</th>
                   </tr>
                 </thead>
-                <tbody id="batchTransactionTable"></tbody>
+                <tbody id="BatchTransactionTable"></tbody>
               </table>
             </div>
           </div>
@@ -497,217 +596,231 @@
 
       document.addEventListener("DOMContentLoaded", function () {
         fetchDailyPayments();
-        fetchCourseTypes(); 
+        fetchCourseTypes();
       });
-      
-    //fetch data
-     document.getElementById("searchInput").addEventListener("input", function () {
-  const keyword = this.value.trim();
-  console.log("Searching for:", keyword); // Debug log
 
-  
-  //fetch data
-  fetch("http://localhost:8080/api/students/search?keyword=" + keyword)
-    .then(res => res.json())
-    .then(data => {
-      console.log("API Response:", data); // Debug log
+      //fetch data
+      document
+        .getElementById("searchInput")
+        .addEventListener("input", function () {
+          const keyword = this.value.trim();
+          console.log("Searching for:", keyword); // Debug log
 
-      if (data.length === 0) {
-        alert("student not found");
-      } else {
-        const student = data[0];
-        document.getElementById("studentName").value = student.name; // ← Set student name
-        document.getElementById("courseType").value = student.course;
-        document.getElementById("phoneNumber").value = student.mobile;
-        document.getElementById("totalAmountPaid").value = student.term_1;
-        document.getElementById("batchCode").value = student.batch;
-        document.getElementById("totalDue").value = student.duefee;
-        fetchBatchStatus();
-        fetchDailyPayments();
+          //fetch data
+          fetch("http://localhost:8080/api/students/search?keyword=" + keyword)
+            .then((res) => res.json())
+            .then((data) => {
+              console.log("API Response:", data); // Debug log
 
+              if (data.length === 0) {
+                alert("student not found");
+              } else {
+                const student = data[0];
+                document.getElementById("studentName").value = student.name; // ← Set student name
+                document.getElementById("courseType").value = student.course;
+                document.getElementById("phoneNumber").value = student.mobile;
+                document.getElementById("totalAmountPaid").value =
+                  student.term_1;
+                document.getElementById("batchCode").value = student.batch;
+                document.getElementById("totalDue").value = student.duefee;
+                fetchBatchStatus();
+              }
+            })
+            .catch((error) => {
+              console.error("Fetch error:", error);
+            });
+        });
 
+      // total due = total due - amount to be paid
+      document
+        .getElementById("amountToBePaid")
+        .addEventListener("input", calculateDueAmount);
+
+      function calculateDueAmount() {
+        // Get numeric values only
+        const totalStr = document
+          .getElementById("totalDue")
+          .value.replace(/[^\d.]/g, "");
+        const paidStr = document
+          .getElementById("amountToBePaid")
+          .value.replace(/[^\d.]/g, "");
+
+        const total = parseFloat(totalStr) || 0;
+        const paid = parseFloat(paidStr) || 0;
+
+        const due = total - paid;
+
+        // Show due in separate readonly field (do not overwrite original due)
+        document.getElementById("duefee").value =
+          due >= 0 ? due.toFixed(2) : "0.00";
       }
-    })
-    .catch(error => {
-      console.error("Fetch error:", error);
-    });
-});
+      function checkOtherTerm() {
+        const term = document.getElementById("termSelect").value;
+        const customTermContainer = document.getElementById(
+          "customTermContainer"
+        );
 
-    // total due = total due - amount to be paid
-document.getElementById("amountToBePaid").addEventListener("input", calculateDueAmount);
+        if (term === "Other") {
+          customTermContainer.style.display = "block";
+        } else {
+          customTermContainer.style.display = "none";
+          document.getElementById("customTerm").value = ""; // clear the field
+        }
+      }
 
-function calculateDueAmount() {
-  // Get numeric values only
-  const totalStr = document.getElementById("totalDue").value.replace(/[^\d.]/g, "");
-  const paidStr = document.getElementById("amountToBePaid").value.replace(/[^\d.]/g, "");
+      function fetchBatchStatus() {
+        const batchCode = document.getElementById("batchCode").value.trim();
+        const statusInput = document.getElementById("statusDisplay");
 
-  const total = parseFloat(totalStr) || 0;
-  const paid = parseFloat(paidStr) || 0;
+        if (!batchCode) {
+          statusInput.value = "";
+          return;
+        }
 
-  const due = total - paid;
+        fetch(`http://localhost:8080/api/batch/status/${batchCode}`)
+          .then((response) => {
+            if (!response.ok) throw new Error("Batch not found");
+            return response.text();
+          })
+          .then((status) => {
+            statusInput.value = status;
+          })
+          .catch((error) => {
+            statusInput.value = "Not Found";
+            console.error("Error fetching batch status:", error);
+          });
+      }
 
-  // Show due in separate readonly field (do not overwrite original due)
-  document.getElementById("duefee").value = due >= 0 ? due.toFixed(2) : "0.00";
-}
-function checkOtherTerm() {
-	  const term = document.getElementById("termSelect").value;
-	  const customTermContainer = document.getElementById("customTermContainer");
+      document
+        .getElementById("submitPaymentBtn")
+        .addEventListener("click", function () {
+          // Gather all required fields
+          const studentName = document.getElementById("studentName").value;
+          const phoneNumber = document.getElementById("phoneNumber").value;
+          const courseType = document.getElementById("courseType").value;
+          const batchCode = document.getElementById("batchCode").value;
+          const statusDisplay = document.getElementById("statusDisplay").value;
+          const paymentDate =
+            document.querySelector('input[type="date"]').value;
+          const amountToBePaid =
+            document.getElementById("amountToBePaid").value;
+          const totalDue = document.getElementById("totalDue").value;
+          const duefee = document.getElementById("duefee").value;
+          const term = document.getElementById("termSelect").value;
+          const customTerm = document.getElementById("customTerm").value;
+          const finalTerm = term === "Other" ? customTerm : term;
 
-	  if (term === "Other") {
-	    customTermContainer.style.display = "block";
-	  } else {
-	    customTermContainer.style.display = "none";
-	    document.getElementById("customTerm").value = ""; // clear the field
-	  }
-	}
-	
-function fetchBatchStatus() {
-	  const batchCode = document.getElementById("batchCode").value.trim();
-	  const statusInput = document.getElementById("statusDisplay");
+          // Optional: Basic validation
+          if (!studentName || !amountToBePaid || !paymentDate || !finalTerm) {
+            alert("Please fill all required fields");
+            return;
+          }
 
-	  if (!batchCode) {
-	    statusInput.value = "";
-	    return;
-	  }
+          const paymentData = {
+            studentName,
+            courseType,
 
-	  fetch(`http://localhost:8080/api/batch/status/${batchCode}`)
-	    .then((response) => {
-	      if (!response.ok) throw new Error("Batch not found");
-	      return response.text();
-	    })
-	    .then((status) => {
-	      statusInput.value = status;
-	    })
-	    .catch((error) => {
-	      statusInput.value = "Not Found";
-	      console.error("Error fetching batch status:", error);
-	    });
-	}
-	
-document.getElementById("submitPaymentBtn").addEventListener("click", function () {
-	  // Gather all required fields
-	  const studentName = document.getElementById("studentName").value;
-	  const phoneNumber = document.getElementById("phoneNumber").value;
-	  const courseType = document.getElementById("courseType").value;
-	  const batchCode = document.getElementById("batchCode").value;
-	  const statusDisplay = document.getElementById("statusDisplay").value;
-	  const paymentDate = document.querySelector('input[type="date"]').value;
-	  const amountToBePaid = document.getElementById("amountToBePaid").value;
-	  const totalDue = document.getElementById("totalDue").value;
-	  const duefee = document.getElementById("duefee").value;
-	  const term = document.getElementById("termSelect").value;
-	  const customTerm = document.getElementById("customTerm").value;
-	  const finalTerm = term === "Other" ? customTerm : term;
+            statusDisplay,
+            batchCode,
+            paymentDate,
+            amountPaid: parseFloat(amountToBePaid),
+            totalDue: parseFloat(totalDue),
+            remainingDue: parseFloat(duefee),
+            term: finalTerm,
+            phoneNumber: phoneNumber,
+          };
 
-	  // Optional: Basic validation
-	  if (!studentName || !amountToBePaid || !paymentDate || !finalTerm) {
-	    alert("Please fill all required fields");
-	    return;
-	  }
+          // Make the API POST request to save payment
+          fetch("http://localhost:8080/api/payments", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(paymentData),
+          })
+            .then((response) => {
+              if (!response.ok) throw new Error("Failed to save payment");
+              return response.json();
+            })
+            .then((result) => {
+              alert("Payment saved successfully!");
+              // Optionally clear fields or refresh payment table
+            })
+            .catch((error) => {
+              console.error("Payment error:", error);
+              alert("Failed to save payment. Try again.");
+            });
+        });
 
-	  const paymentData = {
-	    studentName,
-	    courseType,
-	    
-	    statusDisplay,
-	    batchCode,
-	    paymentDate,
-	    amountPaid: parseFloat(amountToBePaid),
-	    totalDue: parseFloat(totalDue),
-	    remainingDue: parseFloat(duefee),
-	    term: finalTerm,
-	    phoneNumber: phoneNumber
-	  };
+      //Fetch data from payment table
+      function fetchDailyPayments() {
+        fetch("http://localhost:8080/api/payments")
+          .then((response) => {
+            if (!response.ok) throw new Error("Failed to fetch payments");
+            return response.json();
+          })
+          .then((payments) => {
+            const tableBody = document.getElementById("transactionTable");
+            tableBody.innerHTML = ""; // Clear previous rows
 
-	  // Make the API POST request to save payment
-	  fetch("http://localhost:8080/api/payments", {
-	    method: "POST",
-	    headers: {
-	      "Content-Type": "application/json",
-	    },
-	    body: JSON.stringify(paymentData),
-	  })
-	    .then((response) => {
-	      if (!response.ok) throw new Error("Failed to save payment");
-	      return response.json();
-	    })
-	    .then((result) => {
-	      alert("Payment saved successfully!");
-	      // Optionally clear fields or refresh payment table
-	    })
-	    .catch((error) => {
-	      console.error("Payment error:", error);
-	      alert("Failed to save payment. Try again.");
-	    });
-	});
-	
-	//Fetch data from payment table
-	function fetchDailyPayments() {
-  fetch("http://localhost:8080/api/payments")
-    .then(response => {
-      if (!response.ok) throw new Error("Failed to fetch payments");
-      return response.json();
-    })
-    .then(payments => {
-      const tableBody = document.getElementById("transactionTable");
-      tableBody.innerHTML = ""; // Clear previous rows
+            payments.forEach((payment) => {
+              const row = document.createElement("tr");
 
-      payments.forEach(payment => {
-        const row = document.createElement("tr");
-
-        row.innerHTML = `
+              row.innerHTML = `
           <td>${payment.id || ""}</td>
           <td>${payment.batchCode || ""}</td>
-          <td>${payment.statusDisplay|| "N/A"}</td>
+          <td>${payment.statusDisplay || "N/A"}</td>
           <td>${payment.courseType || ""}</td>
           <td>${payment.studentName || ""}</td>
-          <td>${payment.phoneNumber || ""}</td> <!-- You can add phone if you have it -->
+          <td>${
+            payment.phoneNumber || ""
+          }</td> <!-- You can add phone if you have it -->
           <td>₹ ${payment.amountPaid.toFixed(2)}</td>
           <td>${payment.term || ""}</td>
           <td>${payment.paymentDate || ""}</td>
         `;
 
-        tableBody.appendChild(row);
-      });
-    })
-    .catch(error => {
-      console.error("Error loading payments:", error);
-    });
-}
+              tableBody.appendChild(row);
+            });
+          })
+          .catch((error) => {
+            console.error("Error loading payments:", error);
+          });
+      }
 
-	function filterByDate() {
-		  const fromDate = document.getElementById("fromDate").value;
-		  const toDate = document.getElementById("toDate").value;
+      function filterByDate() {
+        const fromDate = document.getElementById("fromDate").value;
+        const toDate = document.getElementById("toDate").value;
 
-		  if (!fromDate || !toDate) {
-		    alert("Please select both From Date and To Date.");
-		    return;
-		  }
+        if (!fromDate || !toDate) {
+          alert("Please select both From Date and To Date.");
+          return;
+        }
 
-		  fetch("http://localhost:8080/api/payments")
-		    .then(response => {
-		      if (!response.ok) throw new Error("Failed to fetch payments");
-		      return response.json();
-		    })
-		    .then(payments => {
-		      const tableBody = document.getElementById("transactionTable");
-		      tableBody.innerHTML = "";
+        fetch("http://localhost:8080/api/payments")
+          .then((response) => {
+            if (!response.ok) throw new Error("Failed to fetch payments");
+            return response.json();
+          })
+          .then((payments) => {
+            const tableBody = document.getElementById("transactionTable");
+            tableBody.innerHTML = "";
 
-		      // Filter payments by date range
-		      const filtered = payments.filter(payment => {
-		        const date = new Date(payment.paymentDate);
-		        return date >= new Date(fromDate) && date <= new Date(toDate);
-		      });
+            // Filter payments by date range
+            const filtered = payments.filter((payment) => {
+              const date = new Date(payment.paymentDate);
+              return date >= new Date(fromDate) && date <= new Date(toDate);
+            });
 
-		      if (filtered.length === 0) {
-		        tableBody.innerHTML = `<tr><td colspan="9">No records found in selected date range.</td></tr>`;
-		        return;
-		      }
+            if (filtered.length === 0) {
+              tableBody.innerHTML = `<tr><td colspan="9">No records found in selected date range.</td></tr>`;
+              return;
+            }
 
-		      filtered.forEach(payment => {
-		        const row = document.createElement("tr");
+            filtered.forEach((payment) => {
+              const row = document.createElement("tr");
 
-		        row.innerHTML = `
+              row.innerHTML = `
 		          <td>${payment.id || ""}</td>
 		          <td>${payment.batchCode || ""}</td>
 		          <td>${payment.statusDisplay || "N/A"}</td>
@@ -719,15 +832,17 @@ document.getElementById("submitPaymentBtn").addEventListener("click", function (
 		          <td>${payment.paymentDate || ""}</td>
 		        `;
 
-		        tableBody.appendChild(row);
-		      });
-		    })
-		    .catch(error => {
-		      console.error("Error filtering payments:", error);
-		    });
-		}
-		//batch table
-function getDetails() {
+              tableBody.appendChild(row);
+            });
+          })
+          .catch((error) => {
+            console.error("Error filtering payments:", error);
+          });
+      }
+      
+      
+      //batch table
+     function getDetails() {
   const selectedCourse = document.getElementById("CourseType").value.trim();
   const selectedStatus = document.getElementById("BatchStatus").value.trim();
   const selectedBatch = document.getElementById("BatchCode").value.trim();
@@ -738,14 +853,14 @@ function getDetails() {
   }
 
   fetch(`/api/payments/filter?course=${selectedCourse}&status=${selectedStatus}&batch=${selectedBatch}`)
-    .then(response => {
-      if (!response.ok) throw new Error("Failed to fetch payments");
+    .then((response) => {
+      if (!response.ok) throw new Error("Failed to fetch batch payments");
       return response.json();
     })
-    .then(payments => {
-      console.log("Fetched Payments:", payments);
+    .then((payments) => {
+      console.log("Fetched Batch Payments:", payments);
 
-      const tableBody = document.getElementById("batchTransactionTable"); // FIXED ID
+      const tableBody = document.getElementById("BatchTableBody"); // ✅ Correct table for batch list
       tableBody.innerHTML = "";
 
       if (payments.length === 0) {
@@ -753,10 +868,10 @@ function getDetails() {
         return;
       }
 
-      payments.forEach(payment => {
+      payments.forEach((payment) => {
         const totalDue = payment.totalDue || 0;
         const paid = payment.amountPaid || 0;
-        const due = payment.remainingDue || (totalDue - paid);
+        const due = payment.remainingDue || totalDue - paid;
 
         const row = document.createElement("tr");
         row.innerHTML = `
@@ -768,130 +883,138 @@ function getDetails() {
           <td>₹ ${(paid + due).toFixed(2)}</td>
           <td>₹ ${paid.toFixed(2)}</td>
           <td>₹ ${due.toFixed(2)}</td>
-          <td><button onclick="showTerms('${payment.phoneNumber}')"
+          <td><button onclick="showTerms('${payment.phoneNumber}')" 
             class="text-blue-600 underline hover:text-blue-800">View</button></td>
         `;
         tableBody.appendChild(row);
       });
     })
-    .catch(error => {
+    .catch((error) => {
       console.error("Error loading batch payments:", error);
     });
 }
 
-		function showTerms(phoneNumber) {
-			  fetch("http://localhost:8080/api/payments")
-			    .then(response => response.json())
-			    .then(data => {
-			      const filtered = data.filter(p => p.phoneNumber === phoneNumber);
-			      const tbody = document.getElementById("batchTransactionTable");
-			      tbody.innerHTML = "";
 
-			      if (filtered.length === 0) {
-			        tbody.innerHTML = "<tr><td colspan='4'>No transactions found.</td></tr>";
-			      } else {
-			        filtered.forEach(p => {
-			          const row = document.createElement("tr");
-			          row.innerHTML = `
-			            <td>${p.term || "-"}</td>
-			            <td>${p.studentName || "-"}</td>
-			            <td>₹ ${p.amountPaid.toFixed(2)}</td>
-			            <td>${p.paymentDate || "-"}</td>
-			          `;
-			          tbody.appendChild(row);
-			        });
-			      }
+     function showTerms(phoneNumber) {
+    	  fetch(`http://localhost:8080/api/payments`)
+    	    .then((response) => response.json())
+    	    .then((data) => {
+    	      const filtered = data.filter((p) => p.phoneNumber === phoneNumber);
+    	      const tbody = document.getElementById("BatchTransactionTable"); // ✅ Correct modal table
+    	      tbody.innerHTML = "";
 
-			      document.getElementById("termsModal").style.display = "block";
-			    })
-			    .catch(err => {
-			      console.error("Error loading transaction details:", err);
-			    });
-			}
-		//course type
-		document.addEventListener("DOMContentLoaded", function () {
-  fetchCourseTypes(); // Load on page load
-});
+    	      if (filtered.length === 0) {
+    	        tbody.innerHTML = "<tr><td colspan='4'>No transactions found.</td></tr>";
+    	      } else {
+    	        filtered.forEach((p) => {
+    	          const row = document.createElement("tr");
+    	          row.innerHTML = `
+    	            <td>${p.term || "-"}</td>
+    	            <td>${p.studentName || "-"}</td>
+    	            <td>₹ ${p.amountPaid.toFixed(2)}</td>
+    	            <td>${p.paymentDate || "-"}</td>
+    	          `;
+    	          tbody.appendChild(row);
+    	        });
+    	      }
 
-		function fetchCourseTypes() {
-			  fetch("http://localhost:8080/api/courses/names")
-			    .then(response => response.json())
-			    .then(data => {
-			      const courseDropdown = document.getElementById("CourseType");
-			      courseDropdown.innerHTML = "<option value=''>Select Course Type</option>";
+    	      document.getElementById("termsModal").style.display = "block"; // ✅ Show modal
+    	    })
+    	    .catch((err) => {
+    	      console.error("Error loading transaction details:", err);
+    	    });
+    	}
 
-			      data.forEach(courseName => {
-			        const option = document.createElement("option");
-			        option.value = courseName;
-			        option.textContent = courseName;
-			        courseDropdown.appendChild(option);
-			      });
-			    })
-			    .catch(error => {
-			      console.error("Error loading course types:", error);
-			    });
-			}
-		
-		function loadStatuses() {
-			  const course = document.getElementById("CourseType").value;
-			  const statusDropdown = document.getElementById("BatchStatus");
-			  const batchCodeDropdown = document.getElementById("BatchCode");
+      //course type
+      document.addEventListener("DOMContentLoaded", function () {
+        fetchCourseTypes(); // Load on page load
+      });
 
-			  statusDropdown.innerHTML = "<option value=''>Loading...</option>";
-			  batchCodeDropdown.innerHTML = "<option value=''>Select Batch</option>";
+      function fetchCourseTypes() {
+        fetch("http://localhost:8080/api/courses/names")
+          .then((response) => response.json())
+          .then((data) => {
+            const courseDropdown = document.getElementById("CourseType");
+            courseDropdown.innerHTML =
+              "<option value=''>Select Course Type</option>";
 
-			  if (!course) {
-			    statusDropdown.innerHTML = "<option value=''>Select Course First</option>";
-			    return;
-			  }
+            data.forEach((courseName) => {
+              const option = document.createElement("option");
+              option.value = courseName;
+              option.textContent = courseName;
+              courseDropdown.appendChild(option);
+            });
+          })
+          .catch((error) => {
+            console.error("Error loading course types:", error);
+          });
+      }
 
-			  fetch(`http://localhost:8080/api/batch/statuses/${course}`)
-			    .then(response => response.json())
-			    .then(data => {
-			      statusDropdown.innerHTML = "<option value=''>Select Status</option>";
-			      data.forEach(status => {
-			        const option = document.createElement("option");
-			        option.value = status;
-			        option.textContent = status;
-			        statusDropdown.appendChild(option);
-			      });
-			    })
-			    .catch(error => {
-			      console.error("Error loading statuses:", error);
-			      statusDropdown.innerHTML = "<option value=''>Failed to Load</option>";
-			    });
-			}
+      function loadStatuses() {
+        const course = document.getElementById("CourseType").value;
+        const statusDropdown = document.getElementById("BatchStatus");
+        const batchCodeDropdown = document.getElementById("BatchCode");
 
-			function loadBatchCodes() {
-			  const course = document.getElementById("CourseType").value;
-			  const status = document.getElementById("BatchStatus").value;
-			  const batchDropdown = document.getElementById("BatchCode");
+        statusDropdown.innerHTML = "<option value=''>Loading...</option>";
+        batchCodeDropdown.innerHTML = "<option value=''>Select Batch</option>";
 
-			  batchDropdown.innerHTML = "<option value=''>Loading...</option>";
+        if (!course) {
+          statusDropdown.innerHTML =
+            "<option value=''>Select Course First</option>";
+          return;
+        }
 
-			  if (!course || !status) {
-			    batchDropdown.innerHTML = "<option value=''>Select Course & Status First</option>";
-			    return;
-			  }
+        fetch(`http://localhost:8080/api/batch/statuses/${course}`)
+          .then((response) => response.json())
+          .then((data) => {
+            statusDropdown.innerHTML =
+              "<option value=''>Select Status</option>";
+            data.forEach((status) => {
+              const option = document.createElement("option");
+              option.value = status;
+              option.textContent = status;
+              statusDropdown.appendChild(option);
+            });
+          })
+          .catch((error) => {
+            console.error("Error loading statuses:", error);
+            statusDropdown.innerHTML =
+              "<option value=''>Failed to Load</option>";
+          });
+      }
 
-			  fetch(`http://localhost:8080/api/batch/codes?course=${course}&status=${status}`)
-			    .then(response => response.json())
-			    .then(data => {
-			      batchDropdown.innerHTML = "<option value=''>Select Batch</option>";
-			      data.forEach(code => {
-			        const option = document.createElement("option");
-			        option.value = code;
-			        option.textContent = code;
-			        batchDropdown.appendChild(option);
-			      });
-			    })
-			    .catch(error => {
-			      console.error("Error loading batch codes:", error);
-			      batchDropdown.innerHTML = "<option value=''>Failed to Load</option>";
-			    });
-			}
+      function loadBatchCodes() {
+        const course = document.getElementById("CourseType").value;
+        const status = document.getElementById("BatchStatus").value;
+        const batchDropdown = document.getElementById("BatchCode");
 
+        batchDropdown.innerHTML = "<option value=''>Loading...</option>";
 
+        if (!course || !status) {
+          batchDropdown.innerHTML =
+            "<option value=''>Select Course & Status First</option>";
+          return;
+        }
+
+        fetch(
+          `http://localhost:8080/api/batch/codes?course=${course}&status=${status}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            batchDropdown.innerHTML = "<option value=''>Select Batch</option>";
+            data.forEach((code) => {
+              const option = document.createElement("option");
+              option.value = code;
+              option.textContent = code;
+              batchDropdown.appendChild(option);
+            });
+          })
+          .catch((error) => {
+            console.error("Error loading batch codes:", error);
+            batchDropdown.innerHTML =
+              "<option value=''>Failed to Load</option>";
+          });
+      }
     </script>
   </body>
 </html>
