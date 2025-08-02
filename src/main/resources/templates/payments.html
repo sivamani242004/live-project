@@ -396,8 +396,9 @@
                 <div class="form-group">
                   <label for="CourseType">Course Type:</label>
                   <select id="CourseType" onchange="loadStatuses()">
-                    <option value="">Select Course Type</option>
-                  </select>
+  <option value="">Loading...</option>
+</select>
+
                 </div>
                 <div class="form-group">
                   <label for="BatchStatus">Status:</label>
@@ -427,14 +428,10 @@
                     <th>Course</th>
                     <th>Name</th>
                     <th>Phone</th>
-                    <th>Course Fee</th>
-                    <th>Discount Applied</th>
                     <th>Total Amount</th>
                     <th>Fee(Paid)</th>
-                    <th>Pay</th>
                     <th>Total Due</th>
-                    <th>Action</th>
-                    <th>Get Terms</th>
+                    <th>Details</th>
                   </tr>
                 </thead>
                 <tbody id="studentTableBody" style="font-size: 12px"></tbody>
@@ -456,7 +453,7 @@
                     <th>Paid Date</th>
                   </tr>
                 </thead>
-                <tbody id="termsTableBody"></tbody>
+                <tbody id="batchTransactionTable"></tbody>
               </table>
             </div>
           </div>
@@ -500,6 +497,7 @@
 
       document.addEventListener("DOMContentLoaded", function () {
         fetchDailyPayments();
+        fetchCourseTypes(); 
       });
       
     //fetch data
@@ -728,6 +726,170 @@ document.getElementById("submitPaymentBtn").addEventListener("click", function (
 		      console.error("Error filtering payments:", error);
 		    });
 		}
+		//batch table
+function getDetails() {
+  const selectedCourse = document.getElementById("CourseType").value.trim();
+  const selectedStatus = document.getElementById("BatchStatus").value.trim();
+  const selectedBatch = document.getElementById("BatchCode").value.trim();
+
+  if (!selectedCourse || !selectedStatus || !selectedBatch) {
+    alert("Please select Course Type, Status, and Batch Code.");
+    return;
+  }
+
+  fetch(`/api/payments/filter?course=${selectedCourse}&status=${selectedStatus}&batch=${selectedBatch}`)
+    .then(response => {
+      if (!response.ok) throw new Error("Failed to fetch payments");
+      return response.json();
+    })
+    .then(payments => {
+      console.log("Fetched Payments:", payments);
+
+      const tableBody = document.getElementById("batchTransactionTable"); // FIXED ID
+      tableBody.innerHTML = "";
+
+      if (payments.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="9">No payments found for selected batch.</td></tr>`;
+        return;
+      }
+
+      payments.forEach(payment => {
+        const totalDue = payment.totalDue || 0;
+        const paid = payment.amountPaid || 0;
+        const due = payment.remainingDue || (totalDue - paid);
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${payment.id || ""}</td>
+          <td>${payment.batchCode || ""}</td>
+          <td>${payment.courseType || ""}</td>
+          <td>${payment.studentName || ""}</td>
+          <td>${payment.phoneNumber || ""}</td>
+          <td>₹ ${(paid + due).toFixed(2)}</td>
+          <td>₹ ${paid.toFixed(2)}</td>
+          <td>₹ ${due.toFixed(2)}</td>
+          <td><button onclick="showTerms('${payment.phoneNumber}')"
+            class="text-blue-600 underline hover:text-blue-800">View</button></td>
+        `;
+        tableBody.appendChild(row);
+      });
+    })
+    .catch(error => {
+      console.error("Error loading batch payments:", error);
+    });
+}
+
+		function showTerms(phoneNumber) {
+			  fetch("http://localhost:8080/api/payments")
+			    .then(response => response.json())
+			    .then(data => {
+			      const filtered = data.filter(p => p.phoneNumber === phoneNumber);
+			      const tbody = document.getElementById("batchTransactionTable");
+			      tbody.innerHTML = "";
+
+			      if (filtered.length === 0) {
+			        tbody.innerHTML = "<tr><td colspan='4'>No transactions found.</td></tr>";
+			      } else {
+			        filtered.forEach(p => {
+			          const row = document.createElement("tr");
+			          row.innerHTML = `
+			            <td>${p.term || "-"}</td>
+			            <td>${p.studentName || "-"}</td>
+			            <td>₹ ${p.amountPaid.toFixed(2)}</td>
+			            <td>${p.paymentDate || "-"}</td>
+			          `;
+			          tbody.appendChild(row);
+			        });
+			      }
+
+			      document.getElementById("termsModal").style.display = "block";
+			    })
+			    .catch(err => {
+			      console.error("Error loading transaction details:", err);
+			    });
+			}
+		//course type
+		document.addEventListener("DOMContentLoaded", function () {
+  fetchCourseTypes(); // Load on page load
+});
+
+		function fetchCourseTypes() {
+			  fetch("http://localhost:8080/api/courses/names")
+			    .then(response => response.json())
+			    .then(data => {
+			      const courseDropdown = document.getElementById("CourseType");
+			      courseDropdown.innerHTML = "<option value=''>Select Course Type</option>";
+
+			      data.forEach(courseName => {
+			        const option = document.createElement("option");
+			        option.value = courseName;
+			        option.textContent = courseName;
+			        courseDropdown.appendChild(option);
+			      });
+			    })
+			    .catch(error => {
+			      console.error("Error loading course types:", error);
+			    });
+			}
+		
+		function loadStatuses() {
+			  const course = document.getElementById("CourseType").value;
+			  const statusDropdown = document.getElementById("BatchStatus");
+			  const batchCodeDropdown = document.getElementById("BatchCode");
+
+			  statusDropdown.innerHTML = "<option value=''>Loading...</option>";
+			  batchCodeDropdown.innerHTML = "<option value=''>Select Batch</option>";
+
+			  if (!course) {
+			    statusDropdown.innerHTML = "<option value=''>Select Course First</option>";
+			    return;
+			  }
+
+			  fetch(`http://localhost:8080/api/batch/statuses/${course}`)
+			    .then(response => response.json())
+			    .then(data => {
+			      statusDropdown.innerHTML = "<option value=''>Select Status</option>";
+			      data.forEach(status => {
+			        const option = document.createElement("option");
+			        option.value = status;
+			        option.textContent = status;
+			        statusDropdown.appendChild(option);
+			      });
+			    })
+			    .catch(error => {
+			      console.error("Error loading statuses:", error);
+			      statusDropdown.innerHTML = "<option value=''>Failed to Load</option>";
+			    });
+			}
+
+			function loadBatchCodes() {
+			  const course = document.getElementById("CourseType").value;
+			  const status = document.getElementById("BatchStatus").value;
+			  const batchDropdown = document.getElementById("BatchCode");
+
+			  batchDropdown.innerHTML = "<option value=''>Loading...</option>";
+
+			  if (!course || !status) {
+			    batchDropdown.innerHTML = "<option value=''>Select Course & Status First</option>";
+			    return;
+			  }
+
+			  fetch(`http://localhost:8080/api/batch/codes?course=${course}&status=${status}`)
+			    .then(response => response.json())
+			    .then(data => {
+			      batchDropdown.innerHTML = "<option value=''>Select Batch</option>";
+			      data.forEach(code => {
+			        const option = document.createElement("option");
+			        option.value = code;
+			        option.textContent = code;
+			        batchDropdown.appendChild(option);
+			      });
+			    })
+			    .catch(error => {
+			      console.error("Error loading batch codes:", error);
+			      batchDropdown.innerHTML = "<option value=''>Failed to Load</option>";
+			    });
+			}
 
 
     </script>

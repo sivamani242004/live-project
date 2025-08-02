@@ -29,5 +29,13 @@ public class coursesController {
     public void deleteCourse(@PathVariable("id") String id) {
         courseRepo.deleteById(id);
     }
+    @GetMapping("/names")
+    public List<String> getCourseNames() {
+        return courseRepo.findAll()
+                         .stream()
+                         .map(courses::getCoursename)
+                         .toList();
+    }
 
+    
 }

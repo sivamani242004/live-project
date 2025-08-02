@@ -70,6 +70,41 @@ public class BatchController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Batch not found");
         }
     }
+    
+ // ✅ Get batch statuses based on course name
+    @GetMapping("/statuses/{coursename}")
+    public ResponseEntity<?> getStatusesByCourse(@PathVariable String coursename) {
+        List<Batch> batches = batchRepo.findAll();
+        Set<String> statuses = new HashSet<>();
+
+        for (Batch b : batches) {
+            if (b.getCoursename().equalsIgnoreCase(coursename)) {
+                statuses.add(b.getStatus());
+            }
+        }
+
+        return ResponseEntity.ok(statuses);
+    }
+
+    // ✅ Get batch codes by course name and status
+    @GetMapping("/codes")
+    public ResponseEntity<?> getBatchCodesByCourseAndStatus(
+            @RequestParam String course,
+            @RequestParam String status) {
+
+        List<Batch> batches = batchRepo.findAll();
+        List<String> codes = new ArrayList<>();
+
+        for (Batch b : batches) {
+            if (b.getCoursename().equalsIgnoreCase(course) &&
+                b.getStatus().equalsIgnoreCase(status)) {
+                codes.add(b.getBatchid());
+            }
+        }
+
+        return ResponseEntity.ok(codes);
+    }
+
 
 
 }

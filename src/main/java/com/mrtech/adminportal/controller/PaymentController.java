@@ -1,5 +1,7 @@
 package com.mrtech.adminportal.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +28,16 @@ public class PaymentController {
         return ResponseEntity.ok(paymentRepository.findAll());
     }
     
+ // Don't include 'api' again in the method mapping
+    @GetMapping("/payments/filter")
+    public List<Payment> filterPayments(@RequestParam String course,
+                                        @RequestParam String status,
+                                        @RequestParam String batch) {
+        return paymentRepository.findByCourseTypeAndStatusDisplayAndBatchCode(course, status, batch);
+    }
+
+
+
     
     
     
