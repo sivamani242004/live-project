@@ -683,7 +683,7 @@
           document.getElementById("studentName").value = student.name;
           document.getElementById("courseType").value = student.course;
           document.getElementById("phoneNumber").value = student.mobile;
-          document.getElementById("totalAmountPaid").value = student.term_1;
+          document.getElementById("totalAmountPaid").value = student.paidamount;
           document.getElementById("batchCode").value = student.batch;
           document.getElementById("totalDue").value = student.duefee;
 
@@ -971,7 +971,7 @@ function renderTablePage(page) {
 
     	  pageData.forEach((student) => {
     	    const totalfee = parseInt(student.totalfee || 0);
-    	    const paid = parseInt(student.term_1 || 0);
+    	    const paid = parseInt(student.paidamount || 0);
     	    const due = parseInt(student.duefee || totalfee - paid);
 
     	    const row = document.createElement("tr");
@@ -1034,7 +1034,7 @@ function renderTablePage(page) {
     		      term1Row.innerHTML = `
     		        <td>Term-1</td>
     		        <td>${student.name || "-"}</td>
-    		        <td>₹ ${student.term_1 || "0.00"}</td>
+    		        <td>₹ ${student.paidamount || "0.00"}</td>
     		        <td>${student.joiningDate || "-"}</td>
     		      `;
     		      tbody.appendChild(term1Row);

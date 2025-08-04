@@ -21,6 +21,7 @@ public class Payment {
     private String statusDisplay;//statusDisplay
     private double remainingDue;
     private String term;
+    
 
     // Getters and Setters
 

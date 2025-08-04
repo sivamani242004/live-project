@@ -22,5 +22,7 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
     List<Student> findByCourseAndStatusAndBatch(String course, String status, String batch);
 
     // If you need status filtering (but there's no 'statusDisplay' in Student entity),
-    // You must first add a field 'statusDisplay' to Student OR remove it from query.
+    // You must first add a field 'statusDisplay' to Student OR remove it from query
+    Optional<Student> findByMobile(String mobile);
+
 }

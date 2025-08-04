@@ -25,9 +25,9 @@
 		    private String batch;
 		    private String coursefee;
 		    private String discount;
-		    private String totalfee;
+		    private double totalfee;
 		    private String term_1;  
-		    private String duefee;
+		    private double duefee;
 		    private String status;
 		    private double paidamount;
 		    // Getters and Setters //Term-I
@@ -140,11 +140,11 @@
 		    public void setDiscount(String discount) {
 		        this.discount = discount;
 		    }
-		    public String getTotalfee() {
+		    public double getTotalfee() {
 		        return totalfee;
 		    }
 		
-		    public void setTotalfee(String totalfee) {
+		    public void setTotalfee(double totalfee) {
 		        this.totalfee = totalfee;
 		    }
 		    public String getTerm_1() {
@@ -154,11 +154,11 @@
 		    public void setTerm_1(String term_1) {
 		        this.term_1 = term_1;
 		    }
-		    public String getDuefee() {
+		    public double getDuefee() {
 		        return duefee;
 		    }
 		
-		    public void setDuefee(String duefee) {
+		    public void setDuefee(double duefee) {
 		        this.duefee = duefee;
 		    }
 		    public String getStatus() {
