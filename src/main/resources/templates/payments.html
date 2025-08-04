@@ -237,7 +237,15 @@
           <div class="tab" onclick="showTab('account')">Batch Payments</div>
         </div>
 
-        <div class="bg-white shadow-lg rounded-2xl p-6 mt-6 w-full max-w-5xl mx-auto">
+       
+
+
+        <section
+          id="dashboard"
+          class="tab-content active px-4 md:px-8 lg:px-10 py-6"
+        >
+        
+         <div class="bg-white shadow-lg rounded-2xl p-6 mt-6 w-full max-w-5xl mx-auto">
           <!-- Search Bar -->
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-2xl font-bold text-purple-700">Student Records</h2>
@@ -257,12 +265,6 @@
             </table>
             </div>
         </div>
-
-
-        <section
-          id="dashboard"
-          class="tab-content active px-4 md:px-8 lg:px-10 py-6"
-        >
           <div
             class="bg-white rounded-2xl shadow-xl p-6 md:p-8 max-w-7xl mx-auto"
           >
@@ -610,39 +612,71 @@
       document.addEventListener("DOMContentLoaded", function () {
         fetchDailyPayments();
         fetchCourseTypes();
+
       });
 
-      //fetch data
-      document
-        .getElementById("searchInput")
-        .addEventListener("input", function () {
-          const keyword = this.value.trim();
-          console.log("Searching for:", keyword); // Debug log
+      //fetch ...
 
-          //fetch data
-          fetch("http://localhost:8080/api/students/search?keyword=" + keyword)
-            .then((res) => res.json())
-            .then((data) => {
-              console.log("API Response:", data); // Debug log
+  document.getElementById("searchInput").addEventListener("input", function () {
+  const keyword = this.value.trim();
+  if (keyword.length < 2) {
+    document.getElementById("studentResults").innerHTML = "";
+    return;
+  }
 
-              if (data.length === 0) {
-                alert("student not found");
-              } else {
-                const student = data[0];
-                document.getElementById("studentName").value = student.name; // ← Set student name
-                document.getElementById("courseType").value = student.course;
-                document.getElementById("phoneNumber").value = student.mobile;
-                document.getElementById("totalAmountPaid").value =
-                  student.term_1;
-                document.getElementById("batchCode").value = student.batch;
-                document.getElementById("totalDue").value = student.duefee;
-                fetchBatchStatus();
-              }
-            })
-            .catch((error) => {
-              console.error("Fetch error:", error);
-            });
+  fetch("http://localhost:8080/api/students/search?keyword=" + keyword)
+    .then((res) => res.json())
+    .then((data) => {
+      let html = "";
+      if (data.length === 0) {
+        html = `<div class="text-gray-500">No students found.</div>`;
+      } else {
+        html = data
+          .map(
+            (student, index) => `
+          <div class="bg-white p-4 rounded shadow-md relative border border-gray-200">
+            <h3 class="text-lg font-semibold text-indigo-700">${student.name}</h3>
+            <p><strong>Mobile:</strong> ${student.mobile}</p>
+            <p><strong>Email:</strong> ${student.email}</p>
+            <p><strong>Course:</strong> ${student.course}</p>
+            <div class="absolute top-4 right-4 flex gap-2">
+              <button class="selectStudentBtn bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 text-sm rounded"
+                data-index="${index}">
+                Select
+              </button>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+      }
+      document.getElementById("studentResults").innerHTML = html;
+
+      // ✅ Attach onclick to each Select button
+      const buttons = document.querySelectorAll(".selectStudentBtn");
+      buttons.forEach((button) => {
+        button.addEventListener("click", function () {
+          const index = this.getAttribute("data-index");
+          const student = data[index];
+
+          // Populate form fields
+          document.getElementById("studentName").value = student.name;
+          document.getElementById("courseType").value = student.course;
+          document.getElementById("phoneNumber").value = student.mobile;
+          document.getElementById("totalAmountPaid").value = student.term_1;
+          document.getElementById("batchCode").value = student.batch;
+          document.getElementById("totalDue").value = student.duefee;
+
+          fetchBatchStatus(); // You can define this elsewhere
         });
+      });
+    })
+    .catch((err) => {
+      document.getElementById("studentResults").innerHTML =
+        "<div class='text-red-500'>Error fetching student data.</div>";
+    });
+});
+
 
       // total due = total due - amount to be paid
       document
@@ -1030,38 +1064,6 @@
           });
       }
 
-      //search box
-       document.getElementById("searchInput").addEventListener("input", function () {
-      const keyword = this.value.trim();
-      if (keyword.length < 2) {
-        document.getElementById("studentResults").innerHTML = "";
-        return;
-      }
-
-      fetch("http://localhost:8080/api/students/search?keyword=" + keyword)
-        .then(res => res.json())
-        .then(data => {
-          let html = "";
-          if (data.length === 0) {
-            html = `<div class="text-gray-500">No students found.</div>`;
-          } else {
-            html = data.map(student => `
-              <div class="bg-white p-4 rounded shadow-md relative border border-gray-200">
-                
-                <h3 class="text-lg font-semibold text-indigo-700">${student.name}</h3>
-                <p><strong>Mobile:</strong> ${student.mobile}</p>
-                <p><strong>Email:</strong> ${student.email}</p>
-                <p><strong>Course:</strong> ${student.course}</p>
-              </div>
-            `).join("");
-          }
-          document.getElementById("studentResults").innerHTML = html;
-        })
-        .catch(err => {
-          document.getElementById("studentResults").innerHTML =
-            "<div class='text-red-500'>Error fetching student data.</div>";
-        });
-    });
     </script>
   </body>
 </html>
