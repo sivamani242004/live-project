@@ -29,6 +29,7 @@
 		    private String term_1;  
 		    private String duefee;
 		    private String status;
+		    private double paidamount;
 		    // Getters and Setters //Term-I
 		
 		    public int getId() {
@@ -167,6 +168,13 @@
 		    public void setStatus(String status) {
 		        this.status = status;
 		    }
+		    
+		    public double getPaidamount() {
+		        return paidamount;
+		    }
 
+		    public void setPaidamount(double paidamount) {
+		        this.paidamount = paidamount;
+		    }
 		}
 		

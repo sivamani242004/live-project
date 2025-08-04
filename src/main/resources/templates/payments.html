@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>MR Technologies - Dashboard</title>
+    <title>MR Technologies - Payments</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       body {
@@ -478,6 +478,16 @@
           <main class="main-content mt-10">
             <div class="wrapper">
               <h1>Daily Transactions</h1>
+              <!-- Pagination Controls -->
+<div class="flex justify-center items-center gap-2 mb-4 text-sm" id="paginationControls">
+  <button onclick="goToPage(1)" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">«</button>
+  <button onclick="prevPage()" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">&lt;</button>
+  <input type="text" id="currentPage" value="1" class="w-10 text-center border border-gray-300 rounded" readonly />
+  <span id="totalPages" class="text-gray-600">of 1</span>
+  <button onclick="nextPage()" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">&gt;</button>
+  <button onclick="goToPage(totalPages)" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">»</button>
+</div>
+              
               <div class="overflow-auto">
                 <table id="table1">
                   <thead>
@@ -532,6 +542,16 @@
 
             <!-- Scrollable Table -->
             <div class="scroll-table">
+            <!-- Batch Table Pagination Controls -->
+<div class="flex justify-center items-center gap-2 mb-4 text-sm" id="batchPaginationControls">
+  <button onclick="goToBatchPage(1)" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">«</button>
+  <button onclick="prevBatchPage()" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">&lt;</button>
+  <input type="text" id="currentBatchPage" value="1" class="w-10 text-center border border-gray-300 rounded" readonly />
+  <span id="totalBatchPages" class="text-gray-600">of 1</span>
+  <button onclick="nextBatchPage()" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">&gt;</button>
+  <button onclick="goToBatchPage(totalBatchPages)" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">»</button>
+</div>
+            
               <table>
                 <thead>
                   <tr>
@@ -800,40 +820,60 @@
         });
 
       //Fetch data from payment table
-      function fetchDailyPayments() {
-        fetch("http://localhost:8080/api/payments")
-          .then((response) => {
-            if (!response.ok) throw new Error("Failed to fetch payments");
-            return response.json();
-          })
-          .then((payments) => {
-            const tableBody = document.getElementById("transactionTable");
-            tableBody.innerHTML = ""; // Clear previous rows
+let allPayments = [];
+let currentPage = 1;
+const rowsPerPage = 5;
+let totalPages = 1;
 
-            payments.forEach((payment) => {
-              const row = document.createElement("tr");
+let allBatchStudents = [];
+let currentBatchPage = 1;
+const batchRowsPerPage = 5;
+let totalBatchPages = 1;
 
-              row.innerHTML = `
-          <td>${payment.id || ""}</td>
-          <td>${payment.batchCode || ""}</td>
-          <td>${payment.statusDisplay || "N/A"}</td>
-          <td>${payment.courseType || ""}</td>
-          <td>${payment.studentName || ""}</td>
-          <td>${
-            payment.phoneNumber || ""
-          }</td> <!-- You can add phone if you have it -->
-          <td>₹ ${payment.amountPaid.toFixed(2)}</td>
-          <td>${payment.term || ""}</td>
-          <td>${payment.paymentDate || ""}</td>
-        `;
 
-              tableBody.appendChild(row);
-            });
-          })
-          .catch((error) => {
-            console.error("Error loading payments:", error);
-          });
-      }
+function fetchDailyPayments() {
+  fetch("http://localhost:8080/api/payments")
+    .then((response) => {
+      if (!response.ok) throw new Error("Failed to fetch payments");
+      return response.json();
+    })
+    .then((payments) => {
+      allPayments = payments;
+      totalPages = Math.ceil(allPayments.length / rowsPerPage);
+      document.getElementById("totalPages").innerText = `of ${totalPages}`;
+      renderTablePage(currentPage);
+    })
+    .catch((error) => {
+      console.error("Error loading payments:", error);
+    });
+}
+
+function renderTablePage(page) {
+  const tableBody = document.getElementById("transactionTable");
+  tableBody.innerHTML = "";
+
+  const start = (page - 1) * rowsPerPage;
+  const end = start + rowsPerPage;
+  const pageData = allPayments.slice(start, end);
+
+  pageData.forEach((payment) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${payment.id || ""}</td>
+      <td>${payment.batchCode || ""}</td>
+      <td>${payment.statusDisplay || "N/A"}</td>
+      <td>${payment.courseType || ""}</td>
+      <td>${payment.studentName || ""}</td>
+      <td>${payment.phoneNumber || ""}</td>
+      <td>₹ ${payment.amountPaid.toFixed(2)}</td>
+      <td>${payment.term || ""}</td>
+      <td>${payment.paymentDate || ""}</td>
+    `;
+    tableBody.appendChild(row);
+  });
+
+  document.getElementById("currentPage").value = page;
+}
 
       function filterByDate() {
         const fromDate = document.getElementById("fromDate").value;
@@ -904,74 +944,125 @@
     	      return response.json();
     	    })
     	    .then((students) => {
-    	      console.log("Fetched Batch Students:", students);
-
-    	      const tableBody = document.getElementById("BatchTableBody");
-    	      tableBody.innerHTML = "";
-
-    	      if (students.length === 0) {
-    	        tableBody.innerHTML = `<tr><td colspan="9">No students found for selected batch.</td></tr>`;
-    	        return;
-    	      }
-
-    	      students.forEach((student) => {
-    	        const totalfee = parseInt(student.totalfee || 0);
-    	        const paid = parseInt(student.term_1 || 0);
-    	        const due = parseInt(student.duefee || (totalDue - paid));
-
-    	        const row = document.createElement("tr");
-    	        row.innerHTML = `
-    	          <td>${student.id || ""}</td>
-    	          <td>${student.batch || ""}</td>
-    	          <td>${student.course || ""}</td>
-    	          <td>${student.name || ""}</td>
-    	          <td>${student.mobile || ""}</td>
-    	          <td>₹ ${totalfee}</td>
-    	          <td>₹ ${paid}</td>
-    	          <td>₹ ${due}</td>
-    	          
-    	          
-    	          <td><button onclick="showTerms('${student.mobile}')" 
-    	            class="text-blue-600 underline hover:text-blue-800">View</button></td>
-    	        `;
-    	        tableBody.appendChild(row);
-    	      });
+    	      allBatchStudents = students;
+    	      totalBatchPages = Math.ceil(allBatchStudents.length / batchRowsPerPage);
+    	      document.getElementById("totalBatchPages").innerText = `of ${totalBatchPages}`;
+    	      renderBatchTablePage(1);
     	    })
     	    .catch((error) => {
     	      console.error("Error loading batch students:", error);
     	    });
     	}
 
+      
+      //renderBatchTablePage
+      function renderBatchTablePage(page) {
+    	  const tableBody = document.getElementById("BatchTableBody");
+    	  tableBody.innerHTML = "";
 
-     function showTerms(phoneNumber) {
-    	  fetch(`http://localhost:8080/api/payments`)
-    	    .then((response) => response.json())
-    	    .then((data) => {
-    	      const filtered = data.filter((p) => p.phoneNumber === phoneNumber);
-    	      const tbody = document.getElementById("BatchTransactionTable"); // ✅ Correct modal table
-    	      tbody.innerHTML = "";
+    	  const start = (page - 1) * batchRowsPerPage;
+    	  const end = start + batchRowsPerPage;
+    	  const pageData = allBatchStudents.slice(start, end);
 
-    	      if (filtered.length === 0) {
-    	        tbody.innerHTML = "<tr><td colspan='4'>No transactions found.</td></tr>";
-    	      } else {
-    	        filtered.forEach((p) => {
-    	          const row = document.createElement("tr");
-    	          row.innerHTML = `
-    	            <td>${p.term || "-"}</td>
-    	            <td>${p.studentName || "-"}</td>
-    	            <td>₹ ${p.amountPaid.toFixed(2)}</td>
-    	            <td>${p.paymentDate || "-"}</td>
-    	          `;
-    	          tbody.appendChild(row);
-    	        });
-    	      }
+    	  if (pageData.length === 0) {
+    	    tableBody.innerHTML = `<tr><td colspan="9">No students found for selected batch.</td></tr>`;
+    	    return;
+    	  }
 
-    	      document.getElementById("termsModal").style.display = "block"; // ✅ Show modal
-    	    })
-    	    .catch((err) => {
-    	      console.error("Error loading transaction details:", err);
-    	    });
+    	  pageData.forEach((student) => {
+    	    const totalfee = parseInt(student.totalfee || 0);
+    	    const paid = parseInt(student.term_1 || 0);
+    	    const due = parseInt(student.duefee || totalfee - paid);
+
+    	    const row = document.createElement("tr");
+    	    row.innerHTML = `
+    	      <td>${student.id || ""}</td>
+    	      <td>${student.batch || ""}</td>
+    	      <td>${student.course || ""}</td>
+    	      <td>${student.name || ""}</td>
+    	      <td>${student.mobile || ""}</td>
+    	      <td>₹ ${totalfee}</td>
+    	      <td>₹ ${paid}</td>
+    	      <td>₹ ${due}</td>
+    	      <td><button onclick="showTerms('${student.mobile}')" class="text-blue-600 underline hover:text-blue-800">View</button></td>
+    	    `;
+    	    tableBody.appendChild(row);
+    	  });
+
+    	  currentBatchPage = page;
+    	  document.getElementById("currentBatchPage").value = page;
     	}
+      //Add Navigation Functions
+
+      function goToBatchPage(page) {
+    	  if (page < 1 || page > totalBatchPages) return;
+    	  renderBatchTablePage(page);
+    	}
+
+    	function nextBatchPage() {
+    	  if (currentBatchPage < totalBatchPages) {
+    	    renderBatchTablePage(currentBatchPage + 1);
+    	  }
+    	}
+
+    	function prevBatchPage() {
+    	  if (currentBatchPage > 1) {
+    	    renderBatchTablePage(currentBatchPage - 1);
+    	  }
+    	}
+
+
+
+    	function showTerms(phoneNumber) {
+    		  // Step 1: Get student details based on phone number
+    		  const student = allBatchStudents.find(s => s.mobile === phoneNumber);
+    		  if (!student) {
+    		    alert("Student not found in batch list.");
+    		    return;
+    		  }
+
+    		  // Step 2: Fetch all payments by phone number
+    		  fetch(`http://localhost:8080/api/payments`)
+    		    .then((response) => response.json())
+    		    .then((data) => {
+    		      const filtered = data.filter((p) => p.phoneNumber === phoneNumber);
+    		      const tbody = document.getElementById("BatchTransactionTable");
+    		      tbody.innerHTML = "";
+
+    		      // Step 3: Add First Term row (from student table)
+    		      const term1Row = document.createElement("tr");
+    		      term1Row.innerHTML = `
+    		        <td>Term-1</td>
+    		        <td>${student.name || "-"}</td>
+    		        <td>₹ ${student.term_1 || "0.00"}</td>
+    		        <td>${student.joiningDate || "-"}</td>
+    		      `;
+    		      tbody.appendChild(term1Row);
+
+    		      // Step 4: Add subsequent payments (from payments table)
+    		      if (filtered.length === 0) {
+    		        const noDataRow = document.createElement("tr");
+    		        noDataRow.innerHTML = "<td colspan='4'>No transactions found.</td>";
+    		        tbody.appendChild(noDataRow);
+    		      } else {
+    		        filtered.forEach((p) => {
+    		          const row = document.createElement("tr");
+    		          row.innerHTML = `
+    		            <td>${p.term || "-"}</td>
+    		            <td>${p.studentName || "-"}</td>
+    		            <td>₹ ${p.amountPaid.toFixed(2)}</td>
+    		            <td>${p.paymentDate || "-"}</td>
+    		          `;
+    		          tbody.appendChild(row);
+    		        });
+    		      }
+
+    		      document.getElementById("termsModal").style.display = "block";
+    		    })
+    		    .catch((err) => {
+    		      console.error("Error loading transaction details:", err);
+    		    });
+    		}
 
       //course type
       document.addEventListener("DOMContentLoaded", function () {
@@ -1063,6 +1154,28 @@
               "<option value=''>Failed to Load</option>";
           });
       }
+      
+      // Add Pagination Button Functions
+      function goToPage(page) {
+  if (page < 1 || page > totalPages) return;
+  currentPage = page;
+  renderTablePage(currentPage);
+}
+
+function nextPage() {
+  if (currentPage < totalPages) {
+    currentPage++;
+    renderTablePage(currentPage);
+  }
+}
+
+function prevPage() {
+  if (currentPage > 1) {
+    currentPage--;
+    renderTablePage(currentPage);
+  }
+}
+
 
     </script>
   </body>
