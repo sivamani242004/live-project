@@ -237,6 +237,28 @@
           <div class="tab" onclick="showTab('account')">Batch Payments</div>
         </div>
 
+        <div class="bg-white shadow-lg rounded-2xl p-6 mt-6 w-full max-w-5xl mx-auto">
+          <!-- Search Bar -->
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold text-purple-700">Student Records</h2>
+            <input type="text" id="searchInput" placeholder="Search by name or ID" 
+              class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 w-64">
+          </div>
+
+          <!-- Scrollable Table -->
+          <div class="overflow-y-auto max-h-64 border border-gray-200 rounded-lg">
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-purple-600 text-white sticky top-0">
+                 <div id="studentResults" class="space-y-4">
+                   <!-- Matching student cards will appear here -->
+                  </div>
+                <!-- Add more rows for testing scroll -->
+              </tbody>
+            </table>
+            </div>
+        </div>
+
+
         <section
           id="dashboard"
           class="tab-content active px-4 md:px-8 lg:px-10 py-6"
@@ -249,18 +271,7 @@
             </h1>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              <!-- Search -->
-              <div>
-                <label class="block text-purple-700 font-semibold mb-1"
-                  >Search</label
-                >
-                <input
-                  id="searchInput"
-                  type="text"
-                  placeholder="Enter name or ID"
-                  class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                />
-              </div>
+              
 
               <div>
                 <label class="block text-purple-700 font-semibold mb-1"
@@ -1018,6 +1029,39 @@
               "<option value=''>Failed to Load</option>";
           });
       }
+
+      //search box
+       document.getElementById("searchInput").addEventListener("input", function () {
+      const keyword = this.value.trim();
+      if (keyword.length < 2) {
+        document.getElementById("studentResults").innerHTML = "";
+        return;
+      }
+
+      fetch("http://localhost:8080/api/students/search?keyword=" + keyword)
+        .then(res => res.json())
+        .then(data => {
+          let html = "";
+          if (data.length === 0) {
+            html = `<div class="text-gray-500">No students found.</div>`;
+          } else {
+            html = data.map(student => `
+              <div class="bg-white p-4 rounded shadow-md relative border border-gray-200">
+                
+                <h3 class="text-lg font-semibold text-indigo-700">${student.name}</h3>
+                <p><strong>Mobile:</strong> ${student.mobile}</p>
+                <p><strong>Email:</strong> ${student.email}</p>
+                <p><strong>Course:</strong> ${student.course}</p>
+              </div>
+            `).join("");
+          }
+          document.getElementById("studentResults").innerHTML = html;
+        })
+        .catch(err => {
+          document.getElementById("studentResults").innerHTML =
+            "<div class='text-red-500'>Error fetching student data.</div>";
+        });
+    });
     </script>
   </body>
 </html>
