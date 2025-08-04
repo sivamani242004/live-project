@@ -97,6 +97,11 @@
 
        </div>
        <div>
+          <label class="block font-medium text-gray-700">Batch Status</label>
+<input type="text" name="status" id="batchStatus" class="w-full border rounded px-4 py-2" required>
+			
+       </div>
+       <div>
           <label class="block font-medium text-gray-700">Course</label>
           <select name="course" id="courseDropdown" required class="w-full border p-2 rounded-md">
            <option value="">Loading...</option>
@@ -141,6 +146,8 @@
   </div>
 
   <script>
+  let batchMap = new Map(); // ⬅ Store batchId → status
+
    document.getElementById("studentForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -277,9 +284,12 @@ fetch("http://localhost:8080/api/batch/active")
 
     batches.forEach((batch) => {
       const option = document.createElement("option");
-      option.value = batch.batchid; // or batch.id if needed
-      option.textContent = `${batch.batchid} (${batch.status})`;
+      option.value = batch.batchid;
+      option.textContent = `${batch.batchid}`;
       dropdown.appendChild(option);
+
+      // Store batch status
+      batchMap.set(batch.batchid, batch.status);
     });
   })
   .catch((err) => {
@@ -287,8 +297,13 @@ fetch("http://localhost:8080/api/batch/active")
     document.getElementById("batchDropdown").innerHTML =
       '<option value="">Failed to load batches</option>';
   });
+document.getElementById("batchDropdown").addEventListener("change", function () {
+	  const selectedBatchId = this.value;
+	  const status = batchMap.get(selectedBatchId);
 
-
+	  // Set the status field (only once!)
+	  document.getElementById("batchStatus").value = status || "";
+	});
 
   </script>
 

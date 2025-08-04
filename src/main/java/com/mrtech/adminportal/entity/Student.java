@@ -28,6 +28,7 @@
 		    private String totalfee;
 		    private String term_1;  
 		    private String duefee;
+		    private String status;
 		    // Getters and Setters //Term-I
 		
 		    public int getId() {
@@ -159,6 +160,13 @@
 		    public void setDuefee(String duefee) {
 		        this.duefee = duefee;
 		    }
-		
+		    public String getStatus() {
+		        return status;
+		    }
+
+		    public void setStatus(String status) {
+		        this.status = status;
+		    }
+
 		}
 		
