@@ -132,7 +132,10 @@
 		  <label class="block font-medium text-gray-700">Term-I fees</label>
 		  <input type="number" name="term_1" required class="w-full border p-2 rounded-md" placeholder="Term- 1 fees" />
 		</div>
-		
+		<div>
+		  <label class="block font-medium text-gray-700">Paid Amount</label>
+		  <input type="number" name="paidamount" required class="w-full border p-2 rounded-md" placeholder="Team-1==amountpaid" />
+		</div>
 		<div>
 		  <label class="block font-medium text-gray-700">Due Amount</label>
 		  <input type="number" name="duefee" required class="w-full border p-2 rounded-md" placeholder="Total amount - Term fees" />
@@ -259,6 +262,8 @@ function calculateDueAmount() {
 
   const due = total - term1;
   document.querySelector("input[name='duefee']").value = due >= 0 ? due : 0;
+  document.querySelector("input[name='paidamount']").value = term1;
+
 }
 //USERNAME
 fetch("http://localhost:8080/api/username", {
