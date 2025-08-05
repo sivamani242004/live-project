@@ -637,7 +637,7 @@
 
       //fetch ...
 
-  document.getElementById("searchInput").addEventListener("input", function () {
+document.getElementById("searchInput").addEventListener("input", function () {
   const keyword = this.value.trim();
   if (keyword.length < 2) {
     document.getElementById("studentResults").innerHTML = "";
@@ -679,7 +679,10 @@
           const index = this.getAttribute("data-index");
           const student = data[index];
 
-          // Populate form fields
+          // ✅ Show popup message
+          alert(`${student.name} is selected`);
+
+          // ✅ Populate form fields
           document.getElementById("studentName").value = student.name;
           document.getElementById("courseType").value = student.course;
           document.getElementById("phoneNumber").value = student.mobile;
@@ -687,7 +690,7 @@
           document.getElementById("batchCode").value = student.batch;
           document.getElementById("totalDue").value = student.duefee;
 
-          fetchBatchStatus(); // You can define this elsewhere
+          fetchBatchStatus(); // Ensure this function is defined elsewhere
         });
       });
     })
@@ -696,6 +699,7 @@
         "<div class='text-red-500'>Error fetching student data.</div>";
     });
 });
+
 
 
       // total due = total due - amount to be paid
@@ -758,69 +762,69 @@
           });
       }
 
+      
+      //submit button 
       document
-        .getElementById("submitPaymentBtn")
-        .addEventListener("click", function () {
-          // Gather all required fields
-          const studentName = document.getElementById("studentName").value;
-          const phoneNumber = document.getElementById("phoneNumber").value;
-          const courseType = document.getElementById("courseType").value;
-          const batchCode = document.getElementById("batchCode").value;
-          const statusDisplay = document.getElementById("statusDisplay").value;
-          const paymentDate =
-            document.querySelector('input[type="date"]').value;
-          const amountToBePaid =
-            document.getElementById("amountToBePaid").value;
-          const totalDue = document.getElementById("totalDue").value;
-          const duefee = document.getElementById("duefee").value;
-          const term = document.getElementById("termSelect").value;
-          const customTerm = document.getElementById("customTerm").value;
-          const finalTerm = term === "Other" ? customTerm : term;
+      .getElementById("submitPaymentBtn")
+      .addEventListener("click", function () {
+        // Gather all required fields
+        const studentName = document.getElementById("studentName").value;
+        const phoneNumber = document.getElementById("phoneNumber").value;
+        const courseType = document.getElementById("courseType").value;
+        const batchCode = document.getElementById("batchCode").value;
+        const statusDisplay = document.getElementById("statusDisplay").value;
+        const paymentDate = document.querySelector('input[type="date"]').value;
+        const amountToBePaid = document.getElementById("amountToBePaid").value;
+        const totalDue = document.getElementById("totalDue").value;
+        const duefee = document.getElementById("duefee").value;
+        const term = document.getElementById("termSelect").value;
+        const customTerm = document.getElementById("customTerm").value;
+        const finalTerm = term === "Other" ? customTerm : term;
 
-          // Optional: Basic validation
-          if (!studentName || !amountToBePaid || !paymentDate || !finalTerm) {
-            alert("Please fill all required fields");
-            return;
-          }
+        // Basic validation
+        if (!studentName || !amountToBePaid || !paymentDate || !finalTerm) {
+          alert("Please fill all required fields");
+          return;
+        }
 
-          const paymentData = {
-            studentName,
-            courseType,
+        const paymentData = {
+          studentName,
+          courseType,
+          statusDisplay,
+          batchCode,
+          paymentDate,
+          amountPaid: parseFloat(amountToBePaid),
+          totalDue: parseFloat(totalDue),
+          remainingDue: parseFloat(duefee),
+          term: finalTerm,
+          phoneNumber: phoneNumber,
+        };
 
-            statusDisplay,
-            batchCode,
-            paymentDate,
-            amountPaid: parseFloat(amountToBePaid),
-            totalDue: parseFloat(totalDue),
-            remainingDue: parseFloat(duefee),
-            term: finalTerm,
-            phoneNumber: phoneNumber,
-          };
-
-          // Make the API POST request to save payment
-          fetch("http://localhost:8080/api/payments", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(paymentData),
+        // API POST request to save payment
+        fetch("http://localhost:8080/api/payments", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(paymentData),
+        })
+          .then((response) => {
+            if (!response.ok) throw new Error("Failed to save payment");
+            return response.json();
           })
-            .then((response) => {
-              if (!response.ok) throw new Error("Failed to save payment");
-              return response.json();
-            })
-            .then((result) => {
-              alert("Payment saved successfully!");
-              // Optionally clear fields or refresh payment table
-            })
-            .catch((error) => {
-              console.error("Payment error:", error);
-              alert("Failed to save payment. Try again.");
-            });
-        });
+          .then((result) => {
+            alert("Payment saved successfully!");
+            location.reload(); // ✅ Auto reload page after saving
+          })
+          .catch((error) => {
+            console.error("Payment error:", error);
+            alert("Failed to save payment. Try again.");
+          });
+      });
+
 
       //Fetch data from payment table
-let allPayments = [];
+      let allPayments = [];
 let currentPage = 1;
 const rowsPerPage = 5;
 let totalPages = 1;
