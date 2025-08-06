@@ -1,80 +1,245 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>MR Technologies - Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 h-screen flex font-sans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MR Technologies - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      body {
+        opacity: 0;
+        transition: opacity 0.6s ease-in-out;
+      }
+      body.loaded {
+        opacity: 1;
+      }
+      @keyframes fadeInScale {
+        0% {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      .animate-fadeInScale {
+        animation: fadeInScale 0.6s ease-out both;
+      }
+      .slide-link {
+        position: relative;
+        overflow: hidden;
+      }
+      .slide-link::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        transition: left 0.3s ease;
+      }
+      .slide-link:hover::before {
+        left: 0;
+      }
+      .fade-up {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease-in-out;
+      }
+      .fade-up.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
+  </head>
 
-  <!-- Sidebar -->
-  <aside class="w-64 bg-indigo-800 text-white flex flex-col p-5 space-y-4">
-    <h2 class="text-2xl font-bold mb-8">MR Technologies</h2>
-    <nav class="flex flex-col gap-4">
-      <a href="/dashboard" class="hover:bg-indigo-600 p-2 rounded">Dashboard</a>
-      <a href="/courses" class="hover:bg-indigo-600 p-2 rounded">Courses</a>
-      <a href="/studenthome" class="hover:bg-indigo-600 p-2 rounded">Students</a>
-      <a href="/Batch" class="hover:bg-indigo-600 p-2 rounded">Batch</a>
-      <a href="/payments" class="hover:bg-indigo-600 p-2 rounded">Payments</a>
-      <a href="/reports" class="hover:bg-indigo-600 p-2 rounded">Reports</a>
-    </nav>
-    <button onclick="logout()" class="mt-auto text-left text-red-300 hover:text-white">Logout</button>
-  </aside>
-
-  <!-- Main Content -->
-  <div class="flex-1 flex flex-col">
-    
-    <!-- Header -->
-    <header class="bg-white shadow p-4 flex justify-between items-center">
-      <h1 class="text-xl font-semibold text-gray-700">Dashboard Overview</h1>
-      <p class="text-sm text-gray-500">
-        Welcome, <span class="font-bold text-indigo-600" id="username">Guest</span>
-
+  <body class="bg-gray-100 min-h-screen flex font-sans text-gray-800">
+    <!-- Top Bar -->
+    <header
+      class="fixed top-0 left-0 right-0 bg-white shadow-md p-4 flex justify-between items-center z-50"
+    >
+      <div class="flex items-center gap-4">
+        <img
+          src="/images/logo.jpg"
+          alt="MR Technologies Logo"
+          class="w-28 h-auto object-contain animate-fadeInScale"
+          style="width: 20%"
+        />
+        <h1 class="text-2xl font-bold text-[#113C71]" style="margin-left: 15%">
+          Analytics Hub
+        </h1>
+      </div>
+      <p class="text-sm text-gray-600">
+        Welcome,
+        <span class="font-semibold text-[#113C71]" id="username"
+          >Loading...</span
+        >
       </p>
     </header>
 
-    <!-- Content -->
-    <main class="p-6 bg-gray-100 flex-1 overflow-y-auto">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
-          <h3 class="text-lg font-semibold text-indigo-700">Total Students</h3>
-         <p class="text-2xl mt-2" th:text="${totalStudents}">0</p>
-        </div>
-        <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
-          <h3 class="text-lg font-semibold text-indigo-700">Total Fees Collected</h3>
-          <p class="text-2xl mt-2">₹2,45,500</p>
-        </div>
-        <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
-          <h3 class="text-lg font-semibold text-indigo-700">Upcoming Due Payments</h3>
-          <p class="text-2xl mt-2">₹47,000</p>
-        </div>
-      </div>
+    <!-- Sidebar -->
+    <aside
+      class="fixed top-[80px] left-0 w-72 bg-[#113C71] text-white flex flex-col p-6 shadow-lg h-[calc(100%-80px)]"
+    >
+      <nav class="flex flex-col gap-4 animate-fadeInScale delay-100">
+        <a href="/dashboard" class="p-3 rounded transition slide-link"
+          >Dashboard</a
+        >
+        <a href="/courses" class="p-3 rounded transition slide-link">Courses</a>
+        <a href="/studenthome" class="p-3 rounded transition slide-link"
+          >Students</a
+        >
+        <a href="/Batch" class="p-3 rounded transition slide-link">Batch</a>
+        <a href="/payments" class="p-3 rounded transition slide-link"
+          >Payments</a
+        >
+        <a href="/reports" class="p-3 rounded transition slide-link">Reports</a>
+      </nav>
+      <button
+        onclick="logout()"
+        class="mt-4 text-left text-red-300 hover:text-white p-3 transition"
+      >
+        Logout
+      </button>
+    </aside>
 
-      <div class="mt-10">
-        <div class="bg-white p-6 rounded-lg shadow text-center text-gray-400">
-          [📊 Fee Collection Chart will appear here]
-        </div>
-      </div>
-    </main>
-  </div>
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col ml-72 pt-[100px]">
+      <!-- Content Area -->
+      <main class="p-8 bg-[#f8f9fc] flex-1 overflow-y-auto space-y-10">
+        <!-- Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div
+            class="bg-white p-6 rounded-xl shadow hover:shadow-xl transition animate-fadeInScale delay-300 flex items-center gap-4"
+          >
+            <i data-lucide="users" class="w-10 h-10 text-[#113C71]"></i>
+            <div>
+              <h3 class="text-lg font-semibold text-[#113C71]">
+                Total Students
+              </h3>
+              <p
+                class="text-3xl mt-2 font-bold text-gray-800"
+                th:text="${totalStudents}"
+              >
+                0
+              </p>
+            </div>
+          </div>
 
-  <script>
-    function logout() {
-      window.location.href = "/login";
-    }
-    fetch("http://localhost:8080/api/username", {
-        credentials: 'include' // ⬅ Important to send session cookie
-      })
-      .then(response => {
-        if (!response.ok) throw new Error("Not logged in");
-        return response.text();
-      })
-      .then(username => {
-        document.getElementById("username").innerText = username;
-      })
-      .catch(() => {
-        document.getElementById("username").innerText = "Guest";
+          <div
+            class="bg-white p-6 rounded-xl shadow hover:shadow-xl transition animate-fadeInScale delay-400 flex items-center gap-4"
+          >
+            <i data-lucide="wallet" class="w-10 h-10 text-green-600"></i>
+            <div>
+              <h3 class="text-lg font-semibold text-[#113C71]">
+                Total Fees Collected
+              </h3>
+              <p
+                class="text-3xl mt-2 font-bold text-green-600"
+                th:text="'₹' + ${totalFees}"
+              >
+                ₹0
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="bg-white p-6 rounded-xl shadow hover:shadow-xl transition animate-fadeInScale delay-500 flex items-center gap-4"
+          >
+            <i data-lucide="alert-circle" class="w-10 h-10 text-red-500"></i>
+            <div>
+              <h3 class="text-lg font-semibold text-[#113C71]">
+                Upcoming Due Payments
+              </h3>
+              <p
+                class="text-3xl mt-2 font-bold text-red-500"
+                th:text="'₹' + ${upcomingDue}"
+              >
+                ₹0
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Animated Chart -->
+        <div class="bg-white p-6 rounded-xl shadow fade-up" id="chartSection">
+          <h2 class="text-xl font-semibold text-[#113C71] mb-4">
+            Monthly Fee Collection
+          </h2>
+          <canvas id="feeChart" width="400" height="200"></canvas>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      lucide.createIcons();
+
+      // Show body after load (page transition)
+      window.addEventListener("DOMContentLoaded", () => {
+        document.body.classList.add("loaded");
       });
-  </script>
-</body>
+
+      // Logout
+      function logout() {
+        window.location.href = "/login";
+      }
+
+      // Load username
+      fetch("http://localhost:8080/api/username", {
+        credentials: "include",
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error("Not logged in");
+          return response.text();
+        })
+        .then((username) => {
+          document.getElementById("username").innerText = username;
+        })
+        .catch(() => {
+          document.getElementById("username").innerText = "Guest";
+        });
+
+      // Scroll-triggered animation
+      const fadeUpEl = document.getElementById("chartSection");
+      window.addEventListener("scroll", () => {
+        const rect = fadeUpEl.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 100) {
+          fadeUpEl.classList.add("show");
+        }
+      });
+
+      // Chart.js bar chart animation
+      const ctx = document.getElementById("feeChart").getContext("2d");
+      const feeChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+          datasets: [
+            {
+              label: "Fees Collected (₹)",
+              data: [40000, 60000, 55000, 75000, 68000, 72000, 80000],
+              backgroundColor: "#113C71",
+              borderRadius: 8,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          animation: {
+            duration: 1200,
+            easing: "easeOutBounce",
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+    </script>
+  </body>
 </html>
