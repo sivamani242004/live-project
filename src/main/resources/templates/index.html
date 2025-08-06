@@ -1,61 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MR Technologies - Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
-    <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-sm">
-        <h2 class="text-2xl font-bold text-center text-indigo-700 mb-1">MR Technologies</h2>
-        <h3 class="text-lg text-center text-gray-600 mb-6">Login to your account</h3>
+    <style>
+      .wrapper {
+        display: flex;
+        transition: transform 0.6s ease, height 0.6s ease;
+        width: 200%;
+      }
 
-        <input
-            type="text"
-            id="username"
-            placeholder="Username"
-            class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-        <input
-            type="password"
-            id="password"
-            placeholder="Password"
-            class="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
+      .slide-container {
+        width: 100%;
+        overflow: hidden;
+        transition: height 0.6s ease;
+      }
 
-        <button
-            onclick="doLogin()"
-            class="w-full bg-indigo-600 text-white p-3 rounded-lg hover:bg-indigo-700 transition duration-300"
-        >
-            Login
-        </button>
+      .panel {
+        width: 50%;
+        display: flex;
+        flex-direction: row;
+        flex-shrink: 0;
+      }
 
-        <p id="message" class="text-center text-red-500 mt-4"></p>
+      .fade-in {
+        animation: fadeIn 0.5s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateX(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div
+      id="outer"
+      class="slide-container max-w-5xl bg-white shadow-xl rounded-2xl transition-all duration-500"
+    >
+      <div id="slider" class="wrapper">
+        <!-- Admin Panel --> 
+        <div class="panel">
+          <!-- Form Section -->
+          <div class="flex-1 p-10 fade-in">
+            <div class="flex justify-center mb-4">
+              <img src="/images/logo.jpg" alt="MR Technologies Logo" class="h-16" />
+            </div>
+            <h3 class="text-xl text-center text-gray-600 mb-6">Admin Login</h3>
+            <input
+              type="text"
+              id="admin-username"
+              placeholder="Username"
+              class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <input
+              type="password"
+              id="admin-password"
+              placeholder="Password"
+              class="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <button
+              onclick="doLogin(true)"
+              class="w-full bg-indigo-600 text-white p-3 rounded-lg hover:bg-indigo-700 transition duration-300"
+            >
+              Login
+            </button>
+            <p id="admin-message" class="text-center text-red-500 mt-4"></p>
+            <div class="text-center mt-6">
+              <button
+                onclick="toggleLogin()"
+                class="text-indigo-600 hover:underline text-sm"
+              >
+                ← Switch to Student Login
+              </button>
+            </div>
+          </div>
+          <!-- Info Section -->
+          <div
+            class="bg-indigo-600 text-white flex-1 p-10 flex flex-col justify-center items-center fade-in"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/1946/1946429.png"
+              alt="Admin Icon"
+              class="w-24 h-24 mb-4"
+            />
+            <h3 class="text-2xl font-semibold mb-2">Welcome Admin</h3>
+            <p class="text-center text-sm">
+              Manage platform settings and users.
+            </p>
+          </div>
+        </div>
+
+        <!-- Student Panel -->
+        <div class="panel">
+          <!-- Info Section -->
+          <div
+            class="bg-indigo-600 text-white flex-1 p-10 flex flex-col justify-center items-center fade-in"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3135/3135789.png"
+              alt="Student Icon"
+              class="w-24 h-24 mb-4"
+            />
+            <h3 class="text-2xl font-semibold mb-2">Welcome Student</h3>
+            <p class="text-center text-sm">
+              Please login to access your student dashboard.
+            </p>
+          </div>
+          <!-- Form Section -->
+          <div class="flex-1 p-10 fade-in">
+            <div class="flex justify-center mb-4">
+              <img src="/images/logo.jpg" alt="MR Technologies Logo" class="h-16" />
+            </div>
+            <h3 class="text-xl text-center text-gray-600 mb-6">
+              Student Login
+            </h3>
+            <input
+              type="text"
+              id="student-username"
+              placeholder="Username"
+              class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <input
+              type="password"
+              id="student-password"
+              placeholder="Password"
+              class="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <button
+              onclick="doLogin(false)"
+              class="w-full bg-indigo-600 text-white p-3 rounded-lg hover:bg-indigo-700 transition duration-300"
+            >
+              Login
+            </button>
+            <p id="student-message" class="text-center text-red-500 mt-4"></p>
+            <div class="text-center mt-6">
+              <button
+                onclick="toggleLogin()"
+                class="text-indigo-600 hover:underline text-sm"
+              >
+                Switch to Admin Login →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script>
-        function doLogin() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
+      let isAdmin = true;
 
-            fetch("http://localhost:8080/api/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password })
-            })
-            .then(res => {
-                if (res.ok) {
-                    window.location.href = "/dashboard";
-                } else {
-                    return res.text().then(data => {
-                        document.getElementById("message").innerText = data;
-                    });
-                }
-            })
-            .catch(() => {
-                document.getElementById("message").innerText = "Server error";
-            });
-        }
+      function toggleLogin() {
+        const slider = document.getElementById("slider");
+        const outer = document.getElementById("outer");
+
+        isAdmin = !isAdmin;
+        slider.style.transform = isAdmin
+          ? "translateX(0%)"
+          : "translateX(-50%)";
+
+        // Optional: re-trigger fade animation
+        const panels = document.querySelectorAll(".fade-in");
+        panels.forEach((panel) => {
+          panel.classList.remove("fade-in");
+          void panel.offsetWidth; // force reflow
+          panel.classList.add("fade-in");
+        });
+
+        // Auto height adjustment
+        setTimeout(() => {
+          const currentPanel = isAdmin
+            ? slider.children[0]
+            : slider.children[1];
+          outer.style.height = currentPanel.offsetHeight + "px";
+        }, 600);
+      }
+
+      function doLogin(isAdminLogin) {
+        const username = isAdminLogin
+          ? document.getElementById("admin-username").value
+          : document.getElementById("student-username").value;
+
+        const password = isAdminLogin
+          ? document.getElementById("admin-password").value
+          : document.getElementById("student-password").value;
+
+        const messageId = isAdminLogin ? "admin-message" : "student-message";
+
+        fetch("http://localhost:8080/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        })
+          .then((res) => {
+            if (res.ok) {
+              window.location.href = "/dashboard";
+            } else {
+              return res.text().then((data) => {
+                document.getElementById(messageId).innerText = data;
+              });
+            }
+          })
+          .catch(() => {
+            document.getElementById(messageId).innerText = "Server error";
+          });
+      }
+
+      // Initial resize based on panel
+      window.addEventListener("load", () => {
+        const outer = document.getElementById("outer");
+        const slider = document.getElementById("slider");
+        outer.style.height = slider.children[0].offsetHeight + "px";
+      });
     </script>
-</body>
+  </body>
 </html>
