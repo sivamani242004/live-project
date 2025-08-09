@@ -8,13 +8,34 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+      :root {
+        --primary-color: #113C71;
+        --secondary-color: #f8f9fc;
+        --accent-color: #03306e;
+        --success-color: #16a34a;
+        --danger-color: #dc2626;
+        --text-color: #333333;
+        --muted-text: #6b7280;
+        --white: #ffffff;
+
+        --font-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        --transition-speed: 0.3s;
+        --card-radius: 12px;
+        --shadow-elevation: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
       body {
         opacity: 0;
         transition: opacity 0.6s ease-in-out;
+        font-family: var(--font-base);
+        background-color: var(--secondary-color);
+        color: var(--text-color);
       }
+
       body.loaded {
         opacity: 1;
       }
+
       @keyframes fadeInScale {
         0% {
           opacity: 0;
@@ -25,13 +46,16 @@
           transform: scale(1);
         }
       }
+
       .animate-fadeInScale {
         animation: fadeInScale 0.6s ease-out both;
       }
+
       .slide-link {
         position: relative;
         overflow: hidden;
       }
+
       .slide-link::before {
         content: "";
         position: absolute;
@@ -40,16 +64,19 @@
         width: 100%;
         height: 100%;
         background: rgba(255, 255, 255, 0.1);
-        transition: left 0.3s ease;
+        transition: left var(--transition-speed) ease;
       }
+
       .slide-link:hover::before {
         left: 0;
       }
+
       .fade-up {
         opacity: 0;
         transform: translateY(20px);
         transition: all 0.6s ease-in-out;
       }
+
       .fade-up.show {
         opacity: 1;
         transform: translateY(0);
@@ -57,7 +84,7 @@
     </style>
   </head>
 
-  <body class="bg-gray-100 min-h-screen flex font-sans text-gray-800">
+  <body class="min-h-screen flex font-sans text-gray-800">
     <!-- Top Bar -->
     <header
       class="fixed top-0 left-0 right-0 bg-white shadow-md p-4 flex justify-between items-center z-50"
@@ -69,34 +96,29 @@
           class="w-28 h-auto object-contain animate-fadeInScale"
           style="width: 20%"
         />
-        <h1 class="text-2xl font-bold text-[#113C71]" style="margin-left: 15%">
+        <h1 class="text-2xl font-bold" style="color: var(--primary-color); margin-left: 15%;">
           Analytics Hub
         </h1>
       </div>
       <p class="text-sm text-gray-600">
         Welcome,
-        <span class="font-semibold text-[#113C71]" id="username"
-          >Loading...</span
-        >
+        <span class="font-semibold" style="color: var(--primary-color);" id="username">
+          Loading...
+        </span>
       </p>
     </header>
 
     <!-- Sidebar -->
     <aside
-      class="fixed top-[80px] left-0 w-72 bg-[#113C71] text-white flex flex-col p-6 shadow-lg h-[calc(100%-80px)]"
+      class="fixed top-[80px] left-0 w-72 text-white flex flex-col p-6 shadow-lg h-[calc(100%-80px)]"
+      style="background-color: var(--primary-color);"
     >
       <nav class="flex flex-col gap-4 animate-fadeInScale delay-100">
-        <a href="/dashboard" class="p-3 rounded transition slide-link"
-          >Dashboard</a
-        >
+        <a href="/dashboard" class="p-3 rounded transition slide-link">Dashboard</a>
         <a href="/courses" class="p-3 rounded transition slide-link">Courses</a>
-        <a href="/studenthome" class="p-3 rounded transition slide-link"
-          >Students</a
-        >
+        <a href="/studenthome" class="p-3 rounded transition slide-link">Students</a>
         <a href="/Batch" class="p-3 rounded transition slide-link">Batch</a>
-        <a href="/payments" class="p-3 rounded transition slide-link"
-          >Payments</a
-        >
+        <a href="/payments" class="p-3 rounded transition slide-link">Payments</a>
         <a href="/reports" class="p-3 rounded transition slide-link">Reports</a>
       </nav>
       <button
@@ -110,15 +132,15 @@
     <!-- Main Content -->
     <div class="flex-1 flex flex-col ml-72 pt-[100px]">
       <!-- Content Area -->
-      <main class="p-8 bg-[#f8f9fc] flex-1 overflow-y-auto space-y-10">
+      <main class="p-8 flex-1 overflow-y-auto space-y-10" style="background-color: var(--secondary-color);">
         <!-- Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div
             class="bg-white p-6 rounded-xl shadow hover:shadow-xl transition animate-fadeInScale delay-300 flex items-center gap-4"
           >
-            <i data-lucide="users" class="w-10 h-10 text-[#113C71]"></i>
+            <i data-lucide="users" class="w-10 h-10" style="color: var(--primary-color);"></i>
             <div>
-              <h3 class="text-lg font-semibold text-[#113C71]">
+              <h3 class="text-lg font-semibold" style="color: var(--primary-color);">
                 Total Students
               </h3>
               <p
@@ -133,13 +155,14 @@
           <div
             class="bg-white p-6 rounded-xl shadow hover:shadow-xl transition animate-fadeInScale delay-400 flex items-center gap-4"
           >
-            <i data-lucide="wallet" class="w-10 h-10 text-green-600"></i>
+            <i data-lucide="wallet" class="w-10 h-10" style="color: var(--success-color);"></i>
             <div>
-              <h3 class="text-lg font-semibold text-[#113C71]">
+              <h3 class="text-lg font-semibold" style="color: var(--primary-color);">
                 Total Fees Collected
               </h3>
               <p
-                class="text-3xl mt-2 font-bold text-green-600"
+                class="text-3xl mt-2 font-bold"
+                style="color: var(--success-color);"
                 th:text="'₹' + ${totalFees}"
               >
                 ₹0
@@ -150,13 +173,14 @@
           <div
             class="bg-white p-6 rounded-xl shadow hover:shadow-xl transition animate-fadeInScale delay-500 flex items-center gap-4"
           >
-            <i data-lucide="alert-circle" class="w-10 h-10 text-red-500"></i>
+            <i data-lucide="alert-circle" class="w-10 h-10" style="color: var(--danger-color);"></i>
             <div>
-              <h3 class="text-lg font-semibold text-[#113C71]">
+              <h3 class="text-lg font-semibold" style="color: var(--primary-color);">
                 Upcoming Due Payments
               </h3>
               <p
-                class="text-3xl mt-2 font-bold text-red-500"
+                class="text-3xl mt-2 font-bold"
+                style="color: var(--danger-color);"
                 th:text="'₹' + ${upcomingDue}"
               >
                 ₹0
@@ -165,9 +189,9 @@
           </div>
         </div>
 
-        <!-- Animated Chart -->
+        <!-- Chart -->
         <div class="bg-white p-6 rounded-xl shadow fade-up" id="chartSection">
-          <h2 class="text-xl font-semibold text-[#113C71] mb-4">
+          <h2 class="text-xl font-semibold mb-4" style="color: var(--primary-color);">
             Monthly Fee Collection
           </h2>
           <canvas id="feeChart" width="400" height="200"></canvas>
@@ -178,12 +202,12 @@
     <script>
       lucide.createIcons();
 
-      // Show body after load (page transition)
+      // Page load transition
       window.addEventListener("DOMContentLoaded", () => {
         document.body.classList.add("loaded");
       });
 
-      // Logout
+      // Logout redirect
       function logout() {
         window.location.href = "/login";
       }
@@ -203,7 +227,7 @@
           document.getElementById("username").innerText = "Guest";
         });
 
-      // Scroll-triggered animation
+      // Scroll animation
       const fadeUpEl = document.getElementById("chartSection");
       window.addEventListener("scroll", () => {
         const rect = fadeUpEl.getBoundingClientRect();
@@ -212,7 +236,7 @@
         }
       });
 
-      // Chart.js bar chart animation
+      // Chart.js
       const ctx = document.getElementById("feeChart").getContext("2d");
       const feeChart = new Chart(ctx, {
         type: "bar",
@@ -222,7 +246,7 @@
             {
               label: "Fees Collected (₹)",
               data: [40000, 60000, 55000, 75000, 68000, 72000, 80000],
-              backgroundColor: "#113C71",
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim(),
               borderRadius: 8,
             },
           ],
