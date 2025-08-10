@@ -5,453 +5,287 @@
   <title>MR Technologies - Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-color: #113C71;
+      --secondary-color: #f8f9fc;
+      --accent-color: #03306e;
+      --success-color: #16a34a;
+      --danger-color: #dc2626;
+      --text-color: #333333;
+      --muted-text: #6b7280;
+      --white: #ffffff;
+      --font-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      --transition-speed: 0.3s;
+      --card-radius: 12px;
+      --shadow-elevation: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: var(--font-base);
+    }
+
+    body {
+      background-color: #f0f0f0;
+    }
+
+    .slide-link {
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s ease;
+    }
+
+    .slide-link::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      transition: left var(--transition-speed) ease;
+    }
+
+    .slide-link:hover::before {
+      left: 0;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 9999px;
+      color: white;
+      animation: pulse 2s infinite;
+    }
+    .status-badge.ongoing {
+      background-color: #22c55e;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+    }
+    .status-badge.upcoming {
+      background-color: #facc15;
+      color: #1f2937;
+      box-shadow: 0 0 10px rgba(250, 204, 21, 0.6);
+    }
+    .status-badge.completed {
+      background-color: #3b82f6;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+    }
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.05);
+        opacity: 0.85;
+      }
+    }
+  </style>
 </head>
+<body class="min-h-screen flex flex-col">
 
-<style>
-     /* General Styles */
-     /*mahesh*/
-   * {
-       margin: 0;
-       padding: 0;
-       box-sizing: border-box;
-       font-family: Arial, sans-serif;
-   }
+<!-- Top Bar -->
+<header class="flex justify-between items-center bg-white shadow-md p-3 fixed top-0 left-0 right-0 z-50">
+  <div class="flex items-center gap-4">
+    <img src="/images/logo.jpg" alt="MR Technologies Logo" class="h-16 object-contain">
+    <h1 class="text-2xl font-bold text-[var(--primary-color)]">Batches</h1>
+  </div>
+  <p class="text-sm text-gray-600">
+    Welcome, <span class="font-semibold text-[var(--primary-color)]" id="username">Loading...</span>
+  </p>
+</header>
 
-   body {
-       background-color: #f0f0f0;
-   }
-
-   /*Main content css starts*/
-
-
-   /* Wrapper for Form */
-   .wrapper {
-       width: 90%;
-       max-width: 1400px;
-       background: white;
-       padding: 40px;
-       border-radius: 12px;
-       box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.2);
-       text-align: center;
-       margin: 30px auto;
-   }
-   .wrapper h1 {
-       font-size: 28px;
-       margin-bottom: 20px;
-       color: #0c0c0c;
-       text-transform: uppercase;
-       font-weight: bold;
-   }
-   /* Form Container */
-   form {
-       display: flex;
-       flex-wrap: wrap;
-       gap: 15px;
-       justify-content: space-between;
-       width: 100%;
-       height: 50%;
-       margin-top: 30px;
-       margin-bottom: 20px;
-   }
-
-   /* Form Groups */
-   .form-group {
-       display: flex;
-       flex-direction: column;
-       min-width: 300px;
-       flex: 1;
-       text-align: left;
-   }
-
-   /* Labels */
-   .form-group label {
-       font-weight: bold;
-       font-size: 16px;
-       margin-bottom: 8px;
-       color: #000;
-   }
-
-   /* Input Fields */
-   .form-group input,
-   .form-group select {
-       padding: 10px;
-       border: 2px solid #0eb4dd;
-       border-radius: 6px;
-       font-size: 16px;
-       width: 100%;
-       box-sizing: border-box;
-       transition: border 0.3s ease-in-out;
-   }
-
-   /* Button Styling */
-   /* button {
-       background-color: #0931c0;
-       color: white;
-       border: none;
-       font-weight: bold;
-       padding: 12px 20px;
-       border-radius: 8px;
-       font-size: 16px;
-       cursor: pointer;
-       transition: background 0.3s ease, transform 0.3s ease;
-       height: 44px;
-   } */
-
-   /* Button Styling */
-   button {
-       background-color: #072aab;
-       color: white;
-       border: none;
-       cursor: pointer;
-       font-weight: bold;
-       padding: 12px 20px;
-       border-radius: 8px;
-       transition: all 0.3s ease;
-       font-size: 16px;
-       height: 44px;
-       /* margin-top: 24px; */
-       /* 👈 This is the new line */
-   }
-   .sub-btn:hover{
-    background: linear-gradient(135deg, #0b33d2, #0d0dcb);
-    transform: scale(1.1);
-    box-shadow: 0px 6px 12px rgba(30, 10, 215, 0.5);
-   }
-
-   /* Success Message */
-   #message {
-       font-size: 14px;
-       color: green;
-       margin-top: 10px;
-   }
-
-   /* Course List Container */
-   .course-list {
-    width: 100%;
-    max-width: 900px;
-    padding: 25px;
-    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
-    border-radius: 12px;
-    margin: 30px auto;
-    text-align: center;
-    background-color: white;
-}
-
-/* Title */
-.course-list h2 {
-    font-size: 24px;
-    margin-bottom: 15px;
-    text-transform: uppercase;
-    font-weight: bold;
-    letter-spacing: 1px;
-}
-
-/* Table Styling */
-table {
-    
-    width: 100%;
-    border-collapse: collapse;
-    overflow: hidden;
-    font-size: 14px;
-}
-
-/* Table Headers */
-th {
-    background-color: #2306a5;
-    color: white;
-    padding: 12px;
-    font-size: 12px;
-    text-transform: uppercase;
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-th:last-child {
-    border-right: none;
-}
-
-/* Table Data */
-td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    text-align: center;
-    color: #333;
-}
-
-/* Alternate Row Background */
-tbody tr:nth-child(even) {
-    background-color: #f1f9fc;
-}
-
-/* Row Hover */
-tbody tr:hover {
-    background-color: rgba(14, 143, 175, 0.2);
-    transition: background-color 0.2s ease-in-out;
-}
-
-/* Delete Button */
-.delete-btn {
-    background: linear-gradient(135deg, #d00000, #a00000);
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    font-size: 12px;
-    font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: transform 0.2s ease-in-out;
-    box-shadow: 0px 4px 8px rgba(255, 0, 0, 0.3);
-}
-
-.delete-btn:hover {
-    background: linear-gradient(135deg, #ff0000, #c00000);
-    transform: scale(1.1);
-    box-shadow: 0px 6px 12px rgba(255, 0, 0, 0.5);
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .course-list {
-        padding: 20px;
-    }
-
-    table {
-        font-size: 12px;
-    }
-
-    th,
-    td {
-        padding: 8px;
-    }
-
-    .delete-btn {
-        padding: 5px 10px;
-        font-size: 10px;
-    }
-}
-</style>
-<body class="bg-gray-100 h-screen flex font-sans">
-
+<!-- Page Layout -->
+<div class="flex flex-1 pt-20">
   <!-- Sidebar -->
- 
-  <aside class="w-64 bg-indigo-800 text-white flex flex-col p-5 space-y-4" style="position: fixed;height: 100%;" >
-    <h2 class="text-2xl font-bold mb-8">MR Technologies</h2>
-    <nav class="flex flex-col gap-4">
-      <a href="/dashboard" class="hover:bg-indigo-600 p-2 rounded">Dashboard</a>
-      <a href="/courses" class="hover:bg-indigo-600 p-2 rounded">Courses</a>
-      <a href="/studenthome" class="hover:bg-indigo-600 p-2 rounded">Students</a>
-      <a href="/Batch"class="hover:bg-indigo-600 p-2 rounded">Batch</a>
-      <a href="/payments" class="hover:bg-indigo-600 p-2 rounded">Payments</a>
-      <a href="/reports" class="hover:bg-indigo-600 p-2 rounded">Reports</a>
+ <aside class="fixed top-[80px] left-0 w-72 bg-[var(--primary-color)] text-white " style="height: calc(100% - 80px); padding-top: 10px; z-index: 30; font-size: 20px;">
+    <nav class="flex flex-col gap-4" style="margin-top: 10%;margin-left: 10%;">
+      <a href="/dashboard" class="p-3 rounded slide-link">Dashboard</a>
+      <a href="/courses" class="p-3 rounded slide-link">Courses</a>
+      <a href="/studenthome" class="p-3 rounded slide-link">Students</a>
+      <a href="/Batch" class="p-3 rounded slide-link">Batch</a>
+      <a href="/payments" class="p-3 rounded slide-link">Payments</a>
+      <a href="/reports" class="p-3 rounded slide-link">Reports</a>
     </nav>
-    <button onclick="logout()" class="mt-auto text-left text-red-300 hover:text-white">Logout</button>
-  </aside>
+    <button onclick="logout()" class="mt-4 text-left text-red-300 hover:text-white p-3 transition" style="margin-left: 10%;">Logout</button>
+  </aside> 
 
- 
   <!-- Main Content -->
-  <div class="flex-1 flex flex-col">
-    
-    <!-- Header -->
-    <header class="bg-white shadow p-4 flex justify-between items-center" style="position: fixed; margin-left: 256px;width: 1000px;">
-      <h1 class="text-xl font-semibold text-gray-700" style="color: rgb(16, 16, 167); font-size: 25px; margin-left: 0px;" >Batch Registration</h1>
-      <p class="text-sm text-gray-500">
-        Welcome, <span class="font-bold text-indigo-600" id="username">Guest</span>
-      </p>
-    </header>
+  <main class="flex-1 p-6 bg-gray-50 overflow-auto" style="margin-left: 17rem;">
+    <div class="max-w-6xl mx-auto space-y-8">
 
-      <!-- Main Content -->
-    <main class="main-content" style="margin-left: 260px; padding: 20px; flex: 1;">
-        <div class="wrapper">
-            <h1>Add New Batch</h1>
-            
-            <form id="courseForm">
-                <div class="form-group">
-                    <label for="batchid">Batch ID:</label>
-                    <input type="text" id="batchid" name="batchid" required>
-                </div>
-                <div class="form-group">
-                <label >Courses</label>
-                <select name="Status" id="coursestatusDropdown" required class="w-full border p-2 rounded-md">
-                <option value="">Loading...</option>
-                </select> 
-           </div>
-                <div class="form-group">
-                    <label for="duration">Duration (in days):</label>
-                    <input type="number" id="duration" name="duration" required>
-                </div>
-                <div class="form-group">
-    				<label for="trainer">Trainer</label> <!-- corrected id -->
-    				<input type="name" id="trainer" name="trainer" required>
-				</div>
-                <div class="form-group" style="margin-top: 0rem;margin-left:10rem;margin-right: 12rem;">
-                <label >Status</label>
-                <select name="Status" id="statusDropdown" required class="w-full border p-2 rounded-md">
-                <option value="">Select</option>
-                <option value="Ongoing">On going</option>
-                <option value="Upcomi1ng">Up coming</option>
-                <option value="completed">completed</option>
-                </select> 
-           </div>
+      <!-- Page Title -->
+      <h1 class="text-3xl font-bold text-indigo-800 flex items-center gap-3">
+        <i class="fas fa-layer-group text-indigo-600"></i> Add New Batch
+      </h1>
 
-                <button class="sub-btn" type="submit"   style="background-color: #1f48d9; color: white; width: 150px; margin-left: 40%;" id="onclick" >Add Batch</button>
-            </form>
-            <p id="message"></p>
+      <!-- Add Batch Form -->
+      <div class="bg-white shadow-lg rounded-2xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300">
+        <form id="courseForm" class="grid md:grid-cols-2 gap-6">
+          <div>
+            <label for="batchid" class="block text-sm font-semibold text-gray-700 mb-2">Batch ID</label>
+            <input type="text" id="batchid" name="batchid" required class="w-full border-2 border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Courses</label>
+            <select id="coursestatusDropdown" name="coursename" required class="w-full border-2 border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+              <option value="">Loading...</option>
+            </select>
+          </div>
+          <div>
+            <label for="duration" class="block text-sm font-semibold text-gray-700 mb-2">Duration (days)</label>
+            <input type="number" id="duration" name="duration" required class="w-full border-2 border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+          </div>
+          <div>
+            <label for="trainer" class="block text-sm font-semibold text-gray-700 mb-2">Trainer</label>
+            <input type="text" id="trainer" name="trainer" required class="w-full border-2 border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
+            <select id="statusDropdown" name="status" required class="w-full border-2 border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+              <option value="">Select</option>
+              <option value="Ongoing">Ongoing</option>
+              <option value="Upcoming">Upcoming</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+          <div class="md:col-span-2 flex justify-center">
+            <button type="submit" class="bg-gradient-to-r from-indigo-600 to-indigo-800 hover:from-indigo-700 hover:to-indigo-900 text-white font-semibold px-8 py-3 rounded-xl shadow-md flex items-center gap-2">
+              <i class="fas fa-plus-circle"></i> Add Batch
+            </button>
+          </div>
+        </form>
+        <p id="message" class="mt-4 text-center text-green-600 font-medium"></p>
+      </div>
+
+      <!-- Batches List -->
+      <div class="bg-white shadow-lg rounded-2xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300">
+        <h2 class="text-2xl font-semibold text-indigo-800 mb-4 flex items-center gap-3">
+          <i class="fas fa-list-ul text-indigo-600"></i> Batches List
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm border border-gray-200 rounded-lg overflow-hidden">
+            <thead class="bg-indigo-100 text-indigo-800 sticky top-0 z-10">
+              <tr>
+                <th class="px-4 py-3 text-left">Batch ID</th>
+                <th class="px-4 py-3 text-left">Batch Name</th>
+                <th class="px-4 py-3 text-left">Duration</th>
+                <th class="px-4 py-3 text-left">Trainer</th>
+                <th class="px-4 py-3 text-left">Status</th>
+                <th class="px-4 py-3 text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody id="courseTableBody" class="divide-y divide-gray-100 font-medium"></tbody>
+          </table>
         </div>
+      </div>
+    </div>
+  </main>
+</div>
 
-        <div class="course-list">
-            <h2>Batches List</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Batch ID</th>
-                        <th>Batch Name</th>
-                        <th>Duration (days)</th>
-                        <th>Trainer</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="courseTableBody" style="font-size: 12px;">
-                    <!-- Data will be inserted here dynamically -->
-                </tbody>
-            </table>
-        </div>
-        
-        </div>
-    </main>
+<script>
+  // Load username
+  fetch("http://localhost:8080/api/username", { credentials: 'include' })
+    .then(res => res.ok ? res.text() : Promise.reject())
+    .then(username => document.getElementById("username").innerText = username)
+    .catch(() => document.getElementById("username").innerText = "Guest");
 
-    <!-- Modal Styling -->
-
-    <script>
-// Username fetch
-fetch("http://localhost:8080/api/username", {
-    credentials: 'include'
-})
-.then(response => {
-    if (!response.ok) throw new Error("Not logged in");
-    return response.text();
-})
-.then(username => {
-    document.getElementById("username").innerText = username;
-})
-.catch(() => {
-    document.getElementById("username").innerText = "Guest";
-});
-
-// Add Batch Handler
-document.getElementById("courseForm").addEventListener("submit", function (e) {
+  // Add batch
+  document.getElementById("courseForm").addEventListener("submit", e => {
     e.preventDefault();
-
     const batchData = {
-        batchid: document.getElementById("batchid").value,
-        coursename: document.getElementById("coursestatusDropdown").value,
-        duration: parseInt(document.getElementById("duration").value),
-        trainer: document.getElementById("trainer").value,
-        status: document.getElementById("statusDropdown").value
+      batchid: document.getElementById("batchid").value,
+      coursename: document.getElementById("coursestatusDropdown").value,
+      duration: parseInt(document.getElementById("duration").value),
+      trainer: document.getElementById("trainer").value,
+      status: document.getElementById("statusDropdown").value
     };
 
     fetch("http://localhost:8080/api/batch/add", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(batchData)
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(batchData)
     })
-    .then(response => {
-        if (!response.ok) throw new Error("Failed to add batch");
-        return response.json();
+    .then(res => res.ok ? res.json() : Promise.reject())
+    .then(() => {
+      document.getElementById("message").innerText = "Batch added successfully!";
+      e.target.reset();
+      fetchBatches();
     })
-    .then(data => {
-        document.getElementById("message").innerText = "Batch added successfully!";
-        document.getElementById("courseForm").reset();
-        fetchCourses(); // Reload the table
-    })
-    .catch(error => {
-        document.getElementById("message").innerText = "Error adding batch";
-        console.error(error);
-    });
-});
+    .catch(() => document.getElementById("message").innerText = "Error adding batch");
+  });
 
-// Fetch Batches for Table
-function fetchCourses() {
+  // Fetch batches
+  function fetchBatches() {
     fetch("http://localhost:8080/api/batch/all")
-    .then(response => response.json())
-    .then(data => {
+      .then(res => res.json())
+      .then(data => {
         const tableBody = document.getElementById("courseTableBody");
         tableBody.innerHTML = "";
-
         data.forEach(batch => {
-            const row = `
-                <tr>
-                    <td>${batch.batchid}</td>
-                    <td>${batch.coursename}</td>
-                    <td>${batch.duration}</td>
-                    <td>${batch.trainer}</td>
-                    <td>${batch.status}</td>
-                    <td>
-                    <select onchange="updateStatus('${batch.batchid}', this.value)" class="border p-1 rounded text-sm">
-                        <option value="Ongoing" ${batch.status === 'Ongoing' ? 'selected' : ''}>Ongoing</option>
-                        <option value="Upcoming" ${batch.status === 'Upcoming' ? 'selected' : ''}>Upcoming</option>
-                        <option value="completed" ${batch.status === 'completed' ? 'selected' : ''}>Completed</option>
-                    </select>
-                </td>
-                </tr>
-            `;
-            // hello
-            tableBody.innerHTML += row;
+          tableBody.innerHTML += `
+            <tr class="hover:bg-indigo-50 transition">
+              <td class="px-4 py-3">${batch.batchid}</td>
+              <td class="px-4 py-3">${batch.coursename}</td>
+              <td class="px-4 py-3">${batch.duration}</td>
+              <td class="px-4 py-3">${batch.trainer}</td>
+              <td class="px-4 py-3">
+                <span class="status-badge ${batch.status.toLowerCase()}">${batch.status}</span>
+              </td>
+              <td class="px-4 py-3 text-center">
+                <select onchange="updateStatus('${batch.batchid}', this.value)" class="border p-1 rounded text-sm">
+                  <option value="Ongoing" ${batch.status === 'Ongoing' ? 'selected' : ''}>Ongoing</option>
+                  <option value="Upcoming" ${batch.status === 'Upcoming' ? 'selected' : ''}>Upcoming</option>
+                  <option value="Completed" ${batch.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                </select>
+              </td>
+            </tr>`;
         });
-    })
-    .catch(error => {
-        console.error("Error fetching batches:", error);
-    });
-}
+      });
+  }
 
-// Load dropdown
-function loadCoursesDropdown() {
+  // Load courses dropdown
+  function loadCoursesDropdown() {
     fetch("http://localhost:8080/api/courses/all")
-    .then(response => response.json())
-    .then(data => {
+      .then(res => res.json())
+      .then(data => {
         const dropdown = document.getElementById("coursestatusDropdown");
         dropdown.innerHTML = '<option value="">Select Course</option>';
-
         data.forEach(course => {
-            const option = document.createElement("option");
-            option.value = course.coursename; // OR course.courseid if needed
-            option.text = course.coursename;
-            dropdown.appendChild(option);
+          const option = document.createElement("option");
+          option.value = course.coursename;
+          option.text = course.coursename;
+          dropdown.appendChild(option);
         });
-    })
-    .catch(error => {
-        console.error("Error loading courses:", error);
-    });
-}
+      });
+  }
 
-function updateStatus(batchId, newStatus) {
+  // Update status
+  function updateStatus(batchId, newStatus) {
     fetch(`http://localhost:8080/api/batch/updateStatus/${batchId}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ status: newStatus })
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: newStatus })
     })
-    .then(response => {
-        if (!response.ok) throw new Error("Status update failed");
-        return response.json();
-    })
+    .then(res => res.ok ? res.json() : Promise.reject())
     .then(() => {
-        alert("Batch status updated to " + newStatus);
-        fetchCourses(); // Refresh the table
+      alert("Batch status updated to " + newStatus);
+      fetchBatches();
     })
-    .catch(error => {
-        console.error("Error updating status:", error);
-        alert("Failed to update status");
-    });
-}
+    .catch(() => alert("Failed to update status"));
+  }
 
-// Init
-window.onload = () => {
+  // Init
+  window.onload = () => {
     loadCoursesDropdown();
-    fetchCourses();
-};
+    fetchBatches();
+  };
 </script>
 
 </body>
