@@ -86,8 +86,10 @@
 
   <body class="min-h-screen flex font-sans text-gray-800">
     <!-- Top Bar -->
+     <body class="min-h-screen flex font-sans text-gray-800">
+    <!-- Top Bar -->
     <header
-      class="fixed top-0 left-0 right-0 bg-white shadow-md p-4 flex justify-between items-center z-50"
+      class="fixed top-0 left-0 right-0 bg-white shadow-md p-2 flex justify-between items-center z-50"
     >
       <div class="flex items-center gap-4">
         <img
@@ -96,8 +98,9 @@
           class="w-28 h-auto object-contain animate-fadeInScale"
           style="width: 20%"
         />
-        <h1 class="text-2xl font-bold" style="color: var(--primary-color); margin-left: 15%;">
-          Analytics Hub
+        <img src="/images/Analytic hub.png" alt="" style="width: 4rem;height: 4rem;">
+        <h1 class="text-2xl font-bold" style="color: var(--primary-color);"><span>Analytics Hub</span>
+          
         </h1>
       </div>
       <p class="text-sm text-gray-600">
@@ -106,28 +109,21 @@
           Loading...
         </span>
       </p>
+      
     </header>
 
-    <!-- Sidebar -->
-    <aside
-      class="fixed top-[80px] left-0 w-72 text-white flex flex-col p-6 shadow-lg h-[calc(100%-80px)]"
-      style="background-color: var(--primary-color);"
-    >
-      <nav class="flex flex-col gap-4 animate-fadeInScale delay-100">
-        <a href="/dashboard" class="p-3 rounded transition slide-link">Dashboard</a>
-        <a href="/courses" class="p-3 rounded transition slide-link">Courses</a>
-        <a href="/studenthome" class="p-3 rounded transition slide-link">Students</a>
-        <a href="/Batch" class="p-3 rounded transition slide-link">Batch</a>
-        <a href="/payments" class="p-3 rounded transition slide-link">Payments</a>
-        <a href="/reports" class="p-3 rounded transition slide-link">Reports</a>
-      </nav>
-      <button
-        onclick="logout()"
-        class="mt-4 text-left text-red-300 hover:text-white p-3 transition"
-      >
-        Logout
-      </button>
-    </aside>
+  <!-- Sidebar -->
+  <aside class="fixed top-[80px] left-0 w-72 bg-[var(--primary-color)] text-white " style="height: calc(100% - 80px); padding-top: 10px; z-index: 30; font-size: 20px;">
+    <nav class="flex flex-col gap-4" style="margin-top: 10%;margin-left: 10%;">
+      <a href="/dashboard" class="p-3 rounded slide-link">Dashboard</a>
+      <a href="/courses" class="p-3 rounded slide-link">Courses</a>
+      <a href="/studenthome" class="p-3 rounded slide-link">Students</a>
+      <a href="/Batch" class="p-3 rounded slide-link">Batch</a>
+      <a href="/payments" class="p-3 rounded slide-link">Finance</a>
+      <a href="/reports" class="p-3 rounded slide-link">Reports</a>
+    </nav>
+    <button onclick="logout()" class="mt-4 text-left text-red-300 hover:text-white p-3 transition" style="margin-left: 10%;">Logout</button>
+  </aside>
 
     <!-- Main Content -->
     <div class="flex-1 flex flex-col ml-72 pt-[100px]">

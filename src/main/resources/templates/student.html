@@ -219,7 +219,8 @@
           class="w-28 h-auto object-contain animate-fadeInScale"
           style="width: 20%"
         />
-        <h1 class="text-2xl font-bold" style="color: var(--primary-color); margin-left: 15%;">
+        <img src="/images/student.png" alt="" style="width: 4rem;height: 4rem;">
+        <h1 class="text-2xl font-bold" style="color: var(--primary-color); ">
           Student Registration Form
         </h1>
       </div>
@@ -239,7 +240,7 @@
       <a href="/courses" class="p-3 rounded slide-link">Courses</a>
       <a href="/studenthome" class="p-3 rounded slide-link">Students</a>
       <a href="/Batch" class="p-3 rounded slide-link">Batch</a>
-      <a href="/payments" class="p-3 rounded slide-link">Payments</a>
+      <a href="/payments" class="p-3 rounded slide-link">Finance</a>
       <a href="/reports" class="p-3 rounded slide-link">Reports</a>
     </nav>
     <button onclick="logout()" class="mt-4 text-left text-red-300 hover:text-white p-3 transition" style="margin-left: 10%;">Logout</button>
@@ -357,6 +358,16 @@
               class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400" required>
           </div>
         </div>
+        <!-- Course -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <label for="courseDropdown" class="font-medium md:text-right">Course</label>
+          <div class="md:col-span-2">
+            <select name="course" id="courseDropdown"
+              class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400" required>
+              <option value="">Loading...</option>
+            </select>
+          </div>
+        </div>
 
         <!-- Batch -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
@@ -378,16 +389,7 @@
           </div>
         </div>
 
-        <!-- Course -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-          <label for="courseDropdown" class="font-medium md:text-right">Course</label>
-          <div class="md:col-span-2">
-            <select name="course" id="courseDropdown"
-              class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400" required>
-              <option value="">Loading...</option>
-            </select>
-          </div>
-        </div>
+        
 
         <!-- Duration -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
@@ -569,11 +571,12 @@ fetch("http://localhost:8080/api/courses/all")
     document.getElementById("courseDropdown").innerHTML =
       '<option value="">Failed to load courses</option>';
   });
-//Listen to course selection and auto-fill duration
+//Listen to course selection and auto-fill duration & fee
 document.getElementById("courseDropdown").addEventListener("change", function () {
   const selectedCourse = this.value;
   const courseData = courseMap.get(selectedCourse);
 
+  // Auto-fill duration & fee
   if (courseData) {
     document.querySelector("input[name='duration']").value = courseData.duration + " days";
     document.querySelector("input[name='coursefee']").value = courseData.coursefee;
@@ -581,7 +584,46 @@ document.getElementById("courseDropdown").addEventListener("change", function ()
     document.querySelector("input[name='duration']").value = "";
     document.querySelector("input[name='coursefee']").value = "";
   }
+
+  // ✅ Fetch batches for this course only
+  if (selectedCourse) {
+	  fetch(`http://localhost:8080/api/batch/byCourse/${encodeURIComponent(selectedCourse)}`)
+
+      .then((response) => response.json())
+      .then((batches) => {
+        const dropdown = document.getElementById("batchDropdown");
+        dropdown.innerHTML = '<option value="">Select</option>'; // reset
+        batchMap.clear();
+
+        batches.forEach((batch) => {
+          const option = document.createElement("option");
+          option.value = batch.batchid;
+          option.textContent = `${batch.batchid}`;
+          dropdown.appendChild(option);
+
+          // Store batch status
+          batchMap.set(batch.batchid, batch.status);
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to load batches", err);
+        document.getElementById("batchDropdown").innerHTML =
+          '<option value="">Failed to load batches</option>';
+      });
+  } else {
+    // If no course selected → clear batches
+    document.getElementById("batchDropdown").innerHTML = '<option value="">Select</option>';
+    batchMap.clear();
+  }
 });
+
+// On batch change → update status field
+document.getElementById("batchDropdown").addEventListener("change", function () {
+  const selectedBatchId = this.value;
+  const status = batchMap.get(selectedBatchId);
+  document.getElementById("batchStatus").value = status || "";
+});
+
 
 	//total fee= course amount -discount amount
 	
