@@ -5,148 +5,497 @@
   <title>Student Registration - MR Technologies</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #113C71;
+      --secondary-color: #f8f9fc;
+      --accent-color: #03306e;
+      --success-color: #16a34a;
+      --danger-color: #dc2626;
+      --text-color: #333333;
+      --muted-text: #6b7280;
+      --white: #ffffff;
+
+      --font-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      --transition-speed: 0.3s;
+      --card-radius: 12px;
+      --shadow-elevation: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: var(--font-base);
+    }
+
+    body {
+      background-color: #f0f0f0;
+    }
+
+    .slide-link {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide-link::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      transition: left var(--transition-speed) ease;
+    }
+
+    .slide-link:hover::before {
+      left: 0;
+    }
+
+    .delete-btn {
+      background: linear-gradient(135deg, #d00000, #a00000);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out;
+      box-shadow: 0px 4px 8px rgba(255, 0, 0, 0.3);
+    }
+
+    .delete-btn:hover {
+      background: linear-gradient(135deg, #ff0000, #c00000);
+      transform: scale(1.1);
+      box-shadow: 0px 6px 12px rgba(255, 0, 0, 0.5);
+    }
+    /* Icon styling for inputs */
+.input-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 0.75rem; /* Space between icon & border */
+  color: #555; /* Neutral base color */
+  transition: transform 0.2s ease, filter 0.2s ease; /* Smooth fade/scale */
+}
+
+.input-icon:hover,
+.input-icon:focus-within {
+  transform: scale(1.1); /* 10% bigger */
+  filter: brightness(85%); /* ~15% darker */
+}
+    /* Fade-in scale animation */
+    .animate-fadeInScale {
+      animation: fadeInScale 0.5s ease-in-out forwards;
+    }
+
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .tab-btn {
+    position: relative;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    border: none;
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1),
+                inset 0 -2px 3px rgba(0,0,0,0.05);
+    border-radius: 10px 10px 0 0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    transform-style: preserve-3d;
+  }
+
+  .tab-btn {
+  position: relative;
+  padding: 10px 20px;
+  margin-right: 8px;
+  font-weight: 600;
+  color: #555;
+  background: linear-gradient(145deg, #ffffff, #f0f0f0);
+  border: none;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1), inset 0 -2px 5px rgba(255,255,255,0.7);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  transform-style: preserve-3d;
+}
+
+.tab-btn:hover {
+  background: linear-gradient(145deg, #f9f9f9, #ececec);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 10px rgba(0,0,0,0.15), inset 0 -2px 5px rgba(255,255,255,0.8);
+}
+
+.tab-btn:active {
+  transform: translateY(0px) scale(0.98);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1), inset 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.active-tab {
+  color: #4f46e5;
+  background: linear-gradient(145deg, #eef2ff, #dbeafe);
+  box-shadow: 0 6px 10px rgba(79,70,229,0.2), inset 0 -2px 5px rgba(255,255,255,0.9);
+}
+  /* Preview section premium styling */
+.preview-card {
+  background: white;
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow-elevation);
+  overflow: hidden;
+}
+
+.preview-section {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem 1.25rem;
+}
+
+.preview-section:last-child {
+  border-bottom: none;
+}
+
+.preview-section h3 {
+  color: var(--primary-color);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.preview-section h3 i {
+  color: var(--primary-color);
+}
+
+.preview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.preview-item {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+}
+
+.preview-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted-text);
+}
+
+.preview-value {
+  font-size: 0.95rem;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+
+
+  </style>
 </head>
-<body class="bg-gray-100 h-screen flex font-sans">
+
+ <body class="min-h-screen flex font-sans text-gray-800">
+    <!-- Top Bar -->
+    <header
+      class="fixed top-0 left-0 right-0 bg-white shadow-md p-2 flex justify-between items-center z-50"
+    >
+      <div class="flex items-center gap-4">
+        <img
+          src="/images/logo.jpg"
+          alt="MR Technologies Logo"
+          class="w-28 h-auto object-contain animate-fadeInScale"
+          style="width: 20%"
+        />
+        <img src="/images/student.png" alt="" style="width: 4rem;height: 4rem;">
+        <h1 class="text-2xl font-bold" style="color: var(--primary-color); ">
+          Student Registration Form
+        </h1>
+      </div>
+      <p class="text-sm text-gray-600">
+        Welcome,
+        <span class="font-semibold" style="color: var(--primary-color);" id="username">
+          Loading...
+        </span>
+      </p>
+      
+    </header>
 
   <!-- Sidebar -->
- 
-  <aside class="w-64 bg-indigo-800 text-white flex flex-col p-5 space-y-4" style="position: fixed;height: 100%;" >
-    <h2 class="text-2xl font-bold mb-8">MR Technologies</h2>
-    <nav class="flex flex-col gap-4">
-      <a href="/dashboard" class="hover:bg-indigo-600 p-2 rounded">Dashboard</a>
-      <a href="/courses" class="hover:bg-indigo-600 p-2 rounded">Courses</a>
-      <a href="/studenthome" class="hover:bg-indigo-600 p-2 rounded">Students</a>
-      <a href="/Batch"class="hover:bg-indigo-600 p-2 rounded">Batch</a>
-      <a href="/payments" class="hover:bg-indigo-600 p-2 rounded">Payments</a>
-      <a href="/reports" class="hover:bg-indigo-600 p-2 rounded">Reports</a>
+  <aside class="fixed top-[80px] left-0 w-72 bg-[var(--primary-color)] text-white " style="height: calc(100% - 80px); padding-top: 10px; z-index: 30; font-size: 20px;">
+    <nav class="flex flex-col gap-4" style="margin-top: 10%;margin-left: 10%;">
+      <a href="/dashboard" class="p-3 rounded slide-link">Dashboard</a>
+      <a href="/courses" class="p-3 rounded slide-link">Courses</a>
+      <a href="/studenthome" class="p-3 rounded slide-link">Students</a>
+      <a href="/Batch" class="p-3 rounded slide-link">Batch</a>
+      <a href="/payments" class="p-3 rounded slide-link">Finance</a>
+      <a href="/reports" class="p-3 rounded slide-link">Reports</a>
     </nav>
-    <button onclick="logout()" class="mt-auto text-left text-red-300 hover:text-white">Logout</button>
-  </aside>
+    <button onclick="logout()" class="mt-4 text-left text-red-300 hover:text-white p-3 transition" style="margin-left: 10%;">Logout</button>
+  </aside>    
+<div class="flex-1 ml-72 p-8 pt-24 bg-gray-100 min-h-screen">
+  <form onsubmit="return validateForm()" id="studentForm" class="space-y-6 max-w-5xl mx-auto">
 
- 
-  <!-- Main Content -->
-  <div class="flex-1 flex flex-col">
-    
-    <!-- Header -->
-    <header class="bg-white shadow p-4 flex justify-between items-center" style="position: fixed; margin-left: 256px;width: 1000px;">
-      <h1 class="text-xl font-semibold text-gray-700" style="color: rgb(16, 16, 167); font-size: 25px; margin-left: 0px;" ><a href="/studenthome"><i class="fa-solid fa-circle-left"></i></a>Student Registration</h1>
-      <p class="text-sm text-gray-500">
-        Welcome, <span class="font-bold text-indigo-600" id="username">Guest</span>
-      </p>
-    </header>
-    
-     <div class="max-w-2xl mx-auto bg-white p-6 rounded shadow-md" style="width: 1900px; margin-top: 80px;margin-left: 400px;">
-    <!-- <h2 class="text-2xl font-bold text-indigo-700 mb-6">Student Registration Form</h2> -->
+    <!-- Tabs Navigation -->
+    <div class="flex border-b border-gray-300 mb-6">
+      <button type="button" class="tab-btn px-4 py-2 font-semibold border-b-2 "
+        data-step="1" style="border: var(--accent-color); color: var(--primary-color);">Personal Info</button>
+      <button type="button" class="tab-btn px-4 py-2 font-semibold text-gray-500 hover:text-indigo-600"
+        data-step="2"style="border: var(--accent-color); color: var(--primary-color);">Course Details</button>
+      <button type="button" class="tab-btn px-4 py-2 font-semibold text-gray-500 hover:text-indigo-600"
+        data-step="3"style="border: var(--accent-color); color: var(--primary-color);">Payment Details</button>
+      <button type="button" class="tab-btn px-4 py-2 font-semibold text-gray-500 hover:text-indigo-600"
+        data-step="4"style="border: var(--accent-color); color: var(--primary-color);">Preview</button>
+    </div>
 
-    <form onsubmit="return validateMobileNumber()" id="studentForm" class="space-y-4" >
-      <input type="hidden" name="id" id="id" />
-      <input type="hidden" name="id" id="id" />
+    <!-- Step 1: Personal Info -->
+    <div class="form-step" data-step="1">
+      <div class="bg-white shadow-md rounded-xl p-6 space-y-6 border border-gray-200">
+        <h2 class="text-lg font-semibold text-indigo-700 border-b pb-2"style="color: var(--primary-color);font: 2em sans-serif;">Personal Information</h2>
 
-      <!-- Fields (same as yours, unchanged) -->
-      <div>
-        <label class="block mb-1 font-medium">Full Name</label>
-        <input type="text" name="name" id="name" class="w-full border rounded px-4 py-2" required>
-      </div>
-      <div>
-        <label class="block mb-1 font-medium">Email</label>
-        <input type="email" name="email" id="email" class="w-full border rounded px-4 py-2" required>
-        
-      </div>
-      <div>
-        <label class="block mb-1 font-medium" for="mobile" >Mobile Number</label>
-        <input type="tel" name="mobile" id="mobile" class="w-full border rounded px-4 py-2"  required>
-        <span id="error" class="text-red-500 text-sm"></span>
-      </div>
-      <div>
-        <label class="block mb-1 font-medium">Date of Birth</label>
-        <input type="date" name="dob" id="dob" class="w-full border rounded px-4 py-2" required>
-      </div>
-      <div>
-        <label class="block mb-1 font-medium">Gender</label>
-        <div class="flex gap-4">
-          <label><input type="radio" name="gender" value="Male"> Male</label>
-          <label><input type="radio" name="gender" value="Female"> Female</label>
-          <label><input type="radio" name="gender" value="Other"> Other</label>
+        <!-- Full Name -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <label for="name" class="font-medium md:text-right">Full Name</label>
+          <div class="md:col-span-2">
+            <input type="text" name="name" id="name"
+              class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400" required>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <label for="email" class="font-medium md:text-right">Email</label>
+          <div class="md:col-span-2">
+            <input type="email" name="email" id="email"
+              class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400" required>
+          </div>
+        </div>
+
+        <!-- Mobile -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <label for="mobile" class="font-medium md:text-right">Mobile Number</label>
+          <div class="md:col-span-2">
+            <input type="tel" name="mobile" id="mobile"
+              class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400" required>
+          </div>
+        </div>
+
+        <!-- Date of Birth -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <label for="dob" class="font-medium md:text-right">Date of Birth</label>
+          <div class="md:col-span-2">
+            <input type="date" name="dob" id="dob"
+              class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400" required>
+          </div>
+        </div>
+
+        <!-- Gender -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <label class="font-medium md:text-right">Gender</label>
+          <div class="flex gap-4 md:col-span-2">
+            <label><input type="radio" name="gender" value="Male" required> Male</label>
+            <label><input type="radio" name="gender" value="Female"> Female</label>
+            <label><input type="radio" name="gender" value="Other"> Other</label>
+          </div>
+        </div>
+
+        <!-- Address -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <label for="address" class="font-medium md:text-right">Address</label>
+          <div class="md:col-span-2">
+            <textarea name="address" id="address" rows="3"
+              class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400" required></textarea>
+          </div>
         </div>
       </div>
-      <div>
-        <label class="block mb-1 font-medium">Address</label>
-        <textarea name="address" id="address" rows="3" class="w-full border rounded px-4 py-2" required></textarea>
-      </div>
-      <div>
-        <label class="block mb-1 font-medium">Highest Qualification</label>
-        <select name="qualification" id="qualification" class="w-full border rounded px-4 py-2" required>
-          <option value="">Select</option>
-          <option value="10th">10th</option>
-          <option value="12th">12th</option>
-          <option value="Diploma">Diploma</option>
-          <option value="Degree">Degree</option>
-          <option value="B-Tech">B-Tech</option>
-          <option value="PG">PG</option>
-        </select>
-      </div>
-      <div>
-        <label class="block mb-1 font-medium">Joining Date</label>
-        <input type="date" name="joiningDate" id="joiningDate" class="w-full border rounded px-4 py-2" required>
-      </div>
-      <div>
-          <label class="block font-medium text-gray-700">Batch</label>
-          <select name="batch" id="batchDropdown" required class="w-full border p-2 rounded-md">
-		  <option value="">Select</option>
-			</select>
 
-       </div>
-       <div>
-          <label class="block font-medium text-gray-700">Batch Status</label>
-<input type="text" name="status" id="batchStatus" class="w-full border rounded px-4 py-2" required>
-			
-       </div>
-       <div>
-          <label class="block font-medium text-gray-700">Course</label>
-          <select name="course" id="courseDropdown" required class="w-full border p-2 rounded-md">
-           <option value="">Loading...</option>
-          </select>
-       </div>
-      <div>
-        <label class="block mb-1 font-medium">Duration</label>
-        <input type="text" name="duration" id="duration" class="w-full border rounded px-4 py-2" required>
+      <!-- Next -->
+      <div class="flex justify-end mt-4">
+        <button type="button" class="next-btn bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700"
+          data-next="2">Next</button>
       </div>
-      
-      
-      <div>
-		  <label class="block font-medium text-gray-700">Course Amount</label>
-		  <input type="number" name="coursefee" id="Coursefee" required class="w-full border p-2 rounded-md" placeholder="course fees" />
-		</div>
-		
-		<div>
-		  <label class="block font-medium text-gray-700">Discount</label>
-		  <input type="number" name="discount" required class="w-full border p-2 rounded-md" placeholder="discount amount" />
-		</div>
-		
-		<div>
-		  <label class="block font-medium text-gray-700">Total Amount</label>
-		  <input type="number" name="totalfee" required class="w-full border p-2 rounded-md" placeholder="course fees-discount amount" />
-		</div>
-		
-		<div>
-		  <label class="block font-medium text-gray-700">Term-I fees</label>
-		  <input type="number" name="term_1" required class="w-full border p-2 rounded-md" placeholder="Term- 1 fees" />
-		</div>
-		<div>
-		  <label class="block font-medium text-gray-700">Paid Amount</label>
-		  <input type="number" name="paidamount" required class="w-full border p-2 rounded-md" placeholder="Team-1==amountpaid" />
-		</div>
-		<div>
-		  <label class="block font-medium text-gray-700">Due Amount</label>
-		  <input type="number" name="duefee" required class="w-full border p-2 rounded-md" placeholder="Total amount - Term fees" />
-		</div>
+    </div>
 
+    <!-- Step 2: Course Details -->
+    <div class="form-step hidden" data-step="2">
+      <div class="bg-white shadow-md rounded-xl p-6 space-y-6 border border-gray-200">
+        <h2 class="text-lg font-semibold text-indigo-700 border-b pb-2"style="color: var(--primary-color);font: 2em sans-serif;">Course Details</h2>
 
-      <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition">
-       Student Registration
-      </button>
-    </form>
-  </div>
+        <!-- Highest Qualification -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <label for="qualification" class="font-medium md:text-right">Highest Qualification</label>
+          <div class="md:col-span-2">
+            <select name="qualification" id="qualification"
+              class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400" required>
+              <option value="">Select</option>
+              <option>10th</option>
+              <option>12th</option>
+              <option>Diploma</option>
+              <option>Degree</option>
+              <option>B-Tech</option>
+              <option>PG</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Joining Date -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <label for="joiningDate" class="font-medium md:text-right">Joining Date</label>
+          <div class="md:col-span-2">
+            <input type="date" name="joiningDate" id="joiningDate"
+              class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400" required>
+          </div>
+        </div>
+        <!-- Course -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <label for="courseDropdown" class="font-medium md:text-right">Course</label>
+          <div class="md:col-span-2">
+            <select name="course" id="courseDropdown"
+              class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400" required>
+              <option value="">Loading...</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Batch -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <label for="batchDropdown" class="font-medium md:text-right">Batch</label>
+          <div class="md:col-span-2">
+            <select name="batch" id="batchDropdown"
+              class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400" required>
+              <option value="">Select</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Batch Status -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <label for="batchStatus" class="font-medium md:text-right">Batch Status</label>
+          <div class="md:col-span-2">
+            <input type="text" name="status" id="batchStatus"
+              class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400" required>
+          </div>
+        </div>
+
+        
+
+        <!-- Duration -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <label for="duration" class="font-medium md:text-right">Duration</label>
+          <div class="md:col-span-2">
+            <input type="text" name="duration" id="duration"
+              class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="flex justify-between mt-4">
+        <button type="button" class="prev-btn bg-gray-400 text-white px-6 py-2 rounded hover:bg-gray-500"
+          data-prev="1">Back</button>
+        <button type="button" class="next-btn bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700"
+          data-next="3">Next</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Payment Details -->
+    <div class="form-step hidden" data-step="3">
+      <div class="bg-white shadow-md rounded-xl p-6 space-y-6 border border-gray-200">
+        <h2 class="text-lg font-semibold text-indigo-700 border-b pb-2"style="color: var(--primary-color);font: 2em sans-serif;">Payment Details</h2>
+
+        <!-- Course Amount -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <label for="Coursefee" class="font-medium md:text-right">Course Amount</label>
+          <div class="md:col-span-2">
+            <input type="number" name="coursefee" id="Coursefee"
+              class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400" required>
+          </div>
+        </div>
+
+        <!-- Discount -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <label class="font-medium md:text-right">Discount</label>
+          <div class="md:col-span-2">
+            <input type="number" name="discount"
+              class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400" required>
+          </div>
+        </div>
+
+        <!-- Total Amount -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <label class="font-medium md:text-right">Total Amount</label>
+          <div class="md:col-span-2">
+            <input type="number" name="totalfee"
+              class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400" required>
+          </div>
+        </div>
+
+        <!-- Term-I fees -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <label class="font-medium md:text-right">Term-I Fees</label>
+          <div class="md:col-span-2">
+            <input type="number" name="term_1"
+              class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400" required>
+          </div>
+        </div>
+
+        <!-- Paid Amount -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <label class="font-medium md:text-right">Paid Amount</label>
+          <div class="md:col-span-2">
+            <input type="number" name="paidamount"
+              class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400" required>
+          </div>
+        </div>
+
+        <!-- Due Amount -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <label class="font-medium md:text-right">Due Amount</label>
+          <div class="md:col-span-2">
+            <input type="number" name="duefee"
+              class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-400" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="flex justify-between mt-4">
+        <button type="button" class="prev-btn bg-gray-400 text-white px-6 py-2 rounded hover:bg-gray-500"
+          data-prev="2">Back</button>
+        <button type="button" class="next-btn bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700"
+          data-next="4">Next</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Preview -->
+    <div class="form-step hidden" data-step="4">
+      <div class="bg-white shadow-md rounded-xl p-6 border border-gray-200">
+        <h2 class="text-lg font-semibold text-indigo-700 border-b pb-2"style="color: var(--primary-color);font: 2em sans-serif;">Preview Details</h2>
+        <div id="previewContent" class="space-y-2"></div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="flex justify-between mt-4">
+        <button type="button" class="prev-btn bg-gray-400 text-white px-6 py-2 rounded hover:bg-gray-500"
+          data-prev="3">Back</button>
+        <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">Submit</button>
+      </div>
+    </div>
+
+  </form>
+</div>
 
   <script>
   let batchMap = new Map(); // ⬅ Store batchId → status
@@ -222,11 +571,12 @@ fetch("http://localhost:8080/api/courses/all")
     document.getElementById("courseDropdown").innerHTML =
       '<option value="">Failed to load courses</option>';
   });
-//Listen to course selection and auto-fill duration
+//Listen to course selection and auto-fill duration & fee
 document.getElementById("courseDropdown").addEventListener("change", function () {
   const selectedCourse = this.value;
   const courseData = courseMap.get(selectedCourse);
 
+  // Auto-fill duration & fee
   if (courseData) {
     document.querySelector("input[name='duration']").value = courseData.duration + " days";
     document.querySelector("input[name='coursefee']").value = courseData.coursefee;
@@ -234,7 +584,46 @@ document.getElementById("courseDropdown").addEventListener("change", function ()
     document.querySelector("input[name='duration']").value = "";
     document.querySelector("input[name='coursefee']").value = "";
   }
+
+  // ✅ Fetch batches for this course only
+  if (selectedCourse) {
+	  fetch(`http://localhost:8080/api/batch/byCourse/${encodeURIComponent(selectedCourse)}`)
+
+      .then((response) => response.json())
+      .then((batches) => {
+        const dropdown = document.getElementById("batchDropdown");
+        dropdown.innerHTML = '<option value="">Select</option>'; // reset
+        batchMap.clear();
+
+        batches.forEach((batch) => {
+          const option = document.createElement("option");
+          option.value = batch.batchid;
+          option.textContent = `${batch.batchid}`;
+          dropdown.appendChild(option);
+
+          // Store batch status
+          batchMap.set(batch.batchid, batch.status);
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to load batches", err);
+        document.getElementById("batchDropdown").innerHTML =
+          '<option value="">Failed to load batches</option>';
+      });
+  } else {
+    // If no course selected → clear batches
+    document.getElementById("batchDropdown").innerHTML = '<option value="">Select</option>';
+    batchMap.clear();
+  }
 });
+
+// On batch change → update status field
+document.getElementById("batchDropdown").addEventListener("change", function () {
+  const selectedBatchId = this.value;
+  const status = batchMap.get(selectedBatchId);
+  document.getElementById("batchStatus").value = status || "";
+});
+
 
 	//total fee= course amount -discount amount
 	
@@ -310,7 +699,107 @@ document.getElementById("batchDropdown").addEventListener("change", function () 
 	  document.getElementById("batchStatus").value = status || "";
 	});
 
+   const steps = document.querySelectorAll(".form-step");
+  const tabBtns = document.querySelectorAll(".tab-btn");
+
+  function showStep(step) {
+    steps.forEach(s => s.classList.toggle("hidden", s.dataset.step !== step));
+    tabBtns.forEach(btn => {
+      btn.classList.toggle("text-indigo-600", btn.dataset.step === step);
+      btn.classList.toggle("border-indigo-600", btn.dataset.step === step);
+      btn.classList.toggle("text-gray-500", btn.dataset.step !== step);
+      btn.classList.toggle("border-b-2", btn.dataset.step === step);
+    });
+  }
+
+  document.querySelectorAll(".next-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (btn.dataset.next === "4") generatePreview();
+      showStep(btn.dataset.next);
+    });
+  });
+
+  document.querySelectorAll(".prev-btn").forEach(btn => {
+    btn.addEventListener("click", () => showStep(btn.dataset.prev));
+  });
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener("click", () => showStep(btn.dataset.step));
+  });
+
+  function generatePreview() {
+    const formData = new FormData(document.getElementById("studentForm"));
+    const previewDiv = document.getElementById("previewContent");
+    previewDiv.innerHTML = "";
+    formData.forEach((value, key) => {
+      previewDiv.innerHTML += `<p><strong>${key}:</strong> ${value}</p>`;
+    });
+  }
+
+  function validateForm() {
+    alert("Form submitted successfully!");
+    return true;
+  }
+
+  showStep("1");
+function generatePreview() {
+  const formData = new FormData(document.getElementById("studentForm"));
+  const previewDiv = document.getElementById("previewContent");
+  previewDiv.innerHTML = "";
+
+  // Categorize fields
+  const sections = {
+    "Personal Information": {
+      icon: "fa-user",
+      fields: ["name", "email", "mobile", "dob", "gender", "address"]
+    },
+    "Course Details": {
+      icon: "fa-book",
+      fields: ["qualification", "joiningDate", "batch", "status", "course", "duration"]
+    },
+    "Payment Details": {
+      icon: "fa-credit-card",
+      fields: ["coursefee", "discount", "totalfee", "term_1", "paidamount", "duefee"]
+    }
+  };
+
+  // Build cards
+  const previewCard = document.createElement("div");
+  previewCard.classList.add("preview-card");
+
+  for (const [sectionTitle, sectionData] of Object.entries(sections)) {
+    const sectionDiv = document.createElement("div");
+    sectionDiv.classList.add("preview-section");
+
+    // Section header
+    sectionDiv.innerHTML = `<h3><i class="fa ${sectionData.icon}"></i>${sectionTitle}</h3>`;
+
+    // Grid of fields
+    const grid = document.createElement("div");
+    grid.classList.add("preview-grid");
+
+    sectionData.fields.forEach(fieldName => {
+      const value = formData.get(fieldName) || "—";
+      const item = document.createElement("div");
+      item.classList.add("preview-item");
+
+      item.innerHTML = `
+        <div class="preview-label">${fieldName.replace(/_/g, " ").toUpperCase()}</div>
+        <div class="preview-value">${value}</div>
+      `;
+
+      grid.appendChild(item);
+    });
+
+    sectionDiv.appendChild(grid);
+    previewCard.appendChild(sectionDiv);
+  }
+
+  previewDiv.appendChild(previewCard);
+}
+
   </script>
 
 </body>
 </html>
+

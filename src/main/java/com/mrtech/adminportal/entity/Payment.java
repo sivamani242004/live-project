@@ -3,6 +3,8 @@ package com.mrtech.adminportal.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Entity
 @Table(name = "payments")
 public class Payment {
@@ -10,11 +12,13 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private int studentId;
     private String studentName;
     private String courseType;
     private String batchCode;
     private String phoneNumber;
+    private double totalfee;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate paymentDate;
     private double amountPaid;
     private double totalDue;
@@ -110,4 +114,20 @@ public class Payment {
     public void setStatusDisplay(String statusDisplay) {
         this.statusDisplay = statusDisplay;
     }
+
+	public int getStudentId() {
+		return studentId;
+	}
+
+	public void setStudentId(int studentId) {
+		this.studentId = studentId;
+	}
+
+	public double getTotalfee() {
+		return totalfee;
+	}
+
+	public void setTotalfee(double totalfee) {
+		this.totalfee = totalfee;
+	}
 }

@@ -3,6 +3,7 @@ package com.mrtech.adminportal.controller;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,27 +26,34 @@ public class PaymentController {
     // ✅ Save payment and update student record
     @PostMapping("/payments")
     public ResponseEntity<?> savePayment(@RequestBody Payment payment) {
-        Optional<Student> optionalStudent = studentRepository.findByMobile(payment.getPhoneNumber());
-
-        if (!optionalStudent.isPresent()) {
-            return ResponseEntity.badRequest().body("Student not found");
+        try {
+            Payment savedPayment = paymentRepository.save(payment);
+            return ResponseEntity.ok(savedPayment);
+        } catch (Exception e) {
+            e.printStackTrace(); // Logs full error in console for debugging
+            
+            // Send the real cause in the response
+            String errorMessage = e.getMessage();
+            if (e.getCause() != null) {
+                errorMessage = e.getCause().getMessage();
+            }
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Payment save failed: " + errorMessage);
         }
-
-        Student student = optionalStudent.get();
-
-        // Update paid and due amount
-        double newPaidAmount = student.getPaidamount() + payment.getAmountPaid();
-        double newDueFee =payment.getRemainingDue() ;
-
-        student.setPaidamount(newPaidAmount);
-        student.setDuefee(newDueFee);
-        studentRepository.save(student);
-
-        // Save payment
-        Payment saved = paymentRepository.save(payment);
-
-        return ResponseEntity.ok(saved);
+        
     }
+    @GetMapping("/payments/student/{studentId}")
+    public ResponseEntity<?> getPaymentsByStudent(@PathVariable Long studentId) {
+        try {
+            return ResponseEntity.ok(paymentRepository.findByStudentId(studentId));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body("Error fetching payment details: " + e.getMessage());
+        }
+    }
+
+
 
     // ✅ Get all payments
     @GetMapping("/payments")

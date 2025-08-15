@@ -58,7 +58,10 @@ public class StudentController {
     public ResponseEntity<List<Student>> getAllStudents() {
         List<Student> students = studentRepository.findAll();
         return ResponseEntity.ok(students);
+        
     }
+   
+
     @PutMapping("/{id}")
     public ResponseEntity<Student> updateStudent(@PathVariable int id, @RequestBody Student updatedData) {
         return studentRepository.findById(id).map(existing -> {

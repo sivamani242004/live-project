@@ -71,6 +71,16 @@ public class BatchController {
         }
     }
     
+ // ✅ Get active batches for a given course
+    @GetMapping("/byCourse/{courseName}")
+    public List<Batch> getBatchesByCourse(@PathVariable String courseName) {
+        return batchRepo.findByCoursenameIgnoreCaseAndStatusIn(
+                courseName,
+                List.of("Ongoing", "Upcoming")
+        );
+    }
+
+    
  // ✅ Get batch statuses based on course name
     @GetMapping("/statuses/{coursename}")
     public ResponseEntity<?> getStatusesByCourse(@PathVariable String coursename) {
@@ -85,6 +95,8 @@ public class BatchController {
 
         return ResponseEntity.ok(statuses);
     }
+    
+    
 
     // ✅ Get batch codes by course name and status
     @GetMapping("/codes")
