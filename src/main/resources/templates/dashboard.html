@@ -9,7 +9,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
       :root {
-        --primary-color: #113C71;
+        --primary-color: #113c71;
         --secondary-color: #f8f9fc;
         --accent-color: #03306e;
         --success-color: #16a34a;
@@ -18,7 +18,7 @@
         --muted-text: #6b7280;
         --white: #ffffff;
 
-        --font-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        --font-base: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         --transition-speed: 0.3s;
         --card-radius: 12px;
         --shadow-elevation: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -85,58 +85,69 @@
   </head>
 
   <body class="min-h-screen flex font-sans text-gray-800">
-    <!-- Top Bar -->
-     <body class="min-h-screen flex font-sans text-gray-800">
-    <!-- Top Bar -->
-    <header
-      class="fixed top-0 left-0 right-0 bg-white shadow-md p-2 flex justify-between items-center z-50"
-    >
-      <div class="flex items-center gap-4">
-        <img
-          src="/images/logo.jpg"
-          alt="MR Technologies Logo"
-          class="w-28 h-auto object-contain animate-fadeInScale"
-          style="width: 20%"
-        />
-        <img src="/images/Analytic hub.png" alt="" style="width: 4rem;height: 4rem;">
-        <h1 class="text-2xl font-bold" style="color: var(--primary-color);"><span>Analytics Hub</span>
-          
-        </h1>
-      </div>
-      <p class="text-sm text-gray-600">
-        Welcome,
-        <span class="font-semibold" style="color: var(--primary-color);" id="username">
-          Loading...
-        </span>
-      </p>
-      
-    </header>
+   <!-- Top Bar -->
+<header class="flex justify-between items-center bg-white shadow-md p-3 fixed top-0 left-0 right-0 z-50">
+  <div class="flex items-center gap-4">
+    <img src="/images/logo.jpg" alt="MR Technologies Logo" class="h-16 object-contain">
+    <img src="/images/Analytic hub.png" alt="" style="width: 4rem;height: 4rem;">
+    <h1 class="text-2xl font-bold text-[var(--primary-color)]">Analytic hub</h1>
+  </div>
+  <p class="text-sm text-gray-600">
+    Welcome, <span class="font-semibold text-[var(--primary-color)]" id="username">Loading...</span>
+  </p>
+</header>
 
-  <!-- Sidebar -->
-  <aside class="fixed top-[80px] left-0 w-72 bg-[var(--primary-color)] text-white " style="height: calc(100% - 80px); padding-top: 10px; z-index: 30; font-size: 20px;">
-    <nav class="flex flex-col gap-4" style="margin-top: 10%;margin-left: 10%;">
-      <a href="/dashboard" class="p-3 rounded slide-link">Dashboard</a>
-      <a href="/courses" class="p-3 rounded slide-link">Courses</a>
-      <a href="/studenthome" class="p-3 rounded slide-link">Students</a>
-      <a href="/Batch" class="p-3 rounded slide-link">Batch</a>
-      <a href="/payments" class="p-3 rounded slide-link">Finance</a>
-      <a href="/reports" class="p-3 rounded slide-link">Reports</a>
-    </nav>
-    <button onclick="logout()" class="mt-4 text-left text-red-300 hover:text-white p-3 transition" style="margin-left: 10%;">Logout</button>
-  </aside>
+    <!-- Sidebar -->
+    <aside
+      class="fixed top-[80px] left-0 w-72 bg-[var(--primary-color)] text-white"
+      style="
+        height: calc(100% - 80px);
+        padding-top: 10px;
+        z-index: 30;
+        font-size: 20px;
+      "
+    >
+      <nav
+        class="flex flex-col gap-4"
+        style="margin-top: 10%; margin-left: 10%"
+      >
+        <a href="/dashboard" class="p-3 rounded slide-link">Dashboard</a>
+        <a href="/courses" class="p-3 rounded slide-link">Courses</a>
+        <a href="/studenthome" class="p-3 rounded slide-link">Students</a>
+        <a href="/Batch" class="p-3 rounded slide-link">Batch</a>
+        <a href="/payments" class="p-3 rounded slide-link">Finance</a>
+        <a href="/reports" class="p-3 rounded slide-link">Reports</a>
+      </nav>
+      <button
+        onclick="logout()"
+        class="mt-4 text-left text-red-300 hover:text-white p-3 transition"
+        style="margin-left: 10%"
+      >
+        Logout
+      </button>
+    </aside>
 
     <!-- Main Content -->
     <div class="flex-1 flex flex-col ml-72 pt-[100px]">
-      <!-- Content Area -->
-      <main class="p-8 flex-1 overflow-y-auto space-y-10" style="background-color: var(--secondary-color);">
+      <main
+        class="p-8 flex-1 overflow-y-auto space-y-10"
+        style="background-color: var(--secondary-color)"
+      >
         <!-- Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div
             class="bg-white p-6 rounded-xl shadow hover:shadow-xl transition animate-fadeInScale delay-300 flex items-center gap-4"
           >
-            <i data-lucide="users" class="w-10 h-10" style="color: var(--primary-color);"></i>
+            <i
+              data-lucide="users"
+              class="w-10 h-10"
+              style="color: var(--primary-color)"
+            ></i>
             <div>
-              <h3 class="text-lg font-semibold" style="color: var(--primary-color);">
+              <h3
+                class="text-lg font-semibold"
+                style="color: var(--primary-color)"
+              >
                 Total Students
               </h3>
               <p
@@ -151,14 +162,21 @@
           <div
             class="bg-white p-6 rounded-xl shadow hover:shadow-xl transition animate-fadeInScale delay-400 flex items-center gap-4"
           >
-            <i data-lucide="wallet" class="w-10 h-10" style="color: var(--success-color);"></i>
+            <i
+              data-lucide="wallet"
+              class="w-10 h-10"
+              style="color: var(--success-color)"
+            ></i>
             <div>
-              <h3 class="text-lg font-semibold" style="color: var(--primary-color);">
+              <h3
+                class="text-lg font-semibold"
+                style="color: var(--primary-color)"
+              >
                 Total Fees Collected
               </h3>
               <p
                 class="text-3xl mt-2 font-bold"
-                style="color: var(--success-color);"
+                style="color: var(--success-color)"
                 th:text="'₹' + ${totalFees}"
               >
                 ₹0
@@ -169,14 +187,21 @@
           <div
             class="bg-white p-6 rounded-xl shadow hover:shadow-xl transition animate-fadeInScale delay-500 flex items-center gap-4"
           >
-            <i data-lucide="alert-circle" class="w-10 h-10" style="color: var(--danger-color);"></i>
+            <i
+              data-lucide="alert-circle"
+              class="w-10 h-10"
+              style="color: var(--danger-color)"
+            ></i>
             <div>
-              <h3 class="text-lg font-semibold" style="color: var(--primary-color);">
+              <h3
+                class="text-lg font-semibold"
+                style="color: var(--primary-color)"
+              >
                 Upcoming Due Payments
               </h3>
               <p
                 class="text-3xl mt-2 font-bold"
-                style="color: var(--danger-color);"
+                style="color: var(--danger-color)"
                 th:text="'₹' + ${upcomingDue}"
               >
                 ₹0
@@ -185,12 +210,53 @@
           </div>
         </div>
 
-        <!-- Chart -->
-        <div class="bg-white p-6 rounded-xl shadow fade-up" id="chartSection">
-          <h2 class="text-xl font-semibold mb-4" style="color: var(--primary-color);">
+        <!-- Monthly Fee Collection -->
+        <div class="bg-white p-6 rounded-xl shadow fade-up">
+          <h2
+            class="text-xl font-semibold mb-4"
+            style="color: var(--primary-color)"
+          >
             Monthly Fee Collection
           </h2>
           <canvas id="feeChart" width="400" height="200"></canvas>
+        </div>
+
+        <!-- ✅ Other Charts (inside main now) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Student Enrollment Trend (Line Chart) -->
+          <div class="bg-white p-6 rounded-xl shadow fade-up">
+            <h2
+              class="text-xl font-semibold mb-4"
+              style="color: var(--primary-color)"
+            >
+              Student Enrollment Trend
+            </h2>
+            <canvas id="enrollmentChart"></canvas>
+          </div>
+
+          <!-- Course Distribution (Pie Chart) -->
+          <div class="bg-white p-6 rounded-xl shadow fade-up">
+            <h2
+              class="text-xl font-semibold mb-4"
+              style="color: var(--primary-color)"
+            >
+              Course Distribution
+            </h2>
+            <canvas id="courseChart"></canvas>
+          </div>
+
+          <!-- Payment Status (Doughnut Chart) -->
+          <div
+            class="bg-white p-6 rounded-xl shadow fade-up col-span-1 lg:col-span-2"
+          >
+            <h2
+              class="text-xl font-semibold mb-4"
+              style="color: var(--primary-color)"
+            >
+              Payment Status
+            </h2>
+            <canvas id="paymentChart"></canvas>
+          </div>
         </div>
       </main>
     </div>
@@ -209,9 +275,7 @@
       }
 
       // Load username
-      fetch("http://localhost:8080/api/username", {
-        credentials: "include",
-      })
+      fetch("http://localhost:8080/api/username", { credentials: "include" })
         .then((response) => {
           if (!response.ok) throw new Error("Not logged in");
           return response.text();
@@ -223,18 +287,20 @@
           document.getElementById("username").innerText = "Guest";
         });
 
-      // Scroll animation
-      const fadeUpEl = document.getElementById("chartSection");
+      // Scroll animation for all fade-up sections
+      const fadeUps = document.querySelectorAll(".fade-up");
       window.addEventListener("scroll", () => {
-        const rect = fadeUpEl.getBoundingClientRect();
-        if (rect.top < window.innerHeight - 100) {
-          fadeUpEl.classList.add("show");
-        }
+        fadeUps.forEach((el) => {
+          const rect = el.getBoundingClientRect();
+          if (rect.top < window.innerHeight - 100) {
+            el.classList.add("show");
+          }
+        });
       });
 
       // Chart.js
       const ctx = document.getElementById("feeChart").getContext("2d");
-      const feeChart = new Chart(ctx, {
+      new Chart(ctx, {
         type: "bar",
         data: {
           labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
@@ -242,22 +308,77 @@
             {
               label: "Fees Collected (₹)",
               data: [40000, 60000, 55000, 75000, 68000, 72000, 80000],
-              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim(),
+              backgroundColor: getComputedStyle(document.documentElement)
+                .getPropertyValue("--primary-color")
+                .trim(),
               borderRadius: 8,
             },
           ],
         },
         options: {
           responsive: true,
-          animation: {
-            duration: 1200,
-            easing: "easeOutBounce",
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
+          animation: { duration: 1200, easing: "easeOutBounce" },
+          scales: { y: { beginAtZero: true } },
+        },
+      });
+
+      // Enrollment Line Chart
+      const enrollmentCtx = document
+        .getElementById("enrollmentChart")
+        .getContext("2d");
+      new Chart(enrollmentCtx, {
+        type: "line",
+        data: {
+          labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+          datasets: [
+            {
+              label: "New Enrollments",
+              data: [50, 70, 65, 90, 80, 100, 120],
+              borderColor: "#113C71",
+              backgroundColor: "rgba(17,60,113,0.2)",
+              tension: 0.3,
+              fill: true,
             },
-          },
+          ],
+        },
+        options: { responsive: true },
+      });
+
+      // Course Distribution Pie Chart
+      const courseCtx = document.getElementById("courseChart").getContext("2d");
+      new Chart(courseCtx, {
+        type: "pie",
+        data: {
+          labels: ["Java", "Python", "Web Dev", "Data Science"],
+          datasets: [
+            {
+              data: [120, 150, 90, 60],
+              backgroundColor: ["#113C71", "#16a34a", "#f59e0b", "#dc2626"],
+            },
+          ],
+        },
+        options: { responsive: true },
+      });
+
+      // Payment Status Doughnut Chart
+      const paymentCtx = document
+        .getElementById("paymentChart")
+        .getContext("2d");
+      new Chart(paymentCtx, {
+        type: "doughnut",
+        data: {
+          labels: ["Paid", "Pending", "Overdue"],
+          datasets: [
+            {
+              data: [300, 120, 50],
+              backgroundColor: ["#16a34a", "#f59e0b", "#dc2626"],
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          cutout: "70%",
+          plugins: { legend: { position: "bottom" } },
         },
       });
     </script>
