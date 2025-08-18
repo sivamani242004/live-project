@@ -23,16 +23,33 @@ public class PaymentController {
     @Autowired
     private StudentRepository studentRepository;
 
-    // ✅ Save payment and update student record
+ // ✅ Save payment and update student record
     @PostMapping("/payments")
     public ResponseEntity<?> savePayment(@RequestBody Payment payment) {
         try {
+            // 1. Save payment first
             Payment savedPayment = paymentRepository.save(payment);
+
+            // 2. Fetch student record
+            Optional<Student> studentOpt = studentRepository.findById(payment.getStudentId());
+            if (studentOpt.isPresent()) {
+                Student student = studentOpt.get();
+
+                // ✅ Update student financials
+                double prevPaid = student.getPaidamount() != 0 ? student.getPaidamount() : 0.0;
+                double newPaid = prevPaid + payment.getAmountPaid();
+
+                student.setPaidamount(newPaid);                      // Update total paid
+                student.setDuefee(student.getTotalfee() - newPaid);  // Remaining due
+
+                // ✅ Save updated student back to DB
+                studentRepository.save(student);
+            }
+
             return ResponseEntity.ok(savedPayment);
         } catch (Exception e) {
-            e.printStackTrace(); // Logs full error in console for debugging
-            
-            // Send the real cause in the response
+            e.printStackTrace();
+
             String errorMessage = e.getMessage();
             if (e.getCause() != null) {
                 errorMessage = e.getCause().getMessage();
@@ -41,8 +58,9 @@ public class PaymentController {
                     .status(HttpStatus.BAD_REQUEST)
                     .body("Payment save failed: " + errorMessage);
         }
-        
     }
+
+    // ✅ Get payments by student
     @GetMapping("/payments/student/{studentId}")
     public ResponseEntity<?> getPaymentsByStudent(@PathVariable Long studentId) {
         try {
@@ -53,19 +71,9 @@ public class PaymentController {
         }
     }
 
-
-
     // ✅ Get all payments
     @GetMapping("/payments")
     public ResponseEntity<?> getAllPayments() {
         return ResponseEntity.ok(paymentRepository.findAll());
     }
-
-    // Optional: Filtered payments by course, status, batch
-    // @GetMapping("/payments/filter")
-    // public List<Payment> filterPayments(@RequestParam String course,
-    //                                     @RequestParam String status,
-    //                                     @RequestParam String batch) {
-    //     return paymentRepository.findByCourseTypeAndStatusDisplayAndBatchCode(course, status, batch);
-    // }
 }
