@@ -506,8 +506,7 @@
                 >From Date</label
               >
               <input
-                id="fromDate"
-                type="date"
+               type="date" id="fromDate" 
                 class="border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
@@ -517,19 +516,15 @@
                 >To Date</label
               >
               <input
-                id="toDate"
-                type="date"
+                type="date" id="toDate"
                 class="border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
 
             <div class="flex items-end">
-              <button
-                onclick="filterByDate()"
-                class="bg-indigo-700 text-white px-6 py-2 rounded hover:bg-indigo-900 transition"
-              >
-                Filter
-              </button>
+               <button onclick="filterPayments()" class="bg-blue-600 text-white px-4 py-1 rounded">
+    Filter
+  </button>
             </div>
           </div>
 
@@ -898,6 +893,8 @@ document.getElementById("searchInput").addEventListener("input", function () {
 
       //Fetch data from payment table
       let allPayments = [];
+      let filteredPayments = [];
+      let currentPayments = [];
 let currentPage = 1;
 const rowsPerPage = 5;
 let totalPages = 1;
@@ -908,14 +905,211 @@ const batchRowsPerPage = 5;
 let totalBatchPages = 1;
 
 
+
+//============================
+//Fetch All Payments (Default)
+//============================
 function fetchDailyPayments() {
+  const tableBody = document.getElementById("transactionTable");
+  tableBody.innerHTML = "";
+
   fetch("http://localhost:8080/api/payments")
     .then((response) => {
       if (!response.ok) throw new Error("Failed to fetch payments");
       return response.json();
     })
     .then((payments) => {
-      allPayments = payments;
+      // Sort latest first
+      allPayments = payments.sort(
+        (a, b) => new Date(b.paymentDate) - new Date(a.paymentDate)
+      );
+      currentPayments = allPayments;
+      totalPages = Math.ceil(currentPayments.length / rowsPerPage);
+      document.getElementById("totalPages").innerText = `of ${totalPages}`;
+      renderTablePage(1);
+    })
+    .catch((error) => {
+      console.error("Error loading payments:", error);
+    });
+}
+function fetchDailyPayments(fromDate, toDate) {
+	  let url = "http://localhost:8080/api/payments";
+
+	  if (fromDate && toDate) {
+	    url += `?fromDate=${fromDate}&toDate=${toDate}`;
+	  }
+
+	  fetch(url)
+	    .then(response => response.json())
+	    .then(data => {
+	      renderPayments(data);
+	    })
+	    .catch(error => console.error("Error fetching payments:", error));
+	}
+function renderTablePage(page) {
+	  const tableBody = document.getElementById("transactionTable");
+	  tableBody.innerHTML = "";
+
+	  let start = (page - 1) * rowsPerPage;
+	  let end = start + rowsPerPage;
+	  let pagePayments = currentPayments.slice(start, end);
+
+	  if (pagePayments.length === 0) {
+	    tableBody.innerHTML =
+	      `<tr><td colspan="8" class="text-center py-2">No payments found</td></tr>`;
+	    return;
+	  }
+
+	  pagePayments.forEach(p => {
+	    let row = `
+	      <tr>
+	        <td>${p.studentId || "1"}</td>
+	        <td>${p.batchId || "2"}</td>
+	        <td>${p.batchStatus || "2"}</td>
+	        <td>${p.course || ""}</td>
+	        <td>${p.fullName || ""}</td>
+	        <td>${p.phone || ""}</td>
+	        <td>${p.amountPaid || 0}</td>
+	        <td>${p.term || ""}</td>
+	        <td>${p.paymentDate || ""}</td>
+	      </tr>
+	    `;
+	    tableBody.innerHTML += row;
+	  });
+	}
+
+//============================
+//Filter Payments by Date
+//============================
+async function filterPayments() {
+  const fromDate = document.getElementById("fromDate").value;
+  const toDate = document.getElementById("toDate").value;
+
+  if (!fromDate || !toDate) {
+    alert("Please select both From and To dates");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/payments/filter?fromDate=${fromDate}&toDate=${toDate}`
+    );
+
+    if (!response.ok) throw new Error("Error fetching payments");
+
+    const filteredPayments = await response.json();
+    currentPayments = filteredPayments;
+    totalPages = Math.ceil(currentPayments.length / rowsPerPage);
+    document.getElementById("totalPages").innerText = `of ${totalPages}`;
+    renderTablePage(1);
+  } catch (error) {
+    console.error("Error:", error);
+    alert("Failed to fetch payments: " + error.message);
+  }
+}
+
+
+	function renderTablePage(page) {
+		  const tableBody = document.getElementById("transactionTable");
+		  tableBody.innerHTML = "";
+
+		  if (!currentPayments || currentPayments.length === 0) {
+		    tableBody.innerHTML =
+		      "<tr><td colspan='9' class='text-center text-gray-500'>No payments found</td></tr>";
+		    return;
+		  }
+
+		  const start = (page - 1) * rowsPerPage;
+		  const end = start + rowsPerPage;
+		  const pageData = currentPayments.slice(start, end);
+
+		  pageData.forEach((payment) => {
+		    const row = document.createElement("tr");
+		    row.innerHTML = `
+		      <td>${payment.studentId || ""}</td>
+		      <td>${payment.batchCode || ""}</td>
+		      <td>${payment.statusDisplay || "N/A"}</td>
+		      <td>${payment.courseType || ""}</td>
+		      <td>${payment.studentName || ""}</td>
+		      <td>${payment.phoneNumber || ""}</td>
+		      <td>₹ ${payment.amountPaid.toFixed(2)}</td>
+		      <td>${payment.term || ""}</td>
+		      <td>${payment.paymentDate || ""}</td>
+		    `;
+		    tableBody.appendChild(row);
+		  });
+
+		  currentPage = page;
+		  document.getElementById("currentPage").value = page;
+		}
+	// ============================
+	// Clear Filter & Reset
+	// ============================
+	function clearFilter() {
+	  document.getElementById("fromDate").value = "";
+	  document.getElementById("toDate").value = "";
+
+	  // Reset to full payments
+	  currentPayments = allPayments;
+	  totalPages = Math.ceil(currentPayments.length / rowsPerPage);
+	  document.getElementById("totalPages").innerText = `of ${totalPages}`;
+	  renderTablePage(1);
+	}
+
+	// ============================
+	// Render Table with Pagination
+	// ============================
+	function renderTablePage(page) {
+	  const tableBody = document.getElementById("transactionTable");
+	  tableBody.innerHTML = "";
+
+	  if (!currentPayments || currentPayments.length === 0) {
+	    tableBody.innerHTML =
+	      "<tr><td colspan='9' class='text-center text-gray-500'>No payments found</td></tr>";
+	    document.getElementById("currentPage").value = 1;
+	    document.getElementById("totalPages").innerText = "of 1";
+	    return;
+	  }
+
+	  const start = (page - 1) * rowsPerPage;
+	  const end = start + rowsPerPage;
+	  const pageData = currentPayments.slice(start, end);
+
+	  pageData.forEach((payment) => {
+	    const row = document.createElement("tr");
+	    row.innerHTML = `
+	      <td>${payment.studentId || ""}</td>
+	      <td>${payment.batchCode || ""}</td>
+	      <td>${payment.statusDisplay || "N/A"}</td>
+	      <td>${payment.courseType || ""}</td>
+	      <td>${payment.studentName || ""}</td>
+	      <td>${payment.phoneNumber || ""}</td>
+	      <td>₹ ${payment.amountPaid ? payment.amountPaid.toFixed(2) : "0.00"}</td>
+	      <td>${payment.term || ""}</td>
+	      <td>${payment.paymentDate || ""}</td>
+	    `;
+	    tableBody.appendChild(row);
+	  });
+
+	  currentPage = page;
+	  document.getElementById("currentPage").value = page;
+	}
+//payments data 
+
+function fetchDailyPayments() {
+  const tableBody = document.getElementById("transactionTable");
+  tableBody.innerHTML = ""; // 🔥 reset table each time
+
+  fetch("http://localhost:8080/api/payments")
+    .then((response) => {
+      if (!response.ok) throw new Error("Failed to fetch payments");
+      return response.json();
+    })
+    .then((payments) => {
+      // sort latest first
+      allPayments = payments.sort(
+        (a, b) => new Date(b.paymentDate) - new Date(a.paymentDate)
+      );
       totalPages = Math.ceil(allPayments.length / rowsPerPage);
       document.getElementById("totalPages").innerText = `of ${totalPages}`;
       renderTablePage(currentPage);
@@ -925,86 +1119,7 @@ function fetchDailyPayments() {
     });
 }
 
-function renderTablePage(page) {
-  const tableBody = document.getElementById("transactionTable");
-  tableBody.innerHTML = "";
 
-  const start = (page - 1) * rowsPerPage;
-  const end = start + rowsPerPage;
-  const pageData = allPayments.slice(start, end);
-
-  pageData.forEach((payment) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${payment.studentId || ""}</td>
-      <td>${payment.batchCode || ""}</td>
-      <td>${payment.statusDisplay || "N/A"}</td>
-      <td>${payment.courseType || ""}</td>
-      <td>${payment.studentName || ""}</td>
-      <td>${payment.phoneNumber || ""}</td>
-      <td>₹ ${payment.amountPaid.toFixed(2)}</td>
-      <td>${payment.term || ""}</td>
-      <td>${payment.paymentDate || ""}</td>
-    `;
-    tableBody.appendChild(row);
-  });
-
-  document.getElementById("currentPage").value = page;
-}
-
-      function filterByDate() {
-        const fromDate = document.getElementById("fromDate").value;
-        const toDate = document.getElementById("toDate").value;
-
-        if (!fromDate || !toDate) {
-          alert("Please select both From Date and To Date.");
-          return;
-        }
-
-        fetch("http://localhost:8080/api/payments")
-          .then((response) => {
-            if (!response.ok) throw new Error("Failed to fetch payments");
-            return response.json();
-          })
-          .then((payments) => {
-            const tableBody = document.getElementById("transactionTable");
-            tableBody.innerHTML = "";
-
-            // Filter payments by date range
-            const filtered = payments.filter((payment) => {
-              const date = new Date(payment.paymentDate);
-              return date >= new Date(fromDate) && date <= new Date(toDate);
-            });
-
-            if (filtered.length === 0) {
-              tableBody.innerHTML = `<tr><td colspan="9">No records found in selected date range.</td></tr>`;
-              return;
-            }
-
-            filtered.forEach((payment) => {
-              const row = document.createElement("tr");
-
-              row.innerHTML = `
-		          <td>${payment.id || ""}</td>
-		          <td>${payment.batchCode || ""}</td>
-		          <td>${payment.statusDisplay || "N/A"}</td>
-		          <td>${payment.courseType || ""}</td>
-		          <td>${payment.studentName || ""}</td>
-		          <td>${payment.phoneNumber || ""}</td>
-		          <td>₹ ${payment.amountPaid.toFixed(2)}</td>
-		          <td>${payment.term || ""}</td>
-		          <td>${payment.paymentDate || ""}</td>
-		        `;
-
-              tableBody.appendChild(row);
-            });
-          })
-          .catch((error) => {
-            console.error("Error filtering payments:", error);
-          });
-      }
-      
-      
       function getDetails() {
     	  const course = document.getElementById("CourseType").value.trim();
     	  const status = document.getElementById("BatchStatus").value.trim();
@@ -1231,32 +1346,28 @@ function renderTablePage(page) {
               "<option value=''>Failed to Load</option>";
           });
       }
-      
+     
       // Add Pagination Button Functions
-      function goToPage(page) {
+      // ============================
+// Pagination Controls
+// ============================
+function goToPage(page) {
   if (page < 1 || page > totalPages) return;
-  currentPage = page;
-  renderTablePage(currentPage);
+  renderTablePage(page);
 }
-
+      
 function nextPage() {
   if (currentPage < totalPages) {
-    currentPage++;
-    renderTablePage(currentPage);
+    renderTablePage(currentPage + 1);
   }
 }
-
 function prevPage() {
   if (currentPage > 1) {
-    currentPage--;
-    renderTablePage(currentPage);
+    renderTablePage(currentPage - 1);
   }
 }
-
-
+window.onload = fetchDailyPayments;
     </script>
-
-
   </body>
 </html>      
  
