@@ -506,8 +506,7 @@
                 >From Date</label
               >
               <input
-                id="fromDate"
-                type="date"
+               type="date" id="fromDate" 
                 class="border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
@@ -517,19 +516,15 @@
                 >To Date</label
               >
               <input
-                id="toDate"
-                type="date"
+                type="date" id="toDate"
                 class="border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
 
             <div class="flex items-end">
-              <button
-                onclick="filterByDate()"
-                class="bg-indigo-700 text-white px-6 py-2 rounded hover:bg-indigo-900 transition"
-              >
-                Filter
-              </button>
+               <button onclick="filterPayments()" class="bg-blue-600 text-white px-4 py-1 rounded">
+    Filter
+  </button>
             </div>
           </div>
 
@@ -925,6 +920,58 @@ function fetchDailyPayments() {
     });
 }
 
+async function filterPayments() {
+    const fromDate = document.getElementById("fromDate").value;
+    const toDate = document.getElementById("toDate").value;
+
+    if (!fromDate || !toDate) {
+      alert("Please select both From and To dates");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/payments/filter?fromDate=${fromDate}&toDate=${toDate}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Error fetching payments");
+      }
+
+      const payments = await response.json();
+      renderPayments(payments);
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Failed to fetch payments: " + error.message);
+    }
+  }
+
+  function renderPayments(payments) {
+    const tableBody = document.getElementById("transactionTable");
+    tableBody.innerHTML = ""; // clear old rows
+
+    if (!payments || payments.length === 0) {
+      tableBody.innerHTML =
+        "<tr><td colspan='7' class='text-center'>No payments found</td></tr>";
+      return;
+    }
+
+    payments.forEach((p) => {
+      const row = `
+        <tr class="border-b">
+          <td class="px-4 py-2">${p.id}</td>
+          <td class="px-4 py-2">${p.studentName}</td>
+          <td class="px-4 py-2">${p.courseType}</td>
+          <td class="px-4 py-2">${p.batchCode}</td>
+          <td class="px-4 py-2">${p.paymentDate}</td>
+          <td class="px-4 py-2">${p.amountPaid}</td>
+          <td class="px-4 py-2">${p.remainingDue}</td>
+        </tr>
+      `;
+      tableBody.insertAdjacentHTML("beforeend", row);
+    });
+  }
+
 function renderTablePage(page) {
   const tableBody = document.getElementById("transactionTable");
   tableBody.innerHTML = "";
@@ -951,59 +998,34 @@ function renderTablePage(page) {
 
   document.getElementById("currentPage").value = page;
 }
+//payments data 
 
-      function filterByDate() {
-        const fromDate = document.getElementById("fromDate").value;
-        const toDate = document.getElementById("toDate").value;
+function fetchDailyPayments() {
+	  fetch("http://localhost:8080/api/payments")
+	    .then((response) => {
+	      if (!response.ok) throw new Error("Failed to fetch payments");
+	      return response.json();
+	    })
+	    .then((payments) => {
+	      // 🔥 Sort by paymentDate (latest first)
+	      allPayments = payments.sort(
+	        (a, b) => new Date(b.paymentDate) - new Date(a.paymentDate)
+	      );
 
-        if (!fromDate || !toDate) {
-          alert("Please select both From Date and To Date.");
-          return;
-        }
+	      totalPages = Math.ceil(allPayments.length / rowsPerPage);
+	      document.getElementById("totalPages").innerText = `of ${totalPages}`;
+	      renderTablePage(currentPage);
+	    })
+	    .catch((error) => {
+	      console.error("Error loading payments:", error);
+	    });
+	}
 
-        fetch("http://localhost:8080/api/payments")
-          .then((response) => {
-            if (!response.ok) throw new Error("Failed to fetch payments");
-            return response.json();
-          })
-          .then((payments) => {
-            const tableBody = document.getElementById("transactionTable");
-            tableBody.innerHTML = "";
 
-            // Filter payments by date range
-            const filtered = payments.filter((payment) => {
-              const date = new Date(payment.paymentDate);
-              return date >= new Date(fromDate) && date <= new Date(toDate);
-            });
 
-            if (filtered.length === 0) {
-              tableBody.innerHTML = `<tr><td colspan="9">No records found in selected date range.</td></tr>`;
-              return;
-            }
 
-            filtered.forEach((payment) => {
-              const row = document.createElement("tr");
 
-              row.innerHTML = `
-		          <td>${payment.id || ""}</td>
-		          <td>${payment.batchCode || ""}</td>
-		          <td>${payment.statusDisplay || "N/A"}</td>
-		          <td>${payment.courseType || ""}</td>
-		          <td>${payment.studentName || ""}</td>
-		          <td>${payment.phoneNumber || ""}</td>
-		          <td>₹ ${payment.amountPaid.toFixed(2)}</td>
-		          <td>${payment.term || ""}</td>
-		          <td>${payment.paymentDate || ""}</td>
-		        `;
 
-              tableBody.appendChild(row);
-            });
-          })
-          .catch((error) => {
-            console.error("Error filtering payments:", error);
-          });
-      }
-      
       
       function getDetails() {
     	  const course = document.getElementById("CourseType").value.trim();

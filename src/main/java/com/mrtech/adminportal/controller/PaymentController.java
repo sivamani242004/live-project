@@ -1,5 +1,6 @@
 package com.mrtech.adminportal.controller;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,25 @@ public class PaymentController {
                     .body("Payment save failed: " + errorMessage);
         }
     }
+    
+    
+    @GetMapping("/payments/filter")
+    public ResponseEntity<?> getPaymentsByDate(
+            @RequestParam String fromDate,
+            @RequestParam String toDate) {
+        try {
+            LocalDate from = LocalDate.parse(fromDate);
+            LocalDate to = LocalDate.parse(toDate);
+
+            return ResponseEntity.ok(paymentRepository.findPaymentsBetweenDates(from, to));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid date format. Expected yyyy-MM-dd");
+        }
+    }
+
+
+
 
     // ✅ Get payments by student
     @GetMapping("/payments/student/{studentId}")
