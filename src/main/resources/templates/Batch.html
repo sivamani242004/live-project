@@ -294,7 +294,7 @@ document.getElementById("coursestatusDropdown").addEventListener("change", funct
       alert("Batch status updated to " + newStatus);
       fetchBatches();
     })
-    .catch(() => alert("Failed to update status"));
+    .catch(() => fetchBatches());
   }
 
   // Init
