@@ -53,7 +53,7 @@
     .slide-link:hover::before {
       left: 0;
     }
-
+/* hello */
     .status-badge {
       display: inline-block;
       padding: 0.35rem 0.75rem;
@@ -294,7 +294,7 @@ document.getElementById("coursestatusDropdown").addEventListener("change", funct
       alert("Batch status updated to " + newStatus);
       fetchBatches();
     })
-    .catch(() => alert("Failed to update status"));
+    .catch(() => fetchBatches());
   }
 
   // Init

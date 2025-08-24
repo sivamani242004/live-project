@@ -17,6 +17,7 @@ public class Payment {
     private String courseType;
     private String batchCode;
     private String phoneNumber;
+    
     private double totalfee;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate paymentDate;

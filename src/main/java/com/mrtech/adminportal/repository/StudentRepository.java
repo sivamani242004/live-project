@@ -4,25 +4,36 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.repository.query.Param;
 
-
-import com.mrtech.adminportal.entity.Payment;
 import com.mrtech.adminportal.entity.Student;
 
 public interface StudentRepository extends JpaRepository<Student, Integer> {
+
+    // 🔍 Search by name or mobile
     List<Student> findByNameContainingIgnoreCaseOrMobileContaining(String name, String mobile);
 
-    Optional<Student> findById(Long id);
+    // Find student by ID
+    Optional<Student> findById(Integer id);
 
+    // Find student by name (case-insensitive)
     Student findByNameContainingIgnoreCase(String name);
 
-    // ✅ Corrected method for String fields
-  //  List<Student> findByCourseAndBatchAndDuefee(String course, String batch, String duefee);
-
+    // Find students by course + status + batch
     List<Student> findByCourseAndStatusAndBatch(String course, String status, String batch);
 
-    // If you need status filtering (but there's no 'statusDisplay' in Student entity),
-    // You must first add a field 'statusDisplay' to Student OR remove it from query
+    // Find by mobile
     Optional<Student> findByMobile(String mobile);
 
+    // Find all students in a batch
+    List<Student> findByBatch(String batch);
+
+    // ✅ Bulk update student status by batch
+    @Modifying
+    @Transactional
+    @Query("UPDATE Student s SET s.status = :status WHERE s.batch = :batchId")
+    int updateStatusByBatch(String batchId, String status);
 }

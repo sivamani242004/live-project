@@ -653,7 +653,6 @@
       function logout() {
         window.location.href = "/login";
       }
-
       fetch("http://localhost:8080/api/username", {
         credentials: "include",
       })
@@ -667,7 +666,6 @@
         .catch(() => {
           document.getElementById("username").innerText = "Guest";
         });
-
       function showTab(tabId) {
         document
           .querySelectorAll(".tab")
@@ -689,8 +687,7 @@
 
       });
 
-      //fetch ...
-
+//search
 document.getElementById("searchInput").addEventListener("input", function () {
   const keyword = this.value.trim();
   if (keyword.length < 2) {
@@ -755,9 +752,6 @@ document.getElementById("searchInput").addEventListener("input", function () {
         "<div class='text-red-500'>Error fetching student data.</div>";
     });
 });
-
-
-
       // total due = total due - amount to be paid
       document
         .getElementById("amountToBePaid")
@@ -771,12 +765,9 @@ document.getElementById("searchInput").addEventListener("input", function () {
         const paidStr = document
           .getElementById("amountToBePaid")
           .value.replace(/[^\d.]/g, "");
-
         const total = parseFloat(totalStr) || 0;
         const paid = parseFloat(paidStr) || 0;
-
         const due = total - paid;
-
         // Show due in separate readonly field (do not overwrite original due)
         document.getElementById("duefee").value =
           due >= 0 ? due.toFixed(2) : "0.00";
@@ -786,7 +777,6 @@ document.getElementById("searchInput").addEventListener("input", function () {
         const customTermContainer = document.getElementById(
           "customTermContainer"
         );
-
         if (term === "Other") {
           customTermContainer.style.display = "block";
         } else {
@@ -794,7 +784,6 @@ document.getElementById("searchInput").addEventListener("input", function () {
           document.getElementById("customTerm").value = ""; // clear the field
         }
       }
-
       function fetchBatchStatus() {
         const batchCode = document.getElementById("batchCode").value.trim();
         const statusInput = document.getElementById("statusDisplay");
@@ -803,7 +792,6 @@ document.getElementById("searchInput").addEventListener("input", function () {
           statusInput.value = "";
           return;
         }
-
         fetch(`http://localhost:8080/api/batch/status/${batchCode}`)
           .then((response) => {
             if (!response.ok) throw new Error("Batch not found");
@@ -816,9 +804,7 @@ document.getElementById("searchInput").addEventListener("input", function () {
             statusInput.value = "Not Found";
             console.error("Error fetching batch status:", error);
           });
-      }
-
-      
+      }   
       //submit button 
      document.getElementById("submitPaymentBtn").addEventListener("click", function () {
   // Gather all required fields
@@ -831,19 +817,15 @@ document.getElementById("searchInput").addEventListener("input", function () {
   const statusDisplay = document.getElementById("statusDisplay").value;
   const paymentDate = document.querySelector('input[type="date"]').value;
   const amountToBePaid = parseFloat(document.getElementById("amountToBePaid").value) || 0;
-  
   let totalAmountPaid = parseFloat(document.getElementById("totalAmountPaid").value) || 0;
   let totalDue = parseFloat(document.getElementById("totalDue").value) || 0;
-
   // ✅ Update totals
   totalAmountPaid += amountToBePaid;
   totalDue = totalfee - totalAmountPaid;  // recalc due from total fee - paid
-
   // Update UI fields immediately
   document.getElementById("totalAmountPaid").value = totalAmountPaid.toFixed(2);
   document.getElementById("totalDue").value = totalDue.toFixed(2);
   document.getElementById("duefee").value = totalDue.toFixed(2);
-
   const term = document.getElementById("termSelect").value;
   const customTerm = document.getElementById("customTerm").value;
   const finalTerm = term === "Other" ? customTerm : term;
@@ -852,7 +834,6 @@ document.getElementById("searchInput").addEventListener("input", function () {
     alert("Please fill all required fields");
     return;
   }
-
   const paymentData = {
     studentId,
     studentName,
@@ -867,7 +848,6 @@ document.getElementById("searchInput").addEventListener("input", function () {
     totalDue,         // ✅ new due
     term: finalTerm
   };
-
   // ✅ Save payment
   fetch("http://localhost:8080/api/payments", {
     method: "POST",
@@ -889,238 +869,53 @@ document.getElementById("searchInput").addEventListener("input", function () {
       alert("Failed to save payment. Try again.");
     });
 });
-
-
-      //Fetch data from payment table
-      let allPayments = [];
-      let filteredPayments = [];
-      let currentPayments = [];
-let currentPage = 1;
-const rowsPerPage = 5;
-let totalPages = 1;
-
+//Fetch data from payment table
 let allBatchStudents = [];
 let currentBatchPage = 1;
 const batchRowsPerPage = 5;
 let totalBatchPages = 1;
-
-
-
 //============================
 //Fetch All Payments (Default)
 //============================
 function fetchDailyPayments() {
-  const tableBody = document.getElementById("transactionTable");
-  tableBody.innerHTML = "";
-
-  fetch("http://localhost:8080/api/payments")
-    .then((response) => {
-      if (!response.ok) throw new Error("Failed to fetch payments");
-      return response.json();
-    })
-    .then((payments) => {
-      // Sort latest first
-      allPayments = payments.sort(
-        (a, b) => new Date(b.paymentDate) - new Date(a.paymentDate)
-      );
-      currentPayments = allPayments;
-      totalPages = Math.ceil(currentPayments.length / rowsPerPage);
-      document.getElementById("totalPages").innerText = `of ${totalPages}`;
-      renderTablePage(1);
-    })
-    .catch((error) => {
-      console.error("Error loading payments:", error);
-    });
-}
-function fetchDailyPayments(fromDate, toDate) {
-	  let url = "http://localhost:8080/api/payments";
-
-	  if (fromDate && toDate) {
-	    url += `?fromDate=${fromDate}&toDate=${toDate}`;
-	  }
-
-	  fetch(url)
-	    .then(response => response.json())
-	    .then(data => {
-	      renderPayments(data);
+	  fetch("http://localhost:8080/api/payments")
+	    .then((response) => {
+	      if (!response.ok) throw new Error("Failed to fetch payments");
+	      return response.json();
 	    })
-	    .catch(error => console.error("Error fetching payments:", error));
+	    .then(data => {
+	      data.sort((a, b) => new Date(b.paymentDate) - new Date(a.paymentDate)); // 🔹 latest first
+
+	      const tableBody = document.getElementById("transactionTable");
+	      tableBody.innerHTML = "";
+
+	      if (data.length === 0) {
+	        tableBody.innerHTML = `<tr><td colspan="9">No daily transactions found.</td></tr>`;
+	        return;
+	      }
+
+	      data.forEach(payment => {
+	        const row = document.createElement("tr");
+	        row.innerHTML = `
+	          <td>${payment.studentId || ""}</td>
+	          <td>${payment.batchCode || ""}</td>
+	          <td>${payment.statusDisplay || "N/A"}</td>
+	          <td>${payment.courseType || ""}</td>
+	          <td>${payment.studentName || ""}</td>
+	          <td>${payment.phoneNumber || ""}</td>
+	          <td>₹ ${payment.amountPaid ? payment.amountPaid.toFixed(2) : "0.00"}</td>
+	          <td>${payment.term || ""}</td>
+	          <td>${payment.paymentDate || ""}</td>
+	        `;
+	        tableBody.appendChild(row);
+	      });
+	    })
+	    .catch((error) => {
+	      console.error("Error loading payments:", error);
+	    });
 	}
-function renderTablePage(page) {
-	  const tableBody = document.getElementById("transactionTable");
-	  tableBody.innerHTML = "";
-
-	  let start = (page - 1) * rowsPerPage;
-	  let end = start + rowsPerPage;
-	  let pagePayments = currentPayments.slice(start, end);
-
-	  if (pagePayments.length === 0) {
-	    tableBody.innerHTML =
-	      `<tr><td colspan="8" class="text-center py-2">No payments found</td></tr>`;
-	    return;
-	  }
-
-	  pagePayments.forEach(p => {
-	    let row = `
-	      <tr>
-	        <td>${p.studentId || "1"}</td>
-	        <td>${p.batchId || "2"}</td>
-	        <td>${p.batchStatus || "2"}</td>
-	        <td>${p.course || ""}</td>
-	        <td>${p.fullName || ""}</td>
-	        <td>${p.phone || ""}</td>
-	        <td>${p.amountPaid || 0}</td>
-	        <td>${p.term || ""}</td>
-	        <td>${p.paymentDate || ""}</td>
-	      </tr>
-	    `;
-	    tableBody.innerHTML += row;
-	  });
-	}
-
-//============================
-//Filter Payments by Date
-//============================
-async function filterPayments() {
-  const fromDate = document.getElementById("fromDate").value;
-  const toDate = document.getElementById("toDate").value;
-
-  if (!fromDate || !toDate) {
-    alert("Please select both From and To dates");
-    return;
-  }
-
-  try {
-    const response = await fetch(
-      `http://localhost:8080/api/payments/filter?fromDate=${fromDate}&toDate=${toDate}`
-    );
-
-    if (!response.ok) throw new Error("Error fetching payments");
-
-    const filteredPayments = await response.json();
-    currentPayments = filteredPayments;
-    totalPages = Math.ceil(currentPayments.length / rowsPerPage);
-    document.getElementById("totalPages").innerText = `of ${totalPages}`;
-    renderTablePage(1);
-  } catch (error) {
-    console.error("Error:", error);
-    alert("Failed to fetch payments: " + error.message);
-  }
-}
-
-
-	function renderTablePage(page) {
-		  const tableBody = document.getElementById("transactionTable");
-		  tableBody.innerHTML = "";
-
-		  if (!currentPayments || currentPayments.length === 0) {
-		    tableBody.innerHTML =
-		      "<tr><td colspan='9' class='text-center text-gray-500'>No payments found</td></tr>";
-		    return;
-		  }
-
-		  const start = (page - 1) * rowsPerPage;
-		  const end = start + rowsPerPage;
-		  const pageData = currentPayments.slice(start, end);
-
-		  pageData.forEach((payment) => {
-		    const row = document.createElement("tr");
-		    row.innerHTML = `
-		      <td>${payment.studentId || ""}</td>
-		      <td>${payment.batchCode || ""}</td>
-		      <td>${payment.statusDisplay || "N/A"}</td>
-		      <td>${payment.courseType || ""}</td>
-		      <td>${payment.studentName || ""}</td>
-		      <td>${payment.phoneNumber || ""}</td>
-		      <td>₹ ${payment.amountPaid.toFixed(2)}</td>
-		      <td>${payment.term || ""}</td>
-		      <td>${payment.paymentDate || ""}</td>
-		    `;
-		    tableBody.appendChild(row);
-		  });
-
-		  currentPage = page;
-		  document.getElementById("currentPage").value = page;
-		}
-	// ============================
-	// Clear Filter & Reset
-	// ============================
-	function clearFilter() {
-	  document.getElementById("fromDate").value = "";
-	  document.getElementById("toDate").value = "";
-
-	  // Reset to full payments
-	  currentPayments = allPayments;
-	  totalPages = Math.ceil(currentPayments.length / rowsPerPage);
-	  document.getElementById("totalPages").innerText = `of ${totalPages}`;
-	  renderTablePage(1);
-	}
-
-	// ============================
-	// Render Table with Pagination
-	// ============================
-	function renderTablePage(page) {
-	  const tableBody = document.getElementById("transactionTable");
-	  tableBody.innerHTML = "";
-
-	  if (!currentPayments || currentPayments.length === 0) {
-	    tableBody.innerHTML =
-	      "<tr><td colspan='9' class='text-center text-gray-500'>No payments found</td></tr>";
-	    document.getElementById("currentPage").value = 1;
-	    document.getElementById("totalPages").innerText = "of 1";
-	    return;
-	  }
-
-	  const start = (page - 1) * rowsPerPage;
-	  const end = start + rowsPerPage;
-	  const pageData = currentPayments.slice(start, end);
-
-	  pageData.forEach((payment) => {
-	    const row = document.createElement("tr");
-	    row.innerHTML = `
-	      <td>${payment.studentId || ""}</td>
-	      <td>${payment.batchCode || ""}</td>
-	      <td>${payment.statusDisplay || "N/A"}</td>
-	      <td>${payment.courseType || ""}</td>
-	      <td>${payment.studentName || ""}</td>
-	      <td>${payment.phoneNumber || ""}</td>
-	      <td>₹ ${payment.amountPaid ? payment.amountPaid.toFixed(2) : "0.00"}</td>
-	      <td>${payment.term || ""}</td>
-	      <td>${payment.paymentDate || ""}</td>
-	    `;
-	    tableBody.appendChild(row);
-	  });
-
-	  currentPage = page;
-	  document.getElementById("currentPage").value = page;
-	}
-//payments data 
-
-function fetchDailyPayments() {
-  const tableBody = document.getElementById("transactionTable");
-  tableBody.innerHTML = ""; // 🔥 reset table each time
-
-  fetch("http://localhost:8080/api/payments")
-    .then((response) => {
-      if (!response.ok) throw new Error("Failed to fetch payments");
-      return response.json();
-    })
-    .then((payments) => {
-      // sort latest first
-      allPayments = payments.sort(
-        (a, b) => new Date(b.paymentDate) - new Date(a.paymentDate)
-      );
-      totalPages = Math.ceil(allPayments.length / rowsPerPage);
-      document.getElementById("totalPages").innerText = `of ${totalPages}`;
-      renderTablePage(currentPage);
-    })
-    .catch((error) => {
-      console.error("Error loading payments:", error);
-    });
-}
-
-
-      function getDetails() {
+//batch payments 
+function getDetails() {
     	  const course = document.getElementById("CourseType").value.trim();
     	  const status = document.getElementById("BatchStatus").value.trim();
     	  const batch = document.getElementById("BatchCode").value.trim();
@@ -1129,7 +924,6 @@ function fetchDailyPayments() {
     	    alert("Please select Course Type, Status, and Batch Code.");
     	    return;
     	  }
-
     	  fetch(`http://localhost:8080/api/students/filter?course=${course}&status=${status}&batch=${batch}`)
     	    .then((response) => {
     	      if (!response.ok) throw new Error("Failed to fetch batch students");
@@ -1145,9 +939,7 @@ function fetchDailyPayments() {
     	      console.error("Error loading batch students:", error);
     	    });
     	}
-
-      
-      //renderBatchTablePage
+      //renderfor BatchTablePage
       function renderBatchTablePage(page) {
     	  const tableBody = document.getElementById("BatchTableBody");
     	  tableBody.innerHTML = "";
@@ -1160,7 +952,6 @@ function fetchDailyPayments() {
     	    tableBody.innerHTML = `<tr><td colspan="9">No students found for selected batch.</td></tr>`;
     	    return;
     	  }
-
     	  pageData.forEach((student) => {
     	    const totalfee = parseInt(student.totalfee || 0);
     	    const paid = parseInt(student.paidamount || 0);
@@ -1184,27 +975,21 @@ function fetchDailyPayments() {
     	  currentBatchPage = page;
     	  document.getElementById("currentBatchPage").value = page;
     	}
-      //Add Navigation Functions
-
+      //Add Navigation Functions for batches
       function goToBatchPage(page) {
     	  if (page < 1 || page > totalBatchPages) return;
     	  renderBatchTablePage(page);
     	}
-
     	function nextBatchPage() {
     	  if (currentBatchPage < totalBatchPages) {
     	    renderBatchTablePage(currentBatchPage + 1);
     	  }
     	}
-
     	function prevBatchPage() {
     	  if (currentBatchPage > 1) {
     	    renderBatchTablePage(currentBatchPage - 1);
     	  }
     	}
-
-
-
     	function showTerms(phoneNumber) {
     		  // Step 1: Get student details based on phone number
     		  const student = allBatchStudents.find(s => s.mobile === phoneNumber);
@@ -1212,7 +997,6 @@ function fetchDailyPayments() {
     		    alert("Student not found in batch list.");
     		    return;
     		  }
-
     		  // Step 2: Fetch all payments by phone number
     		  fetch(`http://localhost:8080/api/payments`)
     		    .then((response) => response.json())
@@ -1220,7 +1004,6 @@ function fetchDailyPayments() {
     		      const filtered = data.filter((p) => p.phoneNumber === phoneNumber);
     		      const tbody = document.getElementById("BatchTransactionTable");
     		      tbody.innerHTML = "";
-
     		      // Step 3: Add First Term row (from student table)
     		      const term1Row = document.createElement("tr");
     		      term1Row.innerHTML = `
@@ -1230,7 +1013,6 @@ function fetchDailyPayments() {
     		        <td>${student.joiningDate || "-"}</td>
     		      `;
     		      tbody.appendChild(term1Row);
-
     		      // Step 4: Add subsequent payments (from payments table)
     		      if (filtered.length === 0) {
     		        const noDataRow = document.createElement("tr");
@@ -1248,19 +1030,16 @@ function fetchDailyPayments() {
     		          tbody.appendChild(row);
     		        });
     		      }
-
     		      document.getElementById("termsModal").style.display = "block";
     		    })
     		    .catch((err) => {
     		      console.error("Error loading transaction details:", err);
     		    });
     		}
-
       //course type
       document.addEventListener("DOMContentLoaded", function () {
         fetchCourseTypes(); // Load on page load
       });
-
       function fetchCourseTypes() {
         fetch("http://localhost:8080/api/courses/names")
           .then((response) => response.json())
@@ -1280,7 +1059,6 @@ function fetchDailyPayments() {
             console.error("Error loading course types:", error);
           });
       }
-
       function loadStatuses() {
         const course = document.getElementById("CourseType").value;
         const statusDropdown = document.getElementById("BatchStatus");
@@ -1294,7 +1072,6 @@ function fetchDailyPayments() {
             "<option value=''>Select Course First</option>";
           return;
         }
-
         fetch(`http://localhost:8080/api/batch/statuses/${course}`)
           .then((response) => response.json())
           .then((data) => {
@@ -1313,7 +1090,6 @@ function fetchDailyPayments() {
               "<option value=''>Failed to Load</option>";
           });
       }
-
       function loadBatchCodes() {
         const course = document.getElementById("CourseType").value;
         const status = document.getElementById("BatchStatus").value;
@@ -1326,7 +1102,7 @@ function fetchDailyPayments() {
             "<option value=''>Select Course & Status First</option>";
           return;
         }
-
+//hello
         fetch(
           `http://localhost:8080/api/batch/codes?course=${course}&status=${status}`
         )
@@ -1346,27 +1122,7 @@ function fetchDailyPayments() {
               "<option value=''>Failed to Load</option>";
           });
       }
-     
-      // Add Pagination Button Functions
-      // ============================
-// Pagination Controls
-// ============================
-function goToPage(page) {
-  if (page < 1 || page > totalPages) return;
-  renderTablePage(page);
-}
-      
-function nextPage() {
-  if (currentPage < totalPages) {
-    renderTablePage(currentPage + 1);
-  }
-}
-function prevPage() {
-  if (currentPage > 1) {
-    renderTablePage(currentPage - 1);
-  }
-}
-window.onload = fetchDailyPayments;
+     window.onload = fetchDailyPayments;
     </script>
   </body>
 </html>      
