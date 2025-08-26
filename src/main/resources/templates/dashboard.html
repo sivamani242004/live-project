@@ -81,21 +81,53 @@
         opacity: 1;
         transform: translateY(0);
       }
+      .graph-section {
+        display: flex;
+        width: 50%;
+        height: auto;
+        flex-direction: column;
+        gap: 1rem;
+      }
     </style>
   </head>
 
   <body class="min-h-screen flex font-sans text-gray-800">
    <!-- Top Bar -->
+<!-- Top Bar -->
+
 <header class="flex justify-between items-center bg-white shadow-md p-3 fixed top-0 left-0 right-0 z-50">
   <div class="flex items-center gap-4">
     <img src="/images/logo.jpg" alt="MR Technologies Logo" class="h-16 object-contain">
     <img src="/images/Analytic hub.png" alt="" style="width: 4rem;height: 4rem;">
     <h1 class="text-2xl font-bold text-[var(--primary-color)]">Analytic hub</h1>
   </div>
-  <p class="text-sm text-gray-600">
-    Welcome, <span class="font-semibold text-[var(--primary-color)]" id="username">Loading...</span>
-  </p>
+
+  <!-- Search + Welcome -->
+  <div class="flex items-center gap-6">
+    <!-- 🔍 Search Icon -->
+    <button id="searchToggle" class="p-2 rounded hover:bg-gray-100">
+      <i data-lucide="search" class="w-6 h-6 text-gray-600"></i>
+    </button>
+
+    <!-- Hidden Search Bar -->
+    <div id="searchBar" class="hidden">
+      <input 
+        type="text" 
+        id="searchInput" 
+        placeholder="Search by Name, ID, Phone..."
+        class="border border-gray-300 rounded-lg px-3 py-1 focus:outline-none focus:ring focus:ring-[var(--primary-color)]"
+      />
+      <button onclick="searchStudent()" class="ml-2 bg-[var(--primary-color)] text-white px-3 py-1 rounded-lg">
+        Go
+      </button>
+    </div>
+
+    <p class="text-sm text-gray-600">
+      Welcome, <span class="font-semibold text-[var(--primary-color)]" id="username">Loading...</span>
+    </p>
+  </div>
 </header>
+
 
     <!-- Sidebar -->
     <aside
@@ -133,6 +165,31 @@
         class="p-8 flex-1 overflow-y-auto space-y-10"
         style="background-color: var(--secondary-color)"
       >
+      <!-- 🔎 Search Results Section -->
+<!-- 🔎 Search Results Section -->
+<div id="searchResultsWrapper" class="border border-gray-200 rounded-lg hidden">
+  <div class="flex justify-between items-center bg-gray-100 px-3 py-2 border-b">
+    <h3 class="font-semibold text-gray-700">Search Results</h3>
+    <button onclick="closeSearchResults()" 
+            class="text-gray-500 hover:text-red-600 text-xl font-bold">✖</button>
+  </div>
+<div id="searchResults" class="overflow-y-auto max-h-64 border border-gray-200 rounded-lg"></div>
+</div>
+<!-- 📌 Student Preview Modal -->
+<div id="studentModal"
+     class="fixed inset-0 hidden bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-xl shadow-lg p-6 w-[600px] relative">
+    <!-- Close Button -->
+    <button onclick="closeModal()" class="absolute top-3 right-3 text-gray-500 hover:text-red-500">
+      ✖
+    </button>
+
+    <h2 class="text-xl font-bold text-[var(--primary-color)] mb-4">Student Details</h2>
+    <div id="studentDetails" class="space-y-2 text-gray-700"></div>
+  </div>
+</div>
+
+      
         <!-- Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div
@@ -210,54 +267,51 @@
           </div>
         </div>
 
-        <!-- Monthly Fee Collection -->
-        <div class="bg-white p-6 rounded-xl shadow fade-up">
-          <h2
-            class="text-xl font-semibold mb-4"
-            style="color: var(--primary-color)"
-          >
-            Monthly Fee Collection
-          </h2>
-          <canvas id="feeChart" width="400" height="200"></canvas>
-        </div>
+       <!-- ✅ Graphs Section (2 rows, 2 per row, same size) -->
+<!-- Graphs Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <!-- Monthly Fee Collection -->
+  <div class="bg-white p-6 rounded-xl shadow fade-up flex flex-col">
+    <h2 class="text-lg font-semibold mb-4 text-[var(--primary-color)]">
+      Monthly Fee Collection
+    </h2>
+    <div class="flex-1">
+      <canvas id="feeChart"></canvas>
+    </div>
+  </div>
 
-        <!-- ✅ Other Charts (inside main now) -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Student Enrollment Trend (Line Chart) -->
-          <div class="bg-white p-6 rounded-xl shadow fade-up">
-            <h2
-              class="text-xl font-semibold mb-4"
-              style="color: var(--primary-color)"
-            >
-              Student Enrollment Trend
-            </h2>
-            <canvas id="enrollmentChart"></canvas>
-          </div>
+  <!-- Student Enrollment Trend -->
+  <div class="bg-white p-6 rounded-xl shadow fade-up flex flex-col">
+    <h2 class="text-lg font-semibold mb-4 text-[var(--primary-color)]">
+      Student Enrollment Trend
+    </h2>
+    <div class="flex-1">
+      <canvas id="enrollmentChart"></canvas>
+    </div>
+  </div>
 
-          <!-- Course Distribution (Pie Chart) -->
-          <div class="bg-white p-6 rounded-xl shadow fade-up">
-            <h2
-              class="text-xl font-semibold mb-4"
-              style="color: var(--primary-color)"
-            >
-              Course Distribution
-            </h2>
-            <canvas id="courseChart"></canvas>
-          </div>
+  <!-- Course Distribution -->
+  <div class="bg-white p-6 rounded-xl shadow fade-up flex flex-col">
+    <h2 class="text-lg font-semibold mb-4 text-[var(--primary-color)]">
+      Course Distribution
+    </h2>
+    <div class="flex-1">
+      <canvas id="courseChart"></canvas>
+    </div>
+  </div>
 
-          <!-- Payment Status (Doughnut Chart) -->
-          <div
-            class="bg-white p-6 rounded-xl shadow fade-up col-span-1 lg:col-span-2"
-          >
-            <h2
-              class="text-xl font-semibold mb-4"
-              style="color: var(--primary-color)"
-            >
-              Payment Status
-            </h2>
-            <canvas id="paymentChart"></canvas>
-          </div>
-        </div>
+  <!-- Payment Status -->
+  <div class="bg-white p-6 rounded-xl shadow fade-up flex flex-col">
+    <h2 class="text-lg font-semibold mb-4 text-[var(--primary-color)]">
+      Payment Status
+    </h2>
+    <div class="flex-1">
+      <canvas id="paymentChart"></canvas>
+    </div>
+  </div>
+</div>
+
+        
       </main>
     </div>
 
@@ -381,6 +435,134 @@
           plugins: { legend: { position: "bottom" } },
         },
       });
+      
+      // search bar 
+      // Toggle search bar
+document.getElementById("searchToggle").addEventListener("click", () => {
+  const bar = document.getElementById("searchBar");
+  bar.classList.toggle("hidden");
+
+  if (!bar.classList.contains("hidden")) {
+    document.getElementById("searchInput").focus();
+  }
+});
+
+// Student search (example using backend API)
+// Student search (example using backend API)
+function searchStudent() {
+  const query = document.getElementById("searchInput").value.trim();
+  if (!query) return alert("Please enter a name, ID, or phone number");
+
+  fetch(`http://localhost:8080/api/students/search?keyword=${query}`, { credentials: "include" })
+    .then(res => {
+      if (!res.ok) throw new Error("Search failed");
+      return res.json();
+    })
+    .then(data => {
+      const wrapper = document.getElementById("searchResultsWrapper");
+      const resultsDiv = document.getElementById("searchResults");
+      resultsDiv.innerHTML = "";
+
+      if (data.length === 0) {
+        resultsDiv.innerHTML = `<p class="text-red-600 p-3">No students found</p>`;
+      } else {
+        data.forEach(student => {
+          const card = document.createElement("div");
+          card.className = "bg-white p-4 rounded-lg shadow flex justify-between items-center mb-2";
+
+          card.innerHTML = `
+            <div>
+              <p class="font-semibold text-lg">${student.name}</p>
+              <p class="text-sm text-gray-600">Mobile: ${student.mobile}</p>
+              <p class="text-sm text-gray-600">Course: ${student.course}</p>
+            </div>
+            <button onclick="previewStudent(${student.id})"
+              class="bg-[var(--primary-color)] text-white px-4 py-2 rounded-lg hover:bg-blue-800">
+              Preview
+            </button>
+          `;
+          resultsDiv.appendChild(card);
+        });
+      }
+
+      wrapper.classList.remove("hidden");  // ✅ Show results box
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Error searching student");
+    });
+}
+
+// Close search results
+function closeSearchResults() {
+  document.getElementById("searchResultsWrapper").classList.add("hidden");
+}
+
+function previewStudent(id) {
+	  fetch(`http://localhost:8080/api/students/${id}`)
+	    .then(res => {
+	      if (!res.ok) throw new Error("Failed to fetch student details");
+	      return res.json();
+	    })
+	    .then(student => {
+	      const detailsDiv = document.getElementById("studentDetails");
+
+	      // Progress bar calculation
+	      const total = student.totalfee || 0;
+	      const paid = student.paidamount || 0;
+	      let percent = 0;
+	      if (total > 0) percent = Math.min((paid / total) * 100, 100);
+
+	      detailsDiv.innerHTML = `
+	        <div class="bg-white p-6 rounded-2xl shadow-lg space-y-4">
+	          <h2 class="text-xl font-bold text-gray-800 border-b pb-2">Student Details</h2>
+	          
+	          <div class="grid grid-cols-2 gap-4">
+	            <p><span class="font-semibold text-gray-600">Name:</span> ${student.name}</p>
+	            <p><span class="font-semibold text-gray-600">Email:</span> ${student.email}</p>
+	            <p><span class="font-semibold text-gray-600">Mobile:</span> ${student.mobile}</p>
+	            <p><span class="font-semibold text-gray-600">DOB:</span> ${student.dob}</p>
+	            <p><span class="font-semibold text-gray-600">Gender:</span> ${student.gender}</p>
+	            <p><span class="font-semibold text-gray-600">Course:</span> ${student.course}</p>
+	            <p><span class="font-semibold text-gray-600">Batch:</span> ${student.batch}</p>
+	            <p><span class="font-semibold text-gray-600">Status:</span> 
+	              <span class="px-2 py-1 text-sm rounded-full 
+	                ${student.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+	                ${student.status}
+	              </span>
+	            </p>
+	          </div>
+
+	          <div class="mt-4">
+	            <p class="font-semibold text-gray-700 mb-2">Fee Details</p>
+	            <div class="flex justify-between text-sm mb-1">
+	              <span>Total: ₹${student.totalfee}</span>
+	              <span>Paid: ₹${student.paidamount}</span>
+	              <span>Due: ₹${student.duefee}</span>
+	            </div>
+	            
+	            <!-- Progress Bar -->
+	            <div class="w-full bg-gray-200 rounded-full h-3">
+	              <div class="bg-blue-600 h-3 rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+	            </div>
+	            <p class="text-xs text-gray-500 mt-1">${percent.toFixed(1)}% Paid</p>
+	          </div>
+	        </div>
+	      `;
+
+	      document.getElementById("studentModal").classList.remove("hidden");
+	    })
+	    .catch(err => {
+	      console.error(err);
+	      alert("Error fetching student details");
+	    });
+	}
+
+	function closeModal() {
+	  document.getElementById("studentModal").classList.add("hidden");
+	}
+
+
     </script>
   </body>
 </html>
