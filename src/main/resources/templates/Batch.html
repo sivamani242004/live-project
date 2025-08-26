@@ -172,6 +172,10 @@
         <h2 class="text-2xl font-semibold text-indigo-800 mb-4 flex items-center gap-3">
           <i class="fas fa-list-ul text-indigo-600"></i> Batches List
         </h2>
+        <button onclick="exportBatchesToExcel()" 
+    class="bg-gradient-to-r from-green-500 to-green-700 text-white px-5 py-3 rounded-xl shadow-lg hover:from-green-600 hover:to-green-800 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
+    📊 Export to Excel
+  </button>
         <div class="overflow-x-auto">
           <table class="min-w-full text-sm border border-gray-200 rounded-lg overflow-hidden">
             <thead class="bg-indigo-100 text-indigo-800 sticky top-0 z-10">
@@ -191,7 +195,7 @@
     </div>
   </main>
 </div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
   // Load username
   fetch("http://localhost:8080/api/username", { credentials: 'include' })
@@ -302,6 +306,39 @@ document.getElementById("coursestatusDropdown").addEventListener("change", funct
     loadCoursesDropdown();
     fetchBatches();
   };
+  
+  // export
+  function exportBatchesToExcel() {
+  fetch("http://localhost:8080/api/batch/all")
+    .then(res => res.json())
+    .then(data => {
+      if (!data || data.length === 0) {
+        alert("⚠ No batch data available!");
+        return;
+      }
+
+      // Select only specific fields for Excel
+      const exportData = data.map(batch => ({
+        "Batch ID": batch.batchid,
+        "Batch Name": batch.coursename,
+        "Duration (days)": batch.duration,
+        "Trainer": batch.trainer,
+        "Status": batch.status
+      }));
+
+      // Convert JSON to worksheet
+      const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+      // Create workbook
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Batches");
+
+      // Download as Excel file
+      XLSX.writeFile(workbook, "Batches_List.xlsx");
+    })
+    .catch(err => console.error("Error exporting batches:", err));
+}
+
 </script>
 
 </body>
