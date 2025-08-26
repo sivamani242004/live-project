@@ -100,6 +100,11 @@
        class="bg-gradient-to-r from-green-500 to-green-700 text-white px-5 py-3 rounded-xl shadow-lg hover:from-green-600 hover:to-green-800 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
       📋 View Student List
     </a>
+    <!-- Excel Export Button -->
+<button onclick="exportToExcel()" 
+  class="ml-4 bg-gradient-to-r from-green-500 to-green-700 text-white px-5 py-3 rounded-xl shadow-lg hover:from-green-600 hover:to-green-800 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
+  📊 Export to Excel
+</button>
   </div>
 
   <!-- Search Input -->
@@ -109,6 +114,7 @@
            placeholder="🔍 Search by Name or Mobile" 
            class="w-3/4 border border-gray-300 p-4 rounded-xl shadow-sm focus:outline-none focus:ring-4 focus:ring-indigo-300 text-lg transition-all duration-300 hover:shadow-md" />
   </div>
+  
 
   <!-- Student Results -->
   <div id="studentResults" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -133,7 +139,7 @@
 </div>
 
 <!-- Scripts -->
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 let allStudents = [];
 
@@ -293,6 +299,24 @@ fetch("/api/username", { credentials: 'include' })
   .catch(() => document.getElementById("username").innerText = "Guest");
 
 window.onload = loadStudents;
+
+function exportToExcel() {
+	  if (allStudents.length === 0) {
+	    alert("⚠ No student data to export!");
+	    return;
+	  }
+
+	  // Convert JSON to worksheet
+	  const worksheet = XLSX.utils.json_to_sheet(allStudents);
+
+	  // Create a new workbook
+	  const workbook = XLSX.utils.book_new();
+	  XLSX.utils.book_append_sheet(workbook, worksheet, "Students");
+
+	  // Export to file
+	  XLSX.writeFile(workbook, "students.xlsx");
+	}
+
 </script>
 
 
