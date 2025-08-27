@@ -15,13 +15,14 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     List<Payment> findByCourseTypeAndStatusDisplayAndBatchCode(String courseType, String statusDisplay, String batchCode);
 
-    List<Payment> findByStudentId(Long studentId);  // 🔥 use int here, not Long
+    List<Payment> findByStudentId(long studentId);  // ✅ fixed type
 
     List<Payment> findByPaymentDateBetweenOrderByPaymentDateDesc(LocalDate fromDate, LocalDate toDate);
 
     @Query("SELECT p FROM Payment p WHERE p.paymentDate BETWEEN :from AND :to ORDER BY p.paymentDate DESC")
     List<Payment> findPaymentsBetweenDates(@Param("from") LocalDate from, @Param("to") LocalDate to);
- // 🔍 Bulk update payments’ statusDisplay by batchCode
+
+    // 🔍 Bulk update payments’ statusDisplay by batchCode
     @Modifying
     @Transactional
     @Query("UPDATE Payment p SET p.statusDisplay = :status WHERE p.batchCode = :batchCode")

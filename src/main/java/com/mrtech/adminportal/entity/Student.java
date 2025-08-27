@@ -26,7 +26,7 @@
 		    private String coursefee;
 		    private String discount;
 		    private double totalfee;
-		    private String term_1;  
+		    private double term_1;  
 		    private double duefee;
 		    private String status;
 		    private double paidamount;
@@ -147,13 +147,13 @@
 		    public void setTotalfee(double totalfee) {
 		        this.totalfee = totalfee;
 		    }
-		    public String getTerm_1() {
+		    public double getTerm_1() {
 		        return term_1;
 		    }
-		
-		    public void setTerm_1(String term_1) {
+		    public void setTerm_1(double term_1) {
 		        this.term_1 = term_1;
 		    }
+
 		    public double getDuefee() {
 		        return duefee;
 		    }
