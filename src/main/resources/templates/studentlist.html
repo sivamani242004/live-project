@@ -372,6 +372,18 @@
     .catch(() => {
       document.getElementById("username").innerText = "Guest";
     });
+//Fetch Student Count
+  fetch("http://localhost:8080/api/students/count")
+    .then(res => res.json())
+    .then(count => {
+      const countElement = document.querySelector(".text-2xl.mt-2");
+      if (countElement) {
+        countElement.textContent = count;
+      }
+    })
+    .catch(err => console.error("❌ Failed to load count:", err));
+
+  
 </script>
 
 

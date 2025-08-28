@@ -13,6 +13,9 @@ import com.mrtech.adminportal.entity.Student;
 
 public interface StudentRepository extends JpaRepository<Student, Integer> {
 
+    @Query("SELECT SUM(s.paidamount) FROM Student s") // ✅ match exactly entity field name
+    Double getTotalPaidAmount();
+
     // 🔍 Search by name or mobile
     List<Student> findByNameContainingIgnoreCaseOrMobileContaining(String name, String mobile);
 
@@ -36,4 +39,11 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
     @Transactional
     @Query("UPDATE Student s SET s.status = :status WHERE s.batch = :batchId")
     int updateStatusByBatch(String batchId, String status);
+
+ // StudentRepository.java
+    @Query("SELECT SUM(s.duefee) FROM Student s WHERE s.duefee > 0")
+    Double getTotalUpcomingDue();
+    
+
+	
 }

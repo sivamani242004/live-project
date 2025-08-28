@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mrtech.adminportal.entity.Payment;
 import com.mrtech.adminportal.entity.Student;
 import com.mrtech.adminportal.repository.StudentRepository;
+import com.mrtech.adminportal.service.StudentService;
 
 @RestController
 @RequestMapping("/api/students")
@@ -30,7 +31,7 @@ import com.mrtech.adminportal.repository.StudentRepository;
 public class StudentController {
     @Autowired
     private StudentRepository studentRepository;
-
+    
     @PostMapping
     public ResponseEntity<Student> registerStudent(@RequestBody Student student) {
         return new ResponseEntity<>(studentRepository.save(student), HttpStatus.CREATED);
@@ -104,9 +105,19 @@ public class StudentController {
         model.addAttribute("students", students);
         return "your-html-template-name"; // e.g., "dashboard"
     }
+    @GetMapping("/total-fees")
+    public ResponseEntity<Double> getTotalFees() {
+        Double total = studentRepository.getTotalPaidAmount();
+        return ResponseEntity.ok(total != null ? total : 0.0);
+    }
+    @Autowired
+    private StudentService studentService;
 
-
-
+    @GetMapping("/upcoming-due")
+    public ResponseEntity<Double> getUpcomingDue() {
+        Double totalDue = studentService.getTotalUpcomingDue();
+        return ResponseEntity.ok(totalDue);
+    }
 
 
 
