@@ -534,13 +534,15 @@
               <h1>Daily Transactions</h1>
               <!-- Pagination Controls -->
 <div class="flex justify-center items-center gap-2 mb-4 text-sm" id="paginationControls">
-  <button onclick="goToPage(1)" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">«</button>
+  <button onclick="firstPage()" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">«</button>
   <button onclick="prevPage()" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">&lt;</button>
-  <input type="text" id="currentPage" value="1" class="w-10 text-center border border-gray-300 rounded" readonly />
+  <input type="number" id="currentPage" value="1" class="w-12 text-center border border-gray-300 rounded" min="1" />
   <span id="totalPages" class="text-gray-600">of 1</span>
   <button onclick="nextPage()" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">&gt;</button>
-  <button onclick="goToPage(totalPages)" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">»</button>
+  <button onclick="lastPage()" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">»</button>
 </div>
+
+
               
               <div class="overflow-auto">
                 <table id="table1">
@@ -869,51 +871,140 @@ document.getElementById("searchInput").addEventListener("input", function () {
       alert("Failed to save payment. Try again.");
     });
 });
-//Fetch data from payment table
-let allBatchStudents = [];
-let currentBatchPage = 1;
-const batchRowsPerPage = 5;
-let totalBatchPages = 1;
-//============================
-//Fetch All Payments (Default)
-//============================
-function fetchDailyPayments() {
-	  fetch("http://localhost:8080/api/payments")
-	    .then((response) => {
-	      if (!response.ok) throw new Error("Failed to fetch payments");
-	      return response.json();
-	    })
-	    .then(data => {
-	      data.sort((a, b) => new Date(b.paymentDate) - new Date(a.paymentDate)); // 🔹 latest first
 
-	      const tableBody = document.getElementById("transactionTable");
-	      tableBody.innerHTML = "";
+  //filter data with date  and fetch daily payments
+   let allPayments = [];   // Holds all payments (filtered or unfiltered)
+  let currentPage = 1;
+  const rowsPerPage = 4; // Rows per page 
 
-	      if (data.length === 0) {
-	        tableBody.innerHTML = `<tr><td colspan="9">No daily transactions found.</td></tr>`;
-	        return;
-	      }
+  // Load all payments initially
+  async function loadAllPayments() {
+    try {
+      const response = await fetch("http://localhost:8080/api/payments");
+      allPayments = await response.json() || [];
 
-	      data.forEach(payment => {
-	        const row = document.createElement("tr");
-	        row.innerHTML = `
-	          <td>${payment.studentId || ""}</td>
-	          <td>${payment.batchCode || ""}</td>
-	          <td>${payment.statusDisplay || "N/A"}</td>
-	          <td>${payment.courseType || ""}</td>
-	          <td>${payment.studentName || ""}</td>
-	          <td>${payment.phoneNumber || ""}</td>
-	          <td>₹ ${payment.amountPaid ? payment.amountPaid.toFixed(2) : "0.00"}</td>
-	          <td>${payment.term || ""}</td>
-	          <td>${payment.paymentDate || ""}</td>
-	        `;
-	        tableBody.appendChild(row);
-	      });
-	    })
-	    .catch((error) => {
-	      console.error("Error loading payments:", error);
-	    });
-	}
+      // ✅ Reset to first page
+      currentPage = 1;
+      renderTable();
+    } catch (error) {
+      console.error("Error fetching payments:", error);
+    }
+  }
+
+  // Filter payments by date (server-side)
+  async function filterPayments() {
+    const fromDate = document.getElementById("fromDate").value;
+    const toDate = document.getElementById("toDate").value;
+
+    if (!fromDate || !toDate) {
+      alert("Please select both From and To dates");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/payments/filter?fromDate=${fromDate}&toDate=${toDate}`
+      );
+      allPayments = await response.json() || [];
+
+      // ✅ Reset to first page
+      currentPage = 1;
+      renderTable();
+    } catch (error) {
+      console.error("Error filtering payments:", error);
+    }
+  }
+
+  // Render table with pagination
+  function renderTable() {
+    const tbody = document.getElementById("transactionTable");
+
+    // ✅ Always clear table completely
+    tbody.innerHTML = "";
+
+    // ✅ Calculate total pages correctly
+    const totalPages = Math.max(Math.ceil(allPayments.length / rowsPerPage), 1);
+    document.getElementById("totalPages").innerText = "of " + totalPages;
+    document.getElementById("currentPage").value = currentPage;
+
+    // ✅ Slice only rowsPerPage data
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = Math.min(start + rowsPerPage, allPayments.length);
+    const pageData = allPayments.slice(start, end);
+
+    if (pageData.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="9" class="text-center text-gray-500">No records found</td></tr>`;
+      return;
+    }
+
+    // ✅ Render only paginated data
+    pageData.forEach((payment) => {
+      const row = `
+        <tr>
+          <td>${payment.studentId}</td>
+          <td>${payment.batchCode}</td>
+          <td>${payment.statusDisplay || ""}</td>
+          <td>${payment.courseType}</td>
+          <td>${payment.studentName}</td>
+          <td>${payment.phoneNumber}</td>
+          <td>${payment.amountPaid}</td>
+          <td>${payment.term}</td>
+          <td>${payment.paymentDate}</td>
+        </tr>
+      `;
+      tbody.insertAdjacentHTML("beforeend", row);
+    });
+  }
+
+  // Pagination functions
+  function nextPage() {
+    const totalPages = Math.ceil(allPayments.length / rowsPerPage);
+    if (currentPage < totalPages) {
+      currentPage++;
+      renderTable();
+    }
+  }
+
+  function prevPage() {
+    if (currentPage > 1) {
+      currentPage--;
+      renderTable();
+    }
+  }
+
+  function goToPage(page) {
+    const totalPages = Math.ceil(allPayments.length / rowsPerPage);
+    if (page >= 1 && page <= totalPages) {
+      currentPage = page;
+      renderTable();
+    } else {
+      document.getElementById("currentPage").value = currentPage;
+    }
+  }
+
+  function firstPage() {
+    currentPage = 1;
+    renderTable();
+  }
+
+  function lastPage() {
+    const totalPages = Math.ceil(allPayments.length / rowsPerPage);
+    currentPage = totalPages;
+    renderTable();
+  }
+
+  // Setup event listener for page input
+  document.addEventListener("DOMContentLoaded", () => {
+    const pageInput = document.getElementById("currentPage");
+    pageInput.addEventListener("change", () => {
+      const page = parseInt(pageInput.value);
+      goToPage(page);
+    });
+
+    // ✅ Load data when DOM is ready
+    loadAllPayments();
+  });
+
 //batch payments 
 function getDetails() {
     	  const course = document.getElementById("CourseType").value.trim();
@@ -940,7 +1031,7 @@ function getDetails() {
     	    });
     	}
       //renderfor BatchTablePage
-      function renderBatchTablePage(page) {
+       function renderBatchTablePage(page) {
     	  const tableBody = document.getElementById("BatchTableBody");
     	  tableBody.innerHTML = "";
 
