@@ -12,12 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import com.mrtech.adminportal.entity.Payment;
 import com.mrtech.adminportal.entity.Student;
-import com.mrtech.adminportal.repository.StudentRepository;
-<<<<<<< HEAD
-import com.mrtech.adminportal.service.StudentService;
-=======
 import com.mrtech.adminportal.repository.PaymentRepository;
->>>>>>> 8740bec9940737421966a689b77aad64db29aac3
+import com.mrtech.adminportal.repository.StudentRepository;
+import com.mrtech.adminportal.service.StudentService;
 
 @RestController
 @RequestMapping("/api/students")
@@ -26,21 +23,18 @@ public class StudentController {
 
     @Autowired
     private StudentRepository studentRepository;
-<<<<<<< HEAD
-    
-=======
 
     @Autowired
     private PaymentRepository paymentRepository;
 
+    @Autowired
+    private StudentService studentService;
+
     // 🟢 Register student + create initial payment
->>>>>>> 8740bec9940737421966a689b77aad64db29aac3
     @PostMapping
     public ResponseEntity<Student> registerStudent(@RequestBody Student student) {
-        // 1️⃣ Save Student
         Student savedStudent = studentRepository.save(student);
 
-        // 2️⃣ Create Payment record
         Payment payment = new Payment();
         payment.setStudentId(savedStudent.getId());
         payment.setStudentName(savedStudent.getName());
@@ -48,23 +42,21 @@ public class StudentController {
         payment.setBatchCode(savedStudent.getBatch());
         payment.setPhoneNumber(savedStudent.getMobile());
 
-        // Convert course fee (String → double if needed)
         double courseFee = 0.0;
         try {
             courseFee = Double.parseDouble(savedStudent.getCoursefee());
         } catch (Exception e) {
-            courseFee = savedStudent.getTotalfee(); // fallback
+            courseFee = savedStudent.getTotalfee();
         }
 
         payment.setTotalfee(courseFee);
-        payment.setAmountPaid(savedStudent.getTerm_1()); // first installment
+        payment.setAmountPaid(savedStudent.getTerm_1());
         payment.setRemainingDue(savedStudent.getDuefee());
-        payment.setTotalDue(courseFee - savedStudent.getPaidamount()); // total fee - paid
+        payment.setTotalDue(courseFee - savedStudent.getPaidamount());
         payment.setPaymentDate(LocalDate.now());
         payment.setTerm("Term-1");
-        payment.setStatusDisplay(savedStudent.getStatus()); // "Pending" / "Paid"
+        payment.setStatusDisplay(savedStudent.getStatus());
 
-        // 3️⃣ Save Payment
         paymentRepository.save(payment);
 
         return new ResponseEntity<>(savedStudent, HttpStatus.CREATED);
@@ -94,8 +86,7 @@ public class StudentController {
     // 📋 Get all students
     @GetMapping("/getstudents")
     public ResponseEntity<List<Student>> getAllStudents() {
-        List<Student> students = studentRepository.findAll();
-        return ResponseEntity.ok(students);
+        return ResponseEntity.ok(studentRepository.findAll());
     }
 
     // ✏️ Update student (and sync payments if needed)
@@ -123,10 +114,10 @@ public class StudentController {
 
             Student saved = studentRepository.save(existing);
 
-            // 🟡 Optional: also update payment record if exists
+            // Update payment record if exists
             List<Payment> payments = paymentRepository.findByStudentId((long) saved.getId());
             if (!payments.isEmpty()) {
-                Payment payment = payments.get(0); // first payment record
+                Payment payment = payments.get(0);
                 double courseFee = 0.0;
                 try {
                     courseFee = Double.parseDouble(saved.getCoursefee());
@@ -161,29 +152,24 @@ public class StudentController {
     }
 
     // 🔗 Thymeleaf view
-    @GetMapping("/student")
-    public String getAllStudents(Model model) {
-        List<Student> students = studentRepository.findAll();
-        model.addAttribute("students", students);
+    @GetMapping("/student-view")
+    public String getStudentView(Model model) {
+        model.addAttribute("students", studentRepository.findAll());
         return "your-html-template-name"; // e.g., "dashboard"
     }
-<<<<<<< HEAD
+
+    // 📊 Get total fees collected
     @GetMapping("/total-fees")
     public ResponseEntity<Double> getTotalFees() {
         Double total = studentRepository.getTotalPaidAmount();
         return ResponseEntity.ok(total != null ? total : 0.0);
     }
-    @Autowired
-    private StudentService studentService;
 
+    // 📆 Get upcoming due amount
     @GetMapping("/upcoming-due")
     public ResponseEntity<Double> getUpcomingDue() {
         Double totalDue = studentService.getTotalUpcomingDue();
-        return ResponseEntity.ok(totalDue);
+        return ResponseEntity.ok(totalDue != null ? totalDue : 0.0);
     }
-
-
-
-=======
->>>>>>> 8740bec9940737421966a689b77aad64db29aac3
 }
+//hello
