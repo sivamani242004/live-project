@@ -14,7 +14,7 @@ import jakarta.transaction.Transactional;
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
     List<Payment> findByCourseTypeAndStatusDisplayAndBatchCode(String courseType, String statusDisplay, String batchCode);
 
-    List<Payment> findByStudentId(int studentId);   // ✅ match entity field type (int)
+    List<Payment> findByStudentId(long studentId);   // ✅ match entity field type (int)
 
     List<Payment> findByPaymentDateBetweenOrderByPaymentDateDesc(LocalDate fromDate, LocalDate toDate);
 

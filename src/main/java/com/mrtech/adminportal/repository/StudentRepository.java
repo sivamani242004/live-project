@@ -30,7 +30,7 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
 
     // 🔹 Find all students in a batch
     List<Student> findByBatch(String batch);
-
+    
     // 🔹 Bulk update student status by batch
     @Modifying
     @Transactional

@@ -186,4 +186,12 @@ public class StudentController {
 
         return ResponseEntity.ok(response);
     }
+ // 📌 Get students by batch
+    @GetMapping("/byBatch/{batchId}")
+    public ResponseEntity<List<Student>> getStudentsByBatch(@PathVariable String batchId) {
+        List<Student> students = studentRepository.findByBatch(batchId);
+        return ResponseEntity.ok(students);
+    }
+
+    
 }
