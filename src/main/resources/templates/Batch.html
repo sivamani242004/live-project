@@ -202,7 +202,8 @@
     .then(res => res.ok ? res.text() : Promise.reject())
     .then(username => document.getElementById("username").innerText = username)
     .catch(() => document.getElementById("username").innerText = "Guest");
-
+//ADD LOGOUT FUNCTION
+// Logout function
   // Add batch
   document.getElementById("courseForm").addEventListener("submit", e => {
     e.preventDefault();
