@@ -3,15 +3,23 @@ import com.mrtech.adminportal.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-	@Service
-	public class StudentService {
+@Service
+public class StudentService {
 
-	    @Autowired
-	    private StudentRepository studentRepository;
+    @Autowired
+    private StudentRepository studentRepository;
 
-	    public long getTotalStudents() {
-	        return studentRepository.count();
-	    }
-	}
+    public long getTotalStudents() {
+        return studentRepository.count();
+    }
+
+    public Double getTotalUpcomingDue() {
+        Double due = studentRepository.getTotalUpcomingDue();
+        return due != null ? due : 0.0;
+    }
+}
+	    
+
+	
 
 

@@ -13,7 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import com.mrtech.adminportal.entity.Payment;
 import com.mrtech.adminportal.entity.Student;
 import com.mrtech.adminportal.repository.StudentRepository;
+<<<<<<< HEAD
+import com.mrtech.adminportal.service.StudentService;
+=======
 import com.mrtech.adminportal.repository.PaymentRepository;
+>>>>>>> 8740bec9940737421966a689b77aad64db29aac3
 
 @RestController
 @RequestMapping("/api/students")
@@ -22,11 +26,15 @@ public class StudentController {
 
     @Autowired
     private StudentRepository studentRepository;
+<<<<<<< HEAD
+    
+=======
 
     @Autowired
     private PaymentRepository paymentRepository;
 
     // 🟢 Register student + create initial payment
+>>>>>>> 8740bec9940737421966a689b77aad64db29aac3
     @PostMapping
     public ResponseEntity<Student> registerStudent(@RequestBody Student student) {
         // 1️⃣ Save Student
@@ -159,4 +167,23 @@ public class StudentController {
         model.addAttribute("students", students);
         return "your-html-template-name"; // e.g., "dashboard"
     }
+<<<<<<< HEAD
+    @GetMapping("/total-fees")
+    public ResponseEntity<Double> getTotalFees() {
+        Double total = studentRepository.getTotalPaidAmount();
+        return ResponseEntity.ok(total != null ? total : 0.0);
+    }
+    @Autowired
+    private StudentService studentService;
+
+    @GetMapping("/upcoming-due")
+    public ResponseEntity<Double> getUpcomingDue() {
+        Double totalDue = studentService.getTotalUpcomingDue();
+        return ResponseEntity.ok(totalDue);
+    }
+
+
+
+=======
+>>>>>>> 8740bec9940737421966a689b77aad64db29aac3
 }

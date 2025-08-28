@@ -231,16 +231,15 @@
               >
                 Total Fees Collected
               </h3>
-              <p
+             	 <p id="totalFees"
                 class="text-3xl mt-2 font-bold"
-                style="color: var(--success-color)"
+                style="color: var(--block-color)"
                 th:text="'₹' + ${totalFees}"
               >
                 ₹0
               </p>
             </div>
-          </div>
-
+            </div>
           <div
             class="bg-white p-6 rounded-xl shadow hover:shadow-xl transition animate-fadeInScale delay-500 flex items-center gap-4"
           >
@@ -256,9 +255,9 @@
               >
                 Upcoming Due Payments
               </h3>
-              <p
+              <p id="upcomingDue"
                 class="text-3xl mt-2 font-bold"
-                style="color: var(--danger-color)"
+                style="color: var(--block-color)"
                 th:text="'₹' + ${upcomingDue}"
               >
                 ₹0
@@ -561,8 +560,22 @@ function previewStudent(id) {
 	function closeModal() {
 	  document.getElementById("studentModal").classList.add("hidden");
 	}
-
-
+	// Total Fees Collected
+	fetch("http://localhost:8080/api/students/total-fees")
+	  .then(res => res.json())
+	  .then(totalFees => {
+	    const el = document.querySelector("#totalFees");
+	    if (el) el.innerHTML = `<b>₹${(totalFees || 0).toLocaleString('en-IN')}</b>`;
+	  })
+	  .catch(err => console.error(err));
+	// Upcoming Due Payments
+	fetch("http://localhost:8080/api/students/upcoming-due")
+	  .then(res => res.json())
+	  .then(dueAmount => {
+	    const el = document.querySelector("#upcomingDue");
+	    if (el) el.innerHTML = `<b>₹${(dueAmount || 0).toLocaleString('en-IN')}</b>`;
+	  })
+	  .catch(err => console.error(err));
     </script>
   </body>
 </html>
