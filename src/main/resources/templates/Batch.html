@@ -186,12 +186,30 @@
                 <th class="px-4 py-3 text-left">Trainer</th>
                 <th class="px-4 py-3 text-left">Status</th>
                 <th class="px-4 py-3 text-center">Action</th>
+                <th class="px-4 py-3 text-center">Details</th>
+                
               </tr>
             </thead>
             <tbody id="courseTableBody" class="divide-y divide-gray-100 font-medium"></tbody>
           </table>
         </div>
       </div>
+         <!-- Student Details -->
+<div id="studentDetails" class="hidden mt-6">
+  <h2 class="text-xl font-bold mb-2">Student Details</h2>
+  <table class="w-full border border-gray-200">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="border px-4 py-2">Name</th>
+        <th class="border px-4 py-2">Mobile</th>
+        <th class="border px-4 py-2">Total Fee</th>
+        <th class="border px-4 py-2">Paid</th>
+        <th class="border px-4 py-2">Due</th>
+      </tr>
+    </thead>
+    <tbody id="studentTableBody"></tbody>
+  </table>
+</div>  
     </div>
   </main>
 </div>
@@ -252,6 +270,15 @@
                   <option value="Completed" ${batch.status === 'Completed' ? 'selected' : ''}>Completed</option>
                 </select>
               </td>
+              <td>
+              <button 
+                onclick="viewStudents('${batch.batchid}')"
+                class="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700">
+                View
+              </button>
+            </td>
+
+
             </tr>`;
         });
       });
@@ -338,7 +365,45 @@ document.getElementById("coursestatusDropdown").addEventListener("change", funct
     })
     .catch(err => console.error("Error exporting batches:", err));
 }
+// batches 
 
+// View students of a batch
+ function viewStudents(batchId) {
+  console.log("Fetching students for batch:", batchId); // debug log
+
+  fetch(`http://localhost:8080/api/students/byBatch/${batchId}`)
+    .then(response => {
+      if (!response.ok) throw new Error("Failed to fetch");
+      return response.json();
+    })
+    .then(data => {
+      const tbody = document.getElementById("studentTableBody");
+      tbody.innerHTML = "";
+
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-2">No students found</td></tr>`;
+      } else {
+        data.forEach(student => {
+          const row = `
+            <tr>
+              <td class="border px-4 py-2">${student.name}</td>
+              <td class="border px-4 py-2">${student.mobile}</td>
+              <td class="border px-4 py-2">₹ ${student.totalfee}</td>
+              <td class="border px-4 py-2">₹ ${student.paidamount}</td>
+              <td class="border px-4 py-2">₹ ${student.duefee}</td>
+            </tr>
+          `;
+          tbody.innerHTML += row;
+        });
+      }
+
+      document.getElementById("studentDetails").classList.remove("hidden");
+    })
+    .catch(error => {
+      alert("⚠ Unable to fetch student details.");
+      console.error(error);
+    });
+}
 </script>
 
 </body>
