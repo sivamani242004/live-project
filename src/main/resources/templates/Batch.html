@@ -7,84 +7,115 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
   <style>
-    :root {
+     :root {
       --primary-color: #113C71;
       --secondary-color: #f8f9fc;
       --accent-color: #03306e;
       --success-color: #16a34a;
       --danger-color: #dc2626;
+      --warning-color: #f59e0b;
       --text-color: #333333;
       --muted-text: #6b7280;
       --white: #ffffff;
       --font-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       --transition-speed: 0.3s;
-      --card-radius: 12px;
-      --shadow-elevation: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: var(--font-base);
+      --card-radius: 16px;
+      --shadow-elevation: 0 8px 24px rgba(0, 0, 0, 0.08);
     }
 
     body {
-      background-color: #f0f0f0;
+      background: linear-gradient(135deg, #f0f4f9, #e9eef5);
+      font-family: var(--font-base);
+      color: var(--text-color);
     }
 
+    /* Sidebar Links */
     .slide-link {
       position: relative;
       overflow: hidden;
-      transition: background 0.3s ease;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    .slide-link:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateX(4px);
+    }
+    .slide-link.active {
+      background: linear-gradient(135deg, #1e40af, #3b82f6);
+      border-radius: 10px;
+      padding-left: 1.5rem;
+      font-weight: bold;
     }
 
-    .slide-link::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.1);
-      transition: left var(--transition-speed) ease;
+    /* Card Styling */
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border-radius: var(--card-radius);
+      box-shadow: var(--shadow-elevation);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
     }
 
-    .slide-link:hover::before {
-      left: 0;
-    }
-/* hello */
-    .status-badge {
-      display: inline-block;
-      padding: 0.35rem 0.75rem;
-      font-size: 0.75rem;
+    /* Premium Select */
+    .premium-select {
+      background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+      border: 1px solid #c7d2fe;
+      color: #1e3a8a;
       font-weight: 600;
-      border-radius: 9999px;
-      color: white;
-      animation: pulse 2s infinite;
+      border-radius: 12px;
+      padding: 0.6rem 2.5rem 0.6rem 1rem;
+      appearance: none;
+      background-image: url('https://cdn-icons-png.flaticon.com/512/32/32195.png');
+      background-size: 14px;
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+    }
+    .premium-select:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+    }
+
+    /* Status Badges */
+    .status-badge {
+      padding: 0.3rem 0.7rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.8rem;
     }
     .status-badge.ongoing {
-      background-color: #22c55e;
-      box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+      background-color: #e0f7e9;
+      color: #166534;
+      border: 1px solid #16a34a;
     }
     .status-badge.upcoming {
-      background-color: #facc15;
-      color: #1f2937;
-      box-shadow: 0 0 10px rgba(250, 204, 21, 0.6);
+      background-color: #fff7ed;
+      color: #92400e;
+      border: 1px solid #f59e0b;
     }
     .status-badge.completed {
-      background-color: #3b82f6;
-      box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+      background-color: #eef2ff;
+      color: #3730a3;
+      border: 1px solid #4338ca;
     }
-    @keyframes pulse {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-      50% {
-        transform: scale(1.05);
-        opacity: 0.85;
-      }
+
+    /* Buttons */
+    .btn-premium {
+      background: linear-gradient(135deg, #4f46e5, #4338ca);
+      color: white;
+      font-weight: 600;
+      border-radius: 12px;
+      padding: 0.6rem 1.5rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+    }
+    .btn-premium:hover {
+      background: linear-gradient(135deg, #4338ca, #312e81);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(67, 56, 202, 0.5);
     }
   </style>
 </head>
@@ -168,41 +199,53 @@
       </div>
 
       <!-- Batches List -->
-      <div class="bg-white shadow-lg rounded-2xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300">
-        <h2 class="text-2xl font-semibold text-indigo-800 mb-4 flex items-center gap-3">
-          <i class="fas fa-list-ul text-indigo-600"></i> Batches List
-        </h2>
-        <button onclick="exportBatchesToExcel()" 
-    class="bg-gradient-to-r from-green-500 to-green-700 text-white px-5 py-3 rounded-xl shadow-lg hover:from-green-600 hover:to-green-800 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
-    📊 Export to Excel
-  </button>
-  <!-- Filter Dropdown -->
-      <select id="statusFilter" class="border p-2 rounded text-sm">
-        <option value="All">All</option>
-        <option value="Ongoing">Ongoing</option>
-        <option value="Upcoming">Upcoming</option>
-        <option value="Completed">Completed</option>
-      </select>
-    </div>
+<!-- Batches List Section -->
+<div class="card p-8">
+  <!-- Section Header -->
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-2xl font-semibold text-indigo-800 flex items-center gap-3">
+      <i class="fas fa-list-ul text-indigo-600"></i> Batches List
+    </h2>
+    <button 
+      onclick="exportBatchesToExcel()" 
+      class="btn-premium flex items-center gap-2 text-sm">
+      📊 Export to Excel
+    </button>
   </div>
-        <div class="overflow-x-auto">
-          <table class="min-w-full text-sm border border-gray-200 rounded-lg overflow-hidden">
-            <thead class="bg-indigo-100 text-indigo-800 sticky top-0 z-10">
-              <tr>
-                <th class="px-4 py-3 text-left">Batch ID</th>
-                <th class="px-4 py-3 text-left">Batch Name</th>
-                <th class="px-4 py-3 text-left">Duration</th>
-                <th class="px-4 py-3 text-left">Trainer</th>
-                <th class="px-4 py-3 text-left">Status</th>
-                <th class="px-4 py-3 text-center">Action</th>
-                <th class="px-4 py-3 text-center">Details</th>
-                
-              </tr>
-            </thead>
-            <tbody id="courseTableBody" class="divide-y divide-gray-100 font-medium"></tbody>
-          </table>
-        </div>
-      </div>
+
+  <!-- Filter Dropdown -->
+  <div class="mb-4 flex items-center gap-3">
+    <label for="statusFilter" class="text-sm font-medium text-gray-700">
+      Filter by Status:
+    </label>
+    <select id="statusFilter" class="premium-select text-sm">
+      <option value="All">All</option>
+      <option value="Ongoing">✅ Ongoing</option>
+      <option value="Upcoming">⏳ Upcoming</option>
+      <option value="Completed">✔ Completed</option>
+    </select>
+  </div>
+
+  <!-- Table -->
+  <div style="max-height: 600px;">
+    <table class="min-w-full text-sm border border-gray-200 rounded-lg">
+      <thead style="background-color:#514c9c;color:white;" class="sticky top-0 z-10">
+        <tr>
+          <th class="px-4 py-3 text-left">Batch ID</th>
+          <th class="px-4 py-3 text-left">Batch Name</th>
+          <th class="px-4 py-3 text-left">Duration</th>
+          <th class="px-4 py-3 text-left">Trainer</th>
+          <th class="px-4 py-3 text-left">Status</th>
+          <th class="px-4 py-3 text-center">Action</th>
+          <th class="px-4 py-3 text-center">Details</th>
+        </tr>
+      </thead>
+      <tbody id="courseTableBody" class="divide-y divide-gray-100 font-medium"></tbody>
+    </table>
+  </div>
+</div>
+    </div>
+  </main>
          <!-- Student Details -->
 <div id="studentDetails" class="hidden mt-6">
   <h2 class="text-xl font-bold mb-2">Student Details</h2>
@@ -300,6 +343,20 @@ function fetchBatches() {
     })
     .catch(err => console.error(err));
 }
+//✅ Apply Filter
+function applyFilter() {
+  const filter = document.getElementById("statusFilter").value;
+  let filteredData = allBatches;
+
+  if (filter !== "All") {
+    filteredData = allBatches.filter(b => b.status === filter);
+  }
+
+  renderBatches(filteredData);
+}
+
+// ✅ Attach filter listener
+document.getElementById("statusFilter").addEventListener("change", applyFilter);
 
 // Render batches table
 function renderBatches(data) {
@@ -339,10 +396,12 @@ function updateStatus(id, newStatus) {
 	  }
 	}
 // ✅ View batch details in modal (STATIC VIEW ONLY)
+// ✅ View batch details with students
 function viewBatch(id) {
   const batch = allBatches.find(b => b.batchid === id);
   if (!batch) return alert("Batch not found!");
 
+  // Show batch info
   document.getElementById("batchDetails").innerHTML = `
     <div class="bg-indigo-50 p-4 rounded-lg shadow hover:shadow-lg transition">
       <p><b>Batch ID:</b> ${batch.batchid}</p>
@@ -351,7 +410,48 @@ function viewBatch(id) {
       <p><b>Trainer:</b> ${batch.trainer}</p>
       <p><b>Status:</b> <span class="status-badge ${batch.status.toLowerCase()}">${batch.status}</span></p>
     </div>
+    <h3 class="text-lg font-bold mt-4">👨‍🎓 Students in this Batch</h3>
+    <div class="max-h-64 overflow-y-auto rounded-lg border border-gray-200 mt-2 shadow-sm">
+    <table class="min-w-full border-collapse text-sm">
+      <thead class="bg-gray-100 sticky top-0 z-10">
+        <tr>
+          <th class="border px-4 py-2 text-left">Name</th>
+          <th class="border px-4 py-2 text-left">Mobile</th>
+          <th class="border px-4 py-2 text-left">Total Fee</th>
+          <th class="border px-4 py-2 text-left">Paid</th>
+          <th class="border px-4 py-2 text-left">Due</th>
+        </tr>
+      </thead>
+      <tbody id="studentTableInModal" class="bg-white divide-y divide-gray-100">
+        <!-- Students will be injected here -->
+      </tbody>
+    </table>
+  </div>
+      <tbody id="studentTableInModal"></tbody>
+    </table>
   `;
+
+  // Fetch students of this batch
+  fetch(`http://localhost:8080/api/students/byBatch/${id}`)
+    .then(res => res.json())
+    .then(students => {
+      const tbody = document.getElementById("studentTableInModal");
+      tbody.innerHTML = students.length
+        ? students.map(s => `
+            <tr>
+              <td class="border px-4 py-2">${s.name}</td>
+              <td class="border px-4 py-2">${s.mobile}</td>
+              <td class="border px-4 py-2">${s.totalfee}</td>
+              <td class="border px-4 py-2">${s.paidamount}</td>
+              <td class="border px-4 py-2">${s.duefee}</td>
+            </tr>
+          `).join("")
+        : `<tr><td colspan="5" class="text-center py-3 text-gray-500">No students in this batch</td></tr>`;
+    })
+    .catch(() => {
+      document.getElementById("studentTableInModal").innerHTML =
+        `<tr><td colspan="5" class="text-center py-3 text-red-500">Error loading students</td></tr>`;
+    });
 
   // Show modal
   const modal = document.getElementById("batchModal");
@@ -359,35 +459,21 @@ function viewBatch(id) {
   modal.classList.add("flex");
 }
 
-function closeModal() {
-  const modal = document.getElementById("batchModal");
-  modal.classList.add("hidden");
-  modal.classList.remove("flex");
-}
-
-// Update batch status
-function updateStatus(batchId, newStatus) {
-  fetch(`http://localhost:8080/api/batch/updateStatus/${batchId}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ status: newStatus })
-  })
-  .then(res => res.ok ? res.json() : Promise.reject())
-  .then(() => fetchBatches())
-  .catch(() => fetchBatches());
-}
-
-// Filter batches by status
-document.getElementById("statusFilter").addEventListener("change", function() {
-  const selectedStatus = this.value;
-  renderBatches(selectedStatus === "All" ? allBatches : allBatches.filter(b => b.status === selectedStatus));
-});
-
-// Export to Excel
+//✅ Export filtered batches to Excel
 function exportBatchesToExcel() {
-  if (!allBatches.length) { alert("No data!"); return; }
+  const filter = document.getElementById("statusFilter").value;
+  let dataToExport = allBatches;
 
-  const exportData = allBatches.map(b => ({
+  if (filter !== "All") {
+    dataToExport = allBatches.filter(b => b.status === filter);
+  }
+
+  if (!dataToExport.length) {
+    alert("No data to export!");
+    return;
+  }
+
+  const exportData = dataToExport.map(b => ({
     "Batch ID": b.batchid,
     "Course": b.coursename,
     "Duration": b.duration,
@@ -401,11 +487,19 @@ function exportBatchesToExcel() {
   XLSX.writeFile(workbook, "Batches_List.xlsx");
 }
 
+function closeModal() {
+    const modal = document.getElementById("batchModal");
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+  }
+
 // Initialize
 window.onload = () => {
   loadCoursesDropdown();
   fetchBatches();
 };
 </script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
 </body>
 </html>
