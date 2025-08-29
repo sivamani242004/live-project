@@ -27,14 +27,17 @@ public class StudentController {
     @Autowired
     private StudentService studentService;
 
-    // 🟢 Register student + create initial payment
+    /**
+     * 🟢 Register new student + create initial payment record
+     */
     @PostMapping
     public ResponseEntity<Student> registerStudent(@RequestBody Student student) {
+        // Save student
         Student savedStudent = studentRepository.save(student);
 
-        // Create first payment entry
+        // Create first payment record
         Payment payment = new Payment();
-        payment.setStudentId(savedStudent.getId()); // ✅ use Integer directly
+        payment.setStudentId(savedStudent.getId());
         payment.setStudentName(savedStudent.getName());
         payment.setCourseType(savedStudent.getCourse());
         payment.setBatchCode(savedStudent.getBatch());
@@ -60,7 +63,9 @@ public class StudentController {
         return ResponseEntity.status(201).body(savedStudent);
     }
 
-    // 🔍 Search students
+    /**
+     * 🔍 Search students by name or mobile
+     */
     @GetMapping("/search")
     public ResponseEntity<List<Student>> searchStudents(@RequestParam("keyword") String keyword) {
         return ResponseEntity.ok(
@@ -68,14 +73,26 @@ public class StudentController {
         );
     }
 
-    // ❌ Delete student
+    /**
+     * ❌ Delete student by ID
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStudent(@PathVariable Integer id) {
+        if (!studentRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
         studentRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/count")
+    public ResponseEntity<Long> getStudentCount() {
+        return ResponseEntity.ok(studentRepository.count());
+    }
 
-    // 🔎 Find by ID
+
+    /**
+     * 🔎 Get student by ID
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Student> getStudentById(@PathVariable Integer id) {
         return studentRepository.findById(id)
@@ -83,16 +100,21 @@ public class StudentController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // 📋 Get all students
+    /**
+     * 📋 Get all students
+     */
     @GetMapping
     public ResponseEntity<List<Student>> getAllStudents() {
         return ResponseEntity.ok(studentRepository.findAll());
     }
 
-    // ✏️ Update student (and sync payments if needed)
+    /**
+     * ✏️ Update student details (and sync with payment if exists)
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Student> updateStudent(@PathVariable Integer id, @RequestBody Student updatedData) {
         return studentRepository.findById(id).map(existing -> {
+            // Update fields
             existing.setName(updatedData.getName());
             existing.setEmail(updatedData.getEmail());
             existing.setMobile(updatedData.getMobile());
@@ -114,8 +136,8 @@ public class StudentController {
 
             Student saved = studentRepository.save(existing);
 
-            // Sync first payment if exists
-            List<Payment> payments = paymentRepository.findByStudentId(saved.getId()); // ✅ fixed type
+            // Sync first payment record if exists
+            List<Payment> payments = paymentRepository.findByStudentId(saved.getId());
             if (!payments.isEmpty()) {
                 Payment payment = payments.get(0);
 
@@ -143,7 +165,9 @@ public class StudentController {
         }).orElse(ResponseEntity.notFound().build());
     }
 
-    // 🔍 Filter students
+    /**
+     * 🔍 Filter students by course, status and batch
+     */
     @GetMapping("/filter")
     public ResponseEntity<List<Student>> filterStudents(
             @RequestParam String course,
@@ -154,7 +178,9 @@ public class StudentController {
         );
     }
 
-    // 📊 Get total fees collected
+    /**
+     * 📊 Get total fees collected
+     */
     @GetMapping("/total-fees")
     public ResponseEntity<Double> getTotalFees() {
         return ResponseEntity.ok(
@@ -162,7 +188,9 @@ public class StudentController {
         );
     }
 
-    // 📆 Get upcoming due amount
+    /**
+     * 📆 Get upcoming due amount
+     */
     @GetMapping("/upcoming-due")
     public ResponseEntity<Double> getUpcomingDue() {
         return ResponseEntity.ok(
@@ -170,7 +198,9 @@ public class StudentController {
         );
     }
 
-    // ✅ Student + Payment details
+    /**
+     * ✅ Get student with their payment details
+     */
     @GetMapping("/{id}/details")
     public ResponseEntity<Map<String, Object>> getStudentWithPayments(@PathVariable Integer id) {
         Optional<Student> studentOpt = studentRepository.findById(id);
@@ -178,7 +208,7 @@ public class StudentController {
             return ResponseEntity.notFound().build();
         }
 
-        List<Payment> payments = paymentRepository.findByStudentId(id); // ✅ works now
+        List<Payment> payments = paymentRepository.findByStudentId(id);
 
         Map<String, Object> response = new HashMap<>();
         response.put("student", studentOpt.get());
@@ -186,12 +216,13 @@ public class StudentController {
 
         return ResponseEntity.ok(response);
     }
- // 📌 Get students by batch
+
+    /**
+     * 📌 Get students by batch ID
+     */
     @GetMapping("/byBatch/{batchId}")
     public ResponseEntity<List<Student>> getStudentsByBatch(@PathVariable String batchId) {
-        List<Student> students = studentRepository.findByBatch(batchId);
-        return ResponseEntity.ok(students);
+        return ResponseEntity.ok(studentRepository.findByBatch(batchId));
     }
 
-    
 }
