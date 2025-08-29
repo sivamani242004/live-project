@@ -89,7 +89,7 @@ public class BatchController {
         });
         return ResponseEntity.ok(codes);
     }
-
+    
     // ✅ Update Batch + Students + Payments together
     @Transactional
     @PutMapping("/updateStatus/{id}")
