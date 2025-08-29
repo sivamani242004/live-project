@@ -176,6 +176,15 @@
     class="bg-gradient-to-r from-green-500 to-green-700 text-white px-5 py-3 rounded-xl shadow-lg hover:from-green-600 hover:to-green-800 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
     📊 Export to Excel
   </button>
+  <!-- Filter Dropdown -->
+      <select id="statusFilter" class="border p-2 rounded text-sm">
+        <option value="All">All</option>
+        <option value="Ongoing">Ongoing</option>
+        <option value="Upcoming">Upcoming</option>
+        <option value="Completed">Completed</option>
+      </select>
+    </div>
+  </div>
         <div class="overflow-x-auto">
           <table class="min-w-full text-sm border border-gray-200 rounded-lg overflow-hidden">
             <thead class="bg-indigo-100 text-indigo-800 sticky top-0 z-10">
@@ -210,89 +219,35 @@
     <tbody id="studentTableBody"></tbody>
   </table>
 </div>  
-    </div>
+ </div>
   </main>
+<div id="batchModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+  <div class="bg-white p-6 rounded-lg w-1/2 max-w-xl shadow-lg">
+    <h2 class="text-2xl font-bold mb-4 text-indigo-700">Batch Details</h2>
+    <div id="batchDetails" class="space-y-4">
+      <!-- Batch info will be injected here in card format -->
+    </div>
+    <div class="text-right mt-4">
+      <button onclick="closeModal()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Close</button>
+    </div>
+  </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-  // Load username
-  fetch("http://localhost:8080/api/username", { credentials: 'include' })
-    .then(res => res.ok ? res.text() : Promise.reject())
-    .then(username => document.getElementById("username").innerText = username)
-    .catch(() => document.getElementById("username").innerText = "Guest");
-//ADD LOGOUT FUNCTION
-// Logout function
-  // Add batch
-  document.getElementById("courseForm").addEventListener("submit", e => {
-    e.preventDefault();
-    const batchData = {
-      batchid: document.getElementById("batchid").value,
-      coursename: document.getElementById("coursestatusDropdown").value,
-      duration: parseInt(document.getElementById("duration").value),
-      trainer: document.getElementById("trainer").value,
-      status: document.getElementById("statusDropdown").value
-    };
+let allBatches = [];
+let coursesData = [];
 
-    fetch("http://localhost:8080/api/batch/add", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(batchData)
-    })
-    .then(res => res.ok ? res.json() : Promise.reject())
-    .then(() => {
-      document.getElementById("message").innerText = "Batch added successfully!";
-      e.target.reset();
-      fetchBatches();
-    })
-    .catch(() => document.getElementById("message").innerText = "Error adding batch");
-  });
+// Load username
+fetch("http://localhost:8080/api/username", { credentials: 'include' })
+  .then(res => res.ok ? res.text() : Promise.reject())
+  .then(username => document.getElementById("username").innerText = username)
+  .catch(() => document.getElementById("username").innerText = "Guest");
 
-  // Fetch batches
-  function fetchBatches() {
-    fetch("http://localhost:8080/api/batch/all")
-      .then(res => res.json())
-      .then(data => {
-        const tableBody = document.getElementById("courseTableBody");
-        tableBody.innerHTML = "";
-        data.forEach(batch => {
-          tableBody.innerHTML += `
-            <tr class="hover:bg-indigo-50 transition">
-              <td class="px-4 py-3">${batch.batchid}</td>
-              <td class="px-4 py-3">${batch.coursename}</td>
-              <td class="px-4 py-3">${batch.duration}</td>
-              <td class="px-4 py-3">${batch.trainer}</td>
-              <td class="px-4 py-3">
-                <span class="status-badge ${batch.status.toLowerCase()}">${batch.status}</span>
-              </td>
-              <td class="px-4 py-3 text-center">
-                <select onchange="updateStatus('${batch.batchid}', this.value)" class="border p-1 rounded text-sm">
-                  <option value="Ongoing" ${batch.status === 'Ongoing' ? 'selected' : ''}>Ongoing</option>
-                  <option value="Upcoming" ${batch.status === 'Upcoming' ? 'selected' : ''}>Upcoming</option>
-                  <option value="Completed" ${batch.status === 'Completed' ? 'selected' : ''}>Completed</option>
-                </select>
-              </td>
-              <td>
-              <button 
-                onclick="viewStudents('${batch.batchid}')"
-                class="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700">
-                View
-              </button>
-            </td>
-
-
-            </tr>`;
-        });
-      });
-  }
-
-  // Load courses dropdown
-  let coursesData = [];
-
+// Load courses dropdown
 function loadCoursesDropdown() {
   fetch("http://localhost:8080/api/courses/all")
     .then(res => res.json())
     .then(data => {
-      coursesData = data; // store courses for later use
+      coursesData = data;
       const dropdown = document.getElementById("coursestatusDropdown");
       dropdown.innerHTML = '<option value="">Select Course</option>';
       data.forEach(course => {
@@ -303,109 +258,154 @@ function loadCoursesDropdown() {
       });
     });
 }
+
+// Set duration when course selected
 document.getElementById("coursestatusDropdown").addEventListener("change", function () {
-	  const selectedCourse = coursesData.find(c => c.coursename === this.value);
-	  if (selectedCourse) {
-	    document.getElementById("duration").value = selectedCourse.duration || "";
-	  } else {
-	    document.getElementById("duration").value = "";
-	  }
-	});
+  const selectedCourse = coursesData.find(c => c.coursename === this.value);
+  document.getElementById("duration").value = selectedCourse ? selectedCourse.duration : "";
+});
 
-
-
-  // Update status
-  function updateStatus(batchId, newStatus) {
-    fetch(`http://localhost:8080/api/batch/updateStatus/${batchId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: newStatus })
-    })
-    .then(res => res.ok ? res.json() : Promise.reject())
-    .then(() => {
-      alert("Batch status updated to " + newStatus);
-      fetchBatches();
-    })
-    .catch(() => fetchBatches());
-  }
-
-  // Init
-  window.onload = () => {
-    loadCoursesDropdown();
-    fetchBatches();
+// Add batch
+document.getElementById("courseForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const batchData = {
+    batchid: document.getElementById("batchid").value,
+    coursename: document.getElementById("coursestatusDropdown").value,
+    duration: parseInt(document.getElementById("duration").value),
+    trainer: document.getElementById("trainer").value,
+    status: document.getElementById("statusDropdown").value
   };
-  
-  // export
-  function exportBatchesToExcel() {
+
+  fetch("http://localhost:8080/api/batch/add", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(batchData)
+  })
+  .then(res => res.ok ? res.json() : Promise.reject())
+  .then(() => {
+    document.getElementById("message").innerText = "Batch added successfully!";
+    e.target.reset();
+    fetchBatches();
+  })
+  .catch(() => document.getElementById("message").innerText = "Error adding batch");
+});
+
+// Fetch batches
+function fetchBatches() {
   fetch("http://localhost:8080/api/batch/all")
     .then(res => res.json())
     .then(data => {
-      if (!data || data.length === 0) {
-        alert("⚠ No batch data available!");
-        return;
-      }
-
-      // Select only specific fields for Excel
-      const exportData = data.map(batch => ({
-        "Batch ID": batch.batchid,
-        "Batch Name": batch.coursename,
-        "Duration (days)": batch.duration,
-        "Trainer": batch.trainer,
-        "Status": batch.status
-      }));
-
-      // Convert JSON to worksheet
-      const worksheet = XLSX.utils.json_to_sheet(exportData);
-
-      // Create workbook
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Batches");
-
-      // Download as Excel file
-      XLSX.writeFile(workbook, "Batches_List.xlsx");
+      allBatches = data;
+      renderBatches(data);
     })
-    .catch(err => console.error("Error exporting batches:", err));
+    .catch(err => console.error(err));
 }
-// batches 
 
-// View students of a batch
- function viewStudents(batchId) {
-  console.log("Fetching students for batch:", batchId); // debug log
-
-  fetch(`http://localhost:8080/api/students/byBatch/${batchId}`)
-    .then(response => {
-      if (!response.ok) throw new Error("Failed to fetch");
-      return response.json();
-    })
-    .then(data => {
-      const tbody = document.getElementById("studentTableBody");
-      tbody.innerHTML = "";
-
-      if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-2">No students found</td></tr>`;
-      } else {
-        data.forEach(student => {
-          const row = `
-            <tr>
-              <td class="border px-4 py-2">${student.name}</td>
-              <td class="border px-4 py-2">${student.mobile}</td>
-              <td class="border px-4 py-2">₹ ${student.totalfee}</td>
-              <td class="border px-4 py-2">₹ ${student.paidamount}</td>
-              <td class="border px-4 py-2">₹ ${student.duefee}</td>
-            </tr>
-          `;
-          tbody.innerHTML += row;
-        });
-      }
-
-      document.getElementById("studentDetails").classList.remove("hidden");
-    })
-    .catch(error => {
-      alert("⚠ Unable to fetch student details.");
-      console.error(error);
-    });
+// Render batches table
+function renderBatches(data) {
+  const tableBody = document.getElementById("courseTableBody");
+  tableBody.innerHTML = "";
+  data.forEach(batch => {
+    tableBody.innerHTML += `
+      <tr class="hover:bg-indigo-50 transition">
+        <td class="px-4 py-3">${batch.batchid}</td>
+        <td class="px-4 py-3">${batch.coursename}</td>
+        <td class="px-4 py-3">${batch.duration}</td>
+        <td class="px-4 py-3">${batch.trainer}</td>
+        <td class="px-4 py-3">
+          <span class="status-badge ${batch.status.toLowerCase()}">${batch.status}</span>
+        </td>
+        <td class="px-4 py-3 text-center">
+          <select onchange="updateStatus('${batch.batchid}', this.value)" class="border p-1 rounded text-sm">
+            <option value="Ongoing" ${batch.status === 'Ongoing' ? 'selected' : ''}>Ongoing</option>
+            <option value="Upcoming" ${batch.status === 'Upcoming' ? 'selected' : ''}>Upcoming</option>
+            <option value="Completed" ${batch.status === 'Completed' ? 'selected' : ''}>Completed</option>
+          </select>
+        </td>
+        <td class="px-4 py-3 text-center">
+          <button onclick="viewBatch('${batch.batchid}')"
+            class="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700 transition">
+            View
+          </button>
+        </td>
+      </tr>`;
+  });
 }
+function updateStatus(id, newStatus) {
+	  const batch = allBatches.find(b => b.batchid === id);
+	  if (batch) {
+	    batch.status = newStatus;  // update array
+	    renderTable(); // refresh table to reflect new status
+	  }
+	}
+// ✅ View batch details in modal (STATIC VIEW ONLY)
+function viewBatch(id) {
+  const batch = allBatches.find(b => b.batchid === id);
+  if (!batch) return alert("Batch not found!");
+
+  document.getElementById("batchDetails").innerHTML = `
+    <div class="bg-indigo-50 p-4 rounded-lg shadow hover:shadow-lg transition">
+      <p><b>Batch ID:</b> ${batch.batchid}</p>
+      <p><b>Course:</b> ${batch.coursename}</p>
+      <p><b>Duration:</b> ${batch.duration}</p>
+      <p><b>Trainer:</b> ${batch.trainer}</p>
+      <p><b>Status:</b> <span class="status-badge ${batch.status.toLowerCase()}">${batch.status}</span></p>
+    </div>
+  `;
+
+  // Show modal
+  const modal = document.getElementById("batchModal");
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+}
+
+function closeModal() {
+  const modal = document.getElementById("batchModal");
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+}
+
+// Update batch status
+function updateStatus(batchId, newStatus) {
+  fetch(`http://localhost:8080/api/batch/updateStatus/${batchId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status: newStatus })
+  })
+  .then(res => res.ok ? res.json() : Promise.reject())
+  .then(() => fetchBatches())
+  .catch(() => fetchBatches());
+}
+
+// Filter batches by status
+document.getElementById("statusFilter").addEventListener("change", function() {
+  const selectedStatus = this.value;
+  renderBatches(selectedStatus === "All" ? allBatches : allBatches.filter(b => b.status === selectedStatus));
+});
+
+// Export to Excel
+function exportBatchesToExcel() {
+  if (!allBatches.length) { alert("No data!"); return; }
+
+  const exportData = allBatches.map(b => ({
+    "Batch ID": b.batchid,
+    "Course": b.coursename,
+    "Duration": b.duration,
+    "Trainer": b.trainer,
+    "Status": b.status
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(exportData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Batches");
+  XLSX.writeFile(workbook, "Batches_List.xlsx");
+}
+
+// Initialize
+window.onload = () => {
+  loadCoursesDropdown();
+  fetchBatches();
+};
 </script>
-
 </body>
 </html>
