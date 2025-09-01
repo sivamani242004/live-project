@@ -1006,127 +1006,132 @@ document.getElementById("searchInput").addEventListener("input", function () {
   });
 
 //batch payments 
+// Batch Payments 
 function getDetails() {
-    	  const course = document.getElementById("CourseType").value.trim();
-    	  const status = document.getElementById("BatchStatus").value.trim();
-    	  const batch = document.getElementById("BatchCode").value.trim();
+  const course = document.getElementById("CourseType").value.trim();
+  const status = document.getElementById("BatchStatus").value.trim();
+  const batch = document.getElementById("BatchCode").value.trim();
 
-    	  if (!course || !status || !batch) {
-    	    alert("Please select Course Type, Status, and Batch Code.");
-    	    return;
-    	  }
-    	  fetch(`http://localhost:8080/api/students/filter?course=${course}&status=${status}&batch=${batch}`)
-    	    .then((response) => {
-    	      if (!response.ok) throw new Error("Failed to fetch batch students");
-    	      return response.json();
-    	    })
-    	    .then((students) => {
-    	      allBatchStudents = students;
-    	      totalBatchPages = Math.ceil(allBatchStudents.length / batchRowsPerPage);
-    	      document.getElementById("totalBatchPages").innerText = `of ${totalBatchPages}`;
-    	      renderBatchTablePage(1);
-    	    })
-    	    .catch((error) => {
-    	      console.error("Error loading batch students:", error);
-    	    });
-    	}
-      //renderfor BatchTablePage
-       function renderBatchTablePage(page) {
-    	  const tableBody = document.getElementById("BatchTableBody");
-    	  tableBody.innerHTML = "";
+  if (!course || !status || !batch) {
+    alert("Please select Course Type, Status, and Batch Code.");
+    return;
+  }
 
-    	  const start = (page - 1) * batchRowsPerPage;
-    	  const end = start + batchRowsPerPage;
-    	  const pageData = allBatchStudents.slice(start, end);
+  fetch(`http://localhost:8080/api/students/filter?course=${course}&status=${status}&batch=${batch}`)
+    .then((response) => {
+      if (!response.ok) throw new Error("Failed to fetch batch students");
+      return response.json();
+    })
+    .then((students) => {
+      allBatchStudents = students;
+      totalBatchPages = Math.ceil(allBatchStudents.length / batchRowsPerPage);
+      document.getElementById("totalBatchPages").innerText = `of ${totalBatchPages}`;
+      renderBatchTablePage(1);
+    })
+    .catch((error) => {
+      console.error("Error loading batch students:", error);
+    });
+}
 
-    	  if (pageData.length === 0) {
-    	    tableBody.innerHTML = `<tr><td colspan="9">No students found for selected batch.</td></tr>`;
-    	    return;
-    	  }
-    	  pageData.forEach((student) => {
-    	    const totalfee = parseInt(student.totalfee || 0);
-    	    const paid = parseInt(student.paidamount || 0);
-    	    const due = parseInt(student.duefee || totalfee - paid);
+// Render Batch Students Table
+const batchRowsPerPage = 5;
+let allBatchStudents = [];
+let totalBatchPages = 1;
+let currentBatchPage = 1;
 
-    	    const row = document.createElement("tr");
-    	    row.innerHTML = `
-    	      <td>${student.id || ""}</td>
-    	      <td>${student.batch || ""}</td>
-    	      <td>${student.course || ""}</td>
-    	      <td>${student.name || ""}</td>
-    	      <td>${student.mobile || ""}</td>
-    	      <td>₹ ${totalfee}</td>
-    	      <td>₹ ${paid}</td>
-    	      <td>₹ ${due}</td>
-    	      <td><button onclick="showTerms('${student.mobile}')" class="text-blue-600 underline hover:text-blue-800">View</button></td>
-    	    `;
-    	    tableBody.appendChild(row);
-    	  });
+function renderBatchTablePage(page) {
+  const tableBody = document.getElementById("BatchTableBody");
+  tableBody.innerHTML = "";
 
-    	  currentBatchPage = page;
-    	  document.getElementById("currentBatchPage").value = page;
-    	}
-      //Add Navigation Functions for batches
-      function goToBatchPage(page) {
-    	  if (page < 1 || page > totalBatchPages) return;
-    	  renderBatchTablePage(page);
-    	}
-    	function nextBatchPage() {
-    	  if (currentBatchPage < totalBatchPages) {
-    	    renderBatchTablePage(currentBatchPage + 1);
-    	  }
-    	}
-    	function prevBatchPage() {
-    	  if (currentBatchPage > 1) {
-    	    renderBatchTablePage(currentBatchPage - 1);
-    	  }
-    	}
-    	function showTerms(phoneNumber) {
-    		  // Step 1: Get student details based on phone number
-    		  const student = allBatchStudents.find(s => s.mobile === phoneNumber);
-    		  if (!student) {
-    		    alert("Student not found in batch list.");
-    		    return;
-    		  }
-    		  // Step 2: Fetch all payments by phone number
-    		  fetch(`http://localhost:8080/api/payments`)
-    		    .then((response) => response.json())
-    		    .then((data) => {
-    		      const filtered = data.filter((p) => p.phoneNumber === phoneNumber);
-    		      const tbody = document.getElementById("BatchTransactionTable");
-    		      tbody.innerHTML = "";
-    		      // Step 3: Add First Term row (from student table)
-    		      const term1Row = document.createElement("tr");
-    		      term1Row.innerHTML = `
-    		        <td>Term-1</td>
-    		        <td>${student.name || "-"}</td>
-    		        <td>₹ ${student.term_1 || "0.00"}</td>
-    		        <td>${student.joiningDate || "-"}</td>
-    		      `;
-    		      tbody.appendChild(term1Row);
-    		      // Step 4: Add subsequent payments (from payments table)
-    		      if (filtered.length === 0) {
-    		        const noDataRow = document.createElement("tr");
-    		        noDataRow.innerHTML = "<td colspan='4'>No transactions found.</td>";
-    		        tbody.appendChild(noDataRow);
-    		      } else {
-    		        filtered.forEach((p) => {
-    		          const row = document.createElement("tr");
-    		          row.innerHTML = `
-    		            <td>${p.term || "-"}</td>
-    		            <td>${p.studentName || "-"}</td>
-    		            <td>₹ ${p.amountPaid.toFixed(2)}</td>
-    		            <td>${p.paymentDate || "-"}</td>
-    		          `;
-    		          tbody.appendChild(row);
-    		        });
-    		      }
-    		      document.getElementById("termsModal").style.display = "block";
-    		    })
-    		    .catch((err) => {
-    		      console.error("Error loading transaction details:", err);
-    		    });
-    		}
+  const start = (page - 1) * batchRowsPerPage;
+  const end = start + batchRowsPerPage;
+  const pageData = allBatchStudents.slice(start, end);
+
+  if (pageData.length === 0) {
+    tableBody.innerHTML = `<tr><td colspan="9" class="text-center text-gray-500">No students found for selected batch.</td></tr>`;
+    return;
+  }
+
+  pageData.forEach((student) => {
+    const totalfee = parseFloat(student.totalfee || 0);
+    const paid = parseFloat(student.paidamount || 0);
+    const due = parseFloat(student.duefee || (totalfee - paid));
+
+    const row = `
+      <tr>
+        <td>${student.id || ""}</td>
+        <td>${student.batch || ""}</td>
+        <td>${student.course || ""}</td>
+        <td>${student.name || ""}</td>
+        <td>${student.mobile || ""}</td>
+        <td>₹ ${totalfee.toFixed(2)}</td>
+        <td>₹ ${paid.toFixed(2)}</td>
+        <td>₹ ${due.toFixed(2)}</td>
+        <td>
+          <button onclick="viewBatchDetails('${student.id}')"
+            class="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700">
+            View
+          </button>
+        </td>
+      </tr>
+    `;
+    tableBody.insertAdjacentHTML("beforeend", row);
+  });
+
+  // update page number
+  currentBatchPage = page;
+  document.getElementById("currentBatchPage").value = currentBatchPage;
+}
+
+// Pagination functions
+function nextBatchPage() {
+  if (currentBatchPage < totalBatchPages) {
+    renderBatchTablePage(currentBatchPage + 1);
+  }
+}
+
+function prevBatchPage() {
+  if (currentBatchPage > 1) {
+    renderBatchTablePage(currentBatchPage - 1);
+  }
+}
+
+function goToBatchPage(page) {
+  if (page >= 1 && page <= totalBatchPages) {
+    renderBatchTablePage(page);
+  }
+}
+
+// Show transaction modal
+function viewBatchDetails(studentId) {
+  fetch(`http://localhost:8080/api/payments/student/${studentId}`)
+    .then((res) => res.json())
+    .then((payments) => {
+      const tbody = document.getElementById("BatchTransactionTable");
+      tbody.innerHTML = "";
+
+      if (!payments.length) {
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500">No transactions found.</td></tr>`;
+      } else {
+        payments.forEach((p) => {
+          const row = `
+            <tr>
+              <td>${p.term || ""}</td>
+              <td>${p.studentName || ""}</td>
+              <td>₹ ${p.amountPaid.toFixed(2)}</td>
+              <td>${p.paymentDate || ""}</td>
+            </tr>
+          `;
+          tbody.insertAdjacentHTML("beforeend", row);
+        });
+      }
+      document.getElementById("termsModal").style.display = "block";
+    })
+    .catch((err) => {
+      console.error("Error fetching batch transactions:", err);
+    });
+}
+
       //course type
       document.addEventListener("DOMContentLoaded", function () {
         fetchCourseTypes(); // Load on page load
