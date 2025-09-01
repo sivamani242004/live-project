@@ -92,20 +92,28 @@
 <div class="max-w-6xl mx-auto p-8 bg-white shadow-xl rounded-2xl" style="margin-left:17rem; width: 100%;">
   <!-- Header Buttons -->
   <div class="flex justify-between items-center mb-8">
-    <button onclick="openRegistration()" 
-            class="bg-gradient-to-r from-indigo-500 to-indigo-700 text-white px-5 py-3 rounded-xl shadow-lg hover:from-indigo-600 hover:to-indigo-800 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
-      ➕ Register New Student
-    </button>
-    <a href="/studentlist" 
-       class="bg-gradient-to-r from-green-500 to-green-700 text-white px-5 py-3 rounded-xl shadow-lg hover:from-green-600 hover:to-green-800 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
-      📋 View Student List
-    </a>
-    <!-- Excel Export Button -->
-<button onclick="exportToExcel()" 
-  class="ml-4 bg-gradient-to-r from-green-500 to-green-700 text-white px-5 py-3 rounded-xl shadow-lg hover:from-green-600 hover:to-green-800 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
-  📊 Export to Excel
-</button>
-  </div>
+  <!-- Register New Student -->
+  <button onclick="openRegistration()" 
+    class="bg-gradient-to-r from-[#495579] to-[#263159] text-white px-5 py-3 rounded-xl shadow-lg 
+           hover:from-[#5a668f] hover:to-[#1b2540] transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
+    ➕ Register New Student
+  </button>
+
+  <!-- View Student List -->
+  <a href="/studentlist" 
+    class="bg-gradient-to-r from-[#263159] to-[#251749] text-white px-5 py-3 rounded-xl shadow-lg 
+           hover:from-[#364274] hover:to-[#1b1035] transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
+    📋 View Student List
+  </a>
+
+  <!-- Excel Export -->
+  <button onclick="exportToExcel()" 
+    class="ml-4 bg-gradient-to-r from-[#495579] to-[#251749] text-white px-5 py-3 rounded-xl shadow-lg 
+           hover:from-[#5a668f] hover:to-[#1b1035] transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
+    📊 Export to Excel
+  </button>
+</div>
+
 
   <!-- Search Input -->
   <div class="mb-8 flex justify-center">
@@ -253,16 +261,24 @@ function renderStudents(students) {
           <p class="text-gray-600 text-sm">🎓 ${student.course}</p>
         </div>
         <div class="flex flex-col gap-2">
-          <button onclick="previewStudent(${student.id})" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 text-sm rounded shadow-md">
-            👁 Preview
-          </button>
-          <button onclick="editStudent(${student.id})" class=" hover:bg-yellow-500 text-white px-3 py-1 text-sm rounded shadow-md" style="background-color: #ffed29; color: #000000;">
-            ✏ Edit
-          </button>
-          <button onclick="deleteStudent(${student.id})" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-sm rounded shadow-md">
-            🗑 Delete
-          </button>
-        </div>
+        <!-- Preview Button -->
+        <button onclick="previewStudent(${student.id})"
+          class="bg-[#5CC6B5] hover:bg-[#4bb2a3] text-white font-medium px-4 py-2 text-sm rounded-md shadow transition duration-200 ease-in-out">
+          👁 Preview
+        </button>
+
+        <!-- Edit Button -->
+        <button onclick="editStudent(${student.id})"
+          class="bg-[#FFF3B0] hover:bg-[#f5e89d] text-black font-medium px-4 py-2 text-sm rounded-md shadow transition duration-200 ease-in-out">
+          ✏ Edit
+        </button>
+
+        <!-- Delete Button -->
+        <button onclick="deleteStudent(${student.id})"
+        	  class="bg-gray-500 hover:bg-gray-600 text-white font-medium px-4 py-2 text-sm rounded-md shadow transition duration-200 ease-in-out">
+        	  🗑 Delete
+        	</button>
+      </div>
       </div>
     </div>
   `).join("");
@@ -336,9 +352,6 @@ function exportToExcel() {
 	  // Export to file
 	  XLSX.writeFile(workbook, "students.xlsx");
 	}
-
 </script>
-
-
 </body>
 </html>
