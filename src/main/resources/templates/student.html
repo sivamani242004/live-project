@@ -508,6 +508,22 @@
      return; // ❌ Stop if validation fails
    }
 
+   function validateMobileNumber() {
+     const mobile = document.getElementById("mobile").value.trim();
+     const errorSpan = document.getElementById("error");
+
+     const mobileRegex = /^[1-9][0-9]{9}$/; //9086834252
+
+     if (!mobileRegex.test(mobile)) {
+       alert("❌ Invalid mobile number. It must be 10 digits and should not start with 0.");
+     
+       return false;
+     }
+
+     
+     return true;
+   }
+   
   // ✅ Step 2: Collect and send form data
   const formData = new FormData(this);
   const studentData = Object.fromEntries(formData);
@@ -525,22 +541,6 @@
     .catch((err) => alert("❌ Error: " + err.message));
 });
 
- function validateMobileNumber() {
-   const mobile = document.getElementById("mobile").value.trim();
-   const errorSpan = document.getElementById("error");
-
-   const mobileRegex = /^[1-9][0-9]{9}$/; //9086834252
-
-   if (!mobileRegex.test(mobile)) {
-     alert("❌ Invalid mobile number. It must be 10 digits and should not start with 0.");
-   
-     return false;
-   }
-
-   
-   return true;
- }
- 
  
  //fetch courses
  
@@ -739,7 +739,6 @@ document.getElementById("batchDropdown").addEventListener("change", function () 
   }
 
   function validateForm() {
-    alert("Form submitted successfully!");
     return true;
   }
 

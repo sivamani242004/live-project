@@ -240,7 +240,20 @@
     <img src="/images/logo.jpg" alt="MR Technologies Logo" class="h-16 object-contain">
     <img src="/images/payments.png" alt="" style="width: 4rem;height: 4rem;">
     <h1 class="text-2xl font-bold text-[var(--primary-color)]">Finance</h1>
-
+  </div>
+   <div class="flex items-center bg-white rounded-full shadow px-4 py-2 w-80 border border-gray-200">
+    <input 
+      type="text" 
+      id="searchInput" 
+      placeholder="Search students..." 
+      class="flex-1 text-gray-700 outline-none text-sm"
+    />
+    <button class="ml-2 text-indigo-700 hover:text-indigo-900 transition">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+          d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 13.65z"/>
+      </svg>
+    </button>
   </div>
   <p class="text-sm text-gray-600">
     Welcome, <span class="font-semibold text-[var(--primary-color)]" id="username">Loading...</span>
@@ -278,15 +291,8 @@
           id="dashboard"
           class="tab-content active px-4 md:px-8 lg:px-10 py-6"
         >
-        
-         <div class="bg-white shadow-lg rounded-2xl p-6 mt-6 w-full max-w-5xl mx-auto">
-          <!-- Search Bar -->
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-2xl font-bold text-purple-700">Student Records</h2>
-            <input type="text" id="searchInput" placeholder="Search by name or ID" 
-              class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 w-64">
-          </div>
 
+         <div class="bg-white shadow-lg rounded-2xl p-6 mt-6 w-full max-w-5xl mx-auto">       
           <!-- Scrollable Table -->
           <div class="overflow-y-auto max-h-64 border border-gray-200 rounded-lg">
             <table class="w-full text-left border-collapse">
@@ -300,204 +306,239 @@
             </div>
         </div>
           <div
-            class="bg-white rounded-2xl shadow-xl p-6 md:p-8 max-w-7xl mx-auto"
-          >
-            <h1 class="text-3xl font-semibold text-center mb-8 text-indigo-700">
-              Daily Payments
-            </h1>
+  class="bg-gradient-to-br from-white/90 to-indigo-50/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 max-w-7xl mx-auto border border-indigo-100"
+>
+  <!-- Title -->
+  <h1
+    class="text-4xl font-extrabold text-center mb-10 bg-gradient-to-r from-indigo-700 to-purple-700 bg-clip-text text-transparent tracking-tight"
+  >
+    Daily Payments
+  </h1>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              
-				<div>
-                <label class="block text-purple-700 font-semibold mb-1"
-                  >Student id</label
-                >
-                <input
-                  id="studentId"
-                  type="number"
-                  readonly
-                  placeholder="Student id"
-                  class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none"
-                />
-              </div>
-              <div>
-                <label class="block text-purple-700 font-semibold mb-1"
-                  >Student Name</label
-                >
-                <input
-                  id="studentName"
-                  type="text"
-                  readonly
-                  placeholder="Student Name"
-                  class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none"
-                />
-              </div>
-              <div>
-                <label class="block text-purple-700 font-semibold mb-1"
-                  >Phone number</label
-                >
-                <input
-                  id="phoneNumber"
-                  type="text"
-                  readonly
-                  placeholder="Mobile number"
-                  class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none"
-                />
-              </div>
+  <!-- Grid Fields -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+    <!-- Student ID -->
+    <div>
+      <label class="block text-sm font-semibold text-indigo-900 mb-2">Student ID</label>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-blue-500">
+          <i class="fas fa-id-card"></i>
+        </span>
+        <input
+          id="studentId"
+          type="number"
+          readonly
+          placeholder="Student ID"
+          class="w-full border border-indigo-100 rounded-xl pl-10 pr-4 py-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium"
+        />
+      </div>
+    </div>
 
-              <div>
-                <label class="block text-purple-700 font-semibold mb-1"
-                  >Course Type</label
-                >
-                <input
-                  id="courseType"
-                  type="text"
-                  readonly
-                  placeholder="Course Type"
-                  class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none"
-                />
-              </div>
-              <div>
-                <label class="block text-purple-700 font-semibold mb-1"
-                  >Batch Code</label
-                >
-                <input
-                  id="batchCode"
-                  type="text"
-                  readonly
-                  placeholder="Batch Code"
-                  class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none"
-                />
-              </div>
-               <div>
-                <label class="block text-purple-700 font-semibold mb-1"
-                  >Batch Status</label
-                >
-                <input
-                  id="statusDisplay"
-                  type="text"
-                  readonly
-                  placeholder="Batch Status"
-                  class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none"
-                />
-              </div>
-               <div>
-                <label class="block text-purple-700 font-semibold mb-1"
-                  >Total fee</label
-                >
-                <input
-                  id="totalfee"
-                  type="text"
-                  readonly
-                  placeholder="totalfee"
-                  class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none"
-                />
-              </div>
+    <!-- Student Name -->
+    <div>
+      <label class="block text-sm font-semibold text-indigo-900 mb-2">Student Name</label>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-purple-500">
+          <i class="fas fa-user"></i>
+        </span>
+        <input
+          id="studentName"
+          type="text"
+          readonly
+          placeholder="Student Name"
+          class="w-full border border-indigo-100 rounded-xl pl-10 pr-4 py-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-700 font-medium"
+        />
+      </div>
+    </div>
 
-              <div>
-                <label class="block text-purple-700 font-semibold mb-1"
-                  >Total Amount Paid</label
-                >
-                <input
-                  id="totalAmountPaid"
-                  type="text"
-                  readonly
-                  placeholder="Amount Paid"
-                  class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none"
-                />
-              </div>
+    <!-- Phone -->
+    <div>
+      <label class="block text-sm font-semibold text-indigo-900 mb-2">Phone Number</label>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-teal-500">
+          <i class="fas fa-phone-alt"></i>
+        </span>
+        <input
+          id="phoneNumber"
+          type="text"
+          readonly
+          placeholder="Mobile Number"
+          class="w-full border border-indigo-100 rounded-xl pl-10 pr-4 py-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-700 font-medium"
+        />
+      </div>
+    </div>
 
-              <div>
-                <label class="block text-purple-700 font-semibold mb-1"
-                  >Total Due Amount</label
-                >
-                <input
-                  id="totalDue"
-                  type="number"
-                  readonly
-                  placeholder="₹ 0.00"
-                  class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none"
-                />
-              </div>
+    <!-- Course -->
+    <div>
+      <label class="block text-sm font-semibold text-indigo-900 mb-2">Course Type</label>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-pink-500">
+          <i class="fas fa-book"></i>
+        </span>
+        <input
+          id="courseType"
+          type="text"
+          readonly
+          placeholder="Course Type"
+          class="w-full border border-indigo-100 rounded-xl pl-10 pr-4 py-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 text-gray-700 font-medium"
+        />
+      </div>
+    </div>
 
-             
+    <!-- Batch -->
+    <div>
+      <label class="block text-sm font-semibold text-indigo-900 mb-2">Batch Code</label>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-orange-500">
+          <i class="fas fa-layer-group"></i>
+        </span>
+        <input
+          id="batchCode"
+          type="text"
+          readonly
+          placeholder="Batch Code"
+          class="w-full border border-indigo-100 rounded-xl pl-10 pr-4 py-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-700 font-medium"
+        />
+      </div>
+    </div>
+ <div>
+      <label class="block text-sm font-semibold text-indigo-900 mb-2">Batch Status</label>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-orange-500">
+          <i class="fas fa-layer-group"></i>
+        </span>
+        <input
+          id="statusDisplay"
+          type="text"
+          readonly
+          placeholder="Batch Status"
+          class="w-full border border-indigo-100 rounded-xl pl-10 pr-4 py-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-700 font-medium"
+        />
+      </div>
+    </div>
+    <!-- Total Fee -->
+    <div>
+      <label class="block text-sm font-semibold text-indigo-900 mb-2">Total Fee</label>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-green-600">
+          <i class="fas fa-rupee-sign"></i>
+        </span>
+        <input
+          id="totalfee"
+          type="text"
+          readonly
+          placeholder="₹ 0.00"
+          class="w-full border border-indigo-100 rounded-xl pl-10 pr-4 py-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-600 text-gray-700 font-medium"
+        />
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold text-indigo-900 mb-2">Total Amount Paid</label>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-green-600">
+          <i class="fas fa-rupee-sign"></i>
+        </span>
+        <input
+          id="totalAmountPaid"
+          type="text"
+          readonly
+          placeholder="₹ 0.00"
+          class="w-full border border-indigo-100 rounded-xl pl-10 pr-4 py-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-600 text-gray-700 font-medium"
+        />
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold text-indigo-900 mb-2">Total Due Amount</label>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-green-600">
+          <i class="fas fa-rupee-sign"></i>
+        </span>
+        <input
+          id="totalDue"
+          type="text"
+          readonly
+          placeholder="₹ 0.00"
+          class="w-full border border-indigo-100 rounded-xl pl-10 pr-4 py-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-600 text-gray-700 font-medium"
+        />
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold text-indigo-900 mb-2">Term</label>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-green-600">
+          <i class="fas fa-rupee-sign"></i>
+        </span>
+        <input
+          id="termSelect"
+          type="text"
+          readonly
+          placeholder="Auto Term"
+          class="w-full border border-indigo-100 rounded-xl pl-10 pr-4 py-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-600 text-gray-700 font-medium"
+        />
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold text-indigo-900 mb-2">Payment Date</label>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-green-600">
+          <i class="fas fa-rupee-sign"></i>
+        </span>
+        <input
+          id="paymentDate"
+          type="date"
+          
+          placeholder="Auto Term"
+          class="w-full border border-indigo-100 rounded-xl pl-10 pr-4 py-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-600 text-gray-700 font-medium"
+        />
+      </div>
+    </div>
 
-              <div>
-                <label class="block text-purple-700 font-semibold mb-1"
-                  >Payment Date</label
-                >
-                <input
-                  type="date"
-                  class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                />
-              </div>
+    <!-- Amount to be Paid -->
+    <div>
+      <label class="block text-sm font-semibold text-indigo-900 mb-2">Amount to be Paid</label>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-rose-500">
+          <i class="fas fa-wallet"></i>
+        </span>
+        <input
+          id="amountToBePaid"
+          type="number"
+          placeholder="₹ 0.00"
+          class="w-full border border-indigo-100 rounded-xl pl-10 pr-4 py-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500 text-gray-700 font-medium"
+        />
+      </div>
+    </div>
+     <div>
+      <label class="block text-sm font-semibold text-indigo-900 mb-2">Remaining Due</label>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-green-600">
+          <i class="fas fa-rupee-sign"></i>
+        </span>
+        <input
+          id="duefee"
+          type="number"
+          readonly
+          placeholder="₹ 0.00"
+          class="w-full border border-indigo-100 rounded-xl pl-10 pr-4 py-3 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-600 text-gray-700 font-medium"
+        />
+      </div>
+    </div>
+  </div>
 
-              <div>
-                <label class="block text-purple-700 font-semibold mb-1"
-                  >Term Fees</label
-                >
-                <select
-                  id="termSelect"
-                  onchange="checkOtherTerm()"
-                  class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                >
-                  <option value="">Select Term</option>
-                  <option value="Term-2">Term-2</option>
-                  <option value="Term-3">Term-3</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
+  <!-- Submit Button -->
+  <div class="flex justify-center mt-12">
+    <button
+      id="submitPaymentBtn"
+      class="bg-gradient-to-r from-indigo-700 to-purple-700 text-white px-10 py-4 rounded-2xl shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-300 font-semibold tracking-wide flex items-center gap-2"
+    >
+      <i class="fas fa-credit-card"></i> Submit Payment
+    </button>
+  </div>
+</div>
 
-              <!-- Optional Custom Term -->
-              <div id="customTermContainer" style="display: none">
-                <label class="block text-purple-700 font-semibold mb-1"
-                  >Enter Custom Term</label
-                >
-                <input
-                  id="customTerm"
-                  type="text"
-                  placeholder="e.g., Term-4"
-                  class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                />
-              </div>
+<!-- FontAwesome Icons -->
+<script src="https://kit.fontawesome.com/a2d9d6a66f.js" crossorigin="anonymous"></script>
 
-              
-              <div>
-                <label class="block text-purple-700 font-semibold mb-1"
-                  >Amount to be Paid</label
-                >
-                <input
-                  id="amountToBePaid"
-                  type="number"
-                  placeholder="₹ 0.00"
-                  class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                />
-              </div>
-
-              <div>
-                <label class="block text-purple-700 font-semibold mb-1"
-                  >Remaining Due</label
-                >
-                <input
-                  id="duefee"
-                  type="number"
-                  readonly
-                  placeholder="₹ 0.00"
-                  class="w-full border rounded px-4 py-2 bg-gray-100 focus:outline-none"
-                />
-              </div>
-            </div>
-
-            <!-- Submit Button -->
-            <div class="flex justify-center mt-8">
-              <button
-                id="submitPaymentBtn"
-                class="bg-indigo-800 text-white px-8 py-3 rounded-xl hover:bg-indigo-900 transition"
-              >
-                Submit Payment
-              </button>
-            </div>
-          </div>
 
           <!-- date range -->
           <div class="flex flex-wrap gap-4 justify-center mt-6">
@@ -728,25 +769,52 @@ document.getElementById("searchInput").addEventListener("input", function () {
       // ✅ Attach onclick to each Select button
       const buttons = document.querySelectorAll(".selectStudentBtn");
       buttons.forEach((button) => {
-        button.addEventListener("click", function () {
-          const index = this.getAttribute("data-index");
-          const student = data[index];
+    	  button.addEventListener("click", async function () {
+    		  const index = this.getAttribute("data-index");
+    		  const student = data[index];
 
-          // ✅ Show popup message
-          alert(`${student.name} is selected`);
+    		  alert(`${student.name} is selected`);
 
-          // ✅ Populate form fields
-          document.getElementById("studentId").value = student.id;
-          document.getElementById("studentName").value = student.name;
-          document.getElementById("courseType").value = student.course;
-          document.getElementById("phoneNumber").value = student.mobile;
-          document.getElementById("totalfee").value = student.totalfee;
-          document.getElementById("totalAmountPaid").value = student.paidamount;
-          document.getElementById("batchCode").value = student.batch;
-          document.getElementById("totalDue").value = student.duefee;
+    		  // Populate fields
+    		  document.getElementById("studentId").value = student.id;
+    		  document.getElementById("studentName").value = student.name;
+    		  document.getElementById("courseType").value = student.course;
+    		  document.getElementById("phoneNumber").value = student.mobile;
+    		  document.getElementById("totalfee").value = student.totalfee;
+    		  document.getElementById("totalAmountPaid").value = student.paidamount;
+    		  document.getElementById("batchCode").value = student.batch;
+    		  document.getElementById("totalDue").value = student.duefee;
 
-          fetchBatchStatus(); // Ensure this function is defined elsewhere
-        });
+    		  fetchBatchStatus();
+
+    		  // ✅ Auto Term Detection
+    		  try {
+    		    const response = await fetch(`http://localhost:8080/api/payments/student/${student.id}`);
+    		    const payments = await response.json();
+
+    		    let nextTerm = "Term-1"; // default
+    		    if (payments.length > 0) {
+    		      let maxTerm = 0;
+    		      payments.forEach(p => {
+    		        if (p.term && p.term.startsWith("Term-")) {
+    		          const num = parseInt(p.term.replace("Term-", ""));
+    		          if (!isNaN(num) && num > maxTerm) {
+    		            maxTerm = num;
+    		          }
+    		        }
+    		      });
+    		      nextTerm = "Term-" + (maxTerm + 1);
+    		    }
+
+    		    // Show next term in the field
+    		    document.getElementById("termSelect").value = nextTerm;
+
+    		  } catch (err) {
+    		    console.error("Error fetching student payments:", err);
+    		    document.getElementById("termSelect").value = "Term-1"; // fallback
+    		  }
+    		});
+
       });
     })
     .catch((err) => {
@@ -754,6 +822,8 @@ document.getElementById("searchInput").addEventListener("input", function () {
         "<div class='text-red-500'>Error fetching student data.</div>";
     });
 });
+
+
       // total due = total due - amount to be paid
       document
         .getElementById("amountToBePaid")
@@ -808,7 +878,7 @@ document.getElementById("searchInput").addEventListener("input", function () {
           });
       }   
       //submit button 
-     document.getElementById("submitPaymentBtn").addEventListener("click", function () {
+    document.getElementById("submitPaymentBtn").addEventListener("click", function () {
   // Gather all required fields
   const studentId = document.getElementById("studentId").value;
   const studentName = document.getElementById("studentName").value;
@@ -817,25 +887,32 @@ document.getElementById("searchInput").addEventListener("input", function () {
   const batchCode = document.getElementById("batchCode").value;
   const totalfee = parseFloat(document.getElementById("totalfee").value) || 0;
   const statusDisplay = document.getElementById("statusDisplay").value;
-  const paymentDate = document.querySelector('input[type="date"]').value;
+
+  // ✅ safer: pick paymentDate by ID, not just first <input type="date">
+  const paymentDate = document.querySelector('#dashboard input[type="date"]').value;
+
   const amountToBePaid = parseFloat(document.getElementById("amountToBePaid").value) || 0;
   let totalAmountPaid = parseFloat(document.getElementById("totalAmountPaid").value) || 0;
   let totalDue = parseFloat(document.getElementById("totalDue").value) || 0;
+
   // ✅ Update totals
   totalAmountPaid += amountToBePaid;
-  totalDue = totalfee - totalAmountPaid;  // recalc due from total fee - paid
-  // Update UI fields immediately
+  totalDue = totalfee - totalAmountPaid;
+
+  // ✅ Update UI fields immediately
   document.getElementById("totalAmountPaid").value = totalAmountPaid.toFixed(2);
   document.getElementById("totalDue").value = totalDue.toFixed(2);
   document.getElementById("duefee").value = totalDue.toFixed(2);
+
   const term = document.getElementById("termSelect").value;
-  const customTerm = document.getElementById("customTerm").value;
-  const finalTerm = term === "Other" ? customTerm : term;
+  const customTermInput = document.getElementById("customTerm");
+  const finalTerm = term === "Other" && customTermInput ? customTermInput.value : term;
 
   if (!studentName || !amountToBePaid || !paymentDate || !finalTerm) {
     alert("Please fill all required fields");
     return;
   }
+
   const paymentData = {
     studentId,
     studentName,
@@ -846,16 +923,15 @@ document.getElementById("searchInput").addEventListener("input", function () {
     statusDisplay,
     paymentDate,
     amountPaid: amountToBePaid,
-    totalAmountPaid,  // ✅ new total
-    totalDue,         // ✅ new due
+    totalAmountPaid,
+    totalDue,
     term: finalTerm
   };
+
   // ✅ Save payment
   fetch("http://localhost:8080/api/payments", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(paymentData),
   })
     .then((response) => {
@@ -864,14 +940,21 @@ document.getElementById("searchInput").addEventListener("input", function () {
     })
     .then((result) => {
       alert("Payment saved successfully!");
-      location.reload();
+
+      // ✅ Add new payment to the in-memory list (top of list)
+      allPayments.unshift(result);
+      currentPage = 1;
+      renderTable();
+
+      // ✅ Reset only payment entry fields
+      document.getElementById("amountToBePaid").value = "";
+      document.getElementById("duefee").value = "";
     })
     .catch((error) => {
       console.error("Payment error:", error);
       alert("Failed to save payment. Try again.");
     });
 });
-
   //filter data with date  and fetch daily payments
    let allPayments = [];   // Holds all payments (filtered or unfiltered)
   let currentPage = 1;
@@ -1043,6 +1126,13 @@ function renderBatchTablePage(page) {
   const tableBody = document.getElementById("BatchTableBody");
   tableBody.innerHTML = "";
 
+  // ✅ Recalculate pages every time
+  totalBatchPages = Math.max(Math.ceil(allBatchStudents.length / batchRowsPerPage), 1);
+  document.getElementById("totalBatchPages").innerText = "of " + totalBatchPages;
+
+  if (page < 1) page = 1;
+  if (page > totalBatchPages) page = totalBatchPages;
+
   const start = (page - 1) * batchRowsPerPage;
   const end = start + batchRowsPerPage;
   const pageData = allBatchStudents.slice(start, end);
@@ -1078,114 +1168,108 @@ function renderBatchTablePage(page) {
     tableBody.insertAdjacentHTML("beforeend", row);
   });
 
-  // update page number
   currentBatchPage = page;
   document.getElementById("currentBatchPage").value = currentBatchPage;
 }
 
-// Pagination functions
-function nextBatchPage() {
-  if (currentBatchPage < totalBatchPages) {
-    renderBatchTablePage(currentBatchPage + 1);
-  }
+function prevBatchPage() {
+  if (currentBatchPage > 1) renderBatchTablePage(currentBatchPage - 1);
 }
 
-function prevBatchPage() {
-  if (currentBatchPage > 1) {
-    renderBatchTablePage(currentBatchPage - 1);
-  }
+function nextBatchPage() {
+  if (currentBatchPage < totalBatchPages) renderBatchTablePage(currentBatchPage + 1);
 }
 
 function goToBatchPage(page) {
-  if (page >= 1 && page <= totalBatchPages) {
-    renderBatchTablePage(page);
-  }
+  renderBatchTablePage(Number(page));
 }
-
-// Show transaction modal
 function viewBatchDetails(studentId) {
-  fetch(`http://localhost:8080/api/payments/student/${studentId}`)
-    .then((res) => res.json())
-    .then((payments) => {
-      const tbody = document.getElementById("BatchTransactionTable");
-      tbody.innerHTML = "";
+	  fetch(`http://localhost:8080/api/payments/student/${studentId}`)
+	    .then((res) => res.json())
+	    .then((transactions) => {
+	      const tbody = document.getElementById("BatchTransactionTable");
+	      tbody.innerHTML = "";
 
-      if (!payments.length) {
-        tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500">No transactions found.</td></tr>`;
-      } else {
-        payments.forEach((p) => {
-          const row = `
-            <tr>
-              <td>${p.term || ""}</td>
-              <td>${p.studentName || ""}</td>
-              <td>₹ ${p.amountPaid.toFixed(2)}</td>
-              <td>${p.paymentDate || ""}</td>
-            </tr>
-          `;
-          tbody.insertAdjacentHTML("beforeend", row);
-        });
-      }
-      document.getElementById("termsModal").style.display = "block";
+	      if (transactions.length === 0) {
+	        tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500">No transactions found</td></tr>`;
+	      } else {
+	        transactions.forEach((tx) => {
+	          const row = `
+	            <tr>
+	              <td>${tx.term || ""}</td>
+	              <td>${tx.studentName || ""}</td>
+	              <td>₹ ${parseFloat(tx.amountPaid || 0).toFixed(2)}</td>
+	              <td>${tx.paymentDate || ""}</td>
+	            </tr>
+	          `;
+	          tbody.insertAdjacentHTML("beforeend", row);
+	        });
+	      }
+
+	      // ✅ Show modal
+	      document.getElementById("termsModal").style.display = "block";
+	    })
+	    .catch((err) => {
+	      console.error("Error fetching transactions:", err);
+	      alert("Failed to load student transactions.");
+	    });
+	}
+
+
+//course type
+document.addEventListener("DOMContentLoaded", function () {
+  fetchCourseTypes(); // Load on page load
+});
+function fetchCourseTypes() {
+  fetch("http://localhost:8080/api/courses/names")
+    .then((response) => response.json())
+    .then((data) => {
+      const courseDropdown = document.getElementById("CourseType");
+      courseDropdown.innerHTML =
+        "<option value=''>Select Course Type</option>";
+
+      data.forEach((courseName) => {
+        const option = document.createElement("option");
+        option.value = courseName;
+        option.textContent = courseName;
+        courseDropdown.appendChild(option);
+      });
     })
-    .catch((err) => {
-      console.error("Error fetching batch transactions:", err);
+    .catch((error) => {
+      console.error("Error loading course types:", error);
     });
 }
+function loadStatuses() {
+  const course = document.getElementById("CourseType").value;
+  const statusDropdown = document.getElementById("BatchStatus");
+  const batchCodeDropdown = document.getElementById("BatchCode");
 
-      //course type
-      document.addEventListener("DOMContentLoaded", function () {
-        fetchCourseTypes(); // Load on page load
+  statusDropdown.innerHTML = "<option value=''>Loading...</option>";
+  batchCodeDropdown.innerHTML = "<option value=''>Select Batch</option>";
+
+  if (!course) {
+    statusDropdown.innerHTML =
+      "<option value=''>Select Course First</option>";
+    return;
+  }
+  fetch(`http://localhost:8080/api/batch/statuses/${course}`)
+    .then((response) => response.json())
+    .then((data) => {
+      statusDropdown.innerHTML =
+        "<option value=''>Select Status</option>";
+      data.forEach((status) => {
+        const option = document.createElement("option");
+        option.value = status;
+        option.textContent = status;
+        statusDropdown.appendChild(option);
       });
-      function fetchCourseTypes() {
-        fetch("http://localhost:8080/api/courses/names")
-          .then((response) => response.json())
-          .then((data) => {
-            const courseDropdown = document.getElementById("CourseType");
-            courseDropdown.innerHTML =
-              "<option value=''>Select Course Type</option>";
-
-            data.forEach((courseName) => {
-              const option = document.createElement("option");
-              option.value = courseName;
-              option.textContent = courseName;
-              courseDropdown.appendChild(option);
-            });
-          })
-          .catch((error) => {
-            console.error("Error loading course types:", error);
-          });
-      }
-      function loadStatuses() {
-        const course = document.getElementById("CourseType").value;
-        const statusDropdown = document.getElementById("BatchStatus");
-        const batchCodeDropdown = document.getElementById("BatchCode");
-
-        statusDropdown.innerHTML = "<option value=''>Loading...</option>";
-        batchCodeDropdown.innerHTML = "<option value=''>Select Batch</option>";
-
-        if (!course) {
-          statusDropdown.innerHTML =
-            "<option value=''>Select Course First</option>";
-          return;
-        }
-        fetch(`http://localhost:8080/api/batch/statuses/${course}`)
-          .then((response) => response.json())
-          .then((data) => {
-            statusDropdown.innerHTML =
-              "<option value=''>Select Status</option>";
-            data.forEach((status) => {
-              const option = document.createElement("option");
-              option.value = status;
-              option.textContent = status;
-              statusDropdown.appendChild(option);
-            });
-          })
-          .catch((error) => {
-            console.error("Error loading statuses:", error);
-            statusDropdown.innerHTML =
-              "<option value=''>Failed to Load</option>";
-          });
-      }
+    })
+    .catch((error) => {
+      console.error("Error loading statuses:", error);
+      statusDropdown.innerHTML =
+        "<option value=''>Failed to Load</option>";
+    });
+}
       function loadBatchCodes() {
         const course = document.getElementById("CourseType").value;
         const status = document.getElementById("BatchStatus").value;
