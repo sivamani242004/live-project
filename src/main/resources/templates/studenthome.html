@@ -169,7 +169,14 @@ function deleteStudent(studentId) {
       .catch(error => alert("❌ Error: " + error.message));
   }
 }
-
+function formatDate(dateStr) {
+	  if (!dateStr) return "";
+	  const date = new Date(dateStr);
+	  const day = String(date.getDate()).padStart(2, "0");
+	  const month = String(date.getMonth() + 1).padStart(2, "0");
+	  const year = date.getFullYear();
+	  return `${day}/${month}/${year}`;
+	}
 function previewStudent(studentId) {
 	  fetch(`/api/students/${studentId}/details`)
 	    .then(res => {
@@ -199,7 +206,7 @@ function previewStudent(studentId) {
 	                <tr>
 	                  <td class="border p-2">${p.term}</td>
 	                  <td class="border p-2">₹${p.amountPaid}</td>
-	                  <td class="border p-2">${p.paymentDate}</td>
+	                  <td class="border p-2">${formatDate(p.paymentDate)}</td>
 	                  <td class="border p-2">${p.mode || "cash"}</td>
 	                </tr>
 	              `).join("")}
@@ -227,11 +234,11 @@ function previewStudent(studentId) {
 	  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-700">
 	    <div><span class="font-semibold">📧 Email:</span> ${student.email}</div>
 	    <div><span class="font-semibold">📞 Mobile:</span> ${student.mobile}</div>
-	    <div><span class="font-semibold">🎂 DOB:</span> ${student.dob}</div>
+	    <div><span class="font-semibold">🎂 DOB:</span> ${formatDate(student.dob)}</div>
 	    <div><span class="font-semibold">🚻 Gender:</span> ${student.gender}</div>
 	    <div class="sm:col-span-2"><span class="font-semibold">🏠 Address:</span> ${student.address}</div>
 	    <div><span class="font-semibold">🎓 Qualification:</span> ${student.qualification}</div>
-	    <div><span class="font-semibold">📅 Joining Date:</span> ${student.joiningDate}</div>
+	    <div><span class="font-semibold">📅 Joining Date:</span> ${formatDate(student.joiningDate)}</div>
 	    <div><span class="font-semibold">💰 Course Fee:</span> ₹${student.coursefee}</div>
 	    <div><span class="font-semibold">📉 Due Fee:</span> ₹${student.duefee}</div>
 	  </div>
