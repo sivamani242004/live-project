@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Home - MR Technologies</title>
+  <script src="https://cdn.tailwindcss.com"></script>     
+  <style>
+    :root {
+      --primary-color: #113C71;
+      --secondary-color: #f8f9fc;
+      --accent-color: #03306e;
+      --success-color: #16a34a;
+      --danger-color: #dc2626;
+      --text-color: #333333;
+      --muted-text: #6b7280;
+      --white: #ffffff;
+      --font-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      --transition-speed: 0.3s;
+      --card-radius: 12px;
+      --shadow-elevation: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: var(--font-base);
+    }
+
+    body {
+      background-color: #f0f0f0;
+    }
+
+    .slide-link {
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s ease;
+    }
+    .slide-link::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      transition: left var(--transition-speed) ease;
+    }
+    .slide-link:hover::before {
+      left: 0;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .row-animate {
+      animation: fadeSlideIn 0.4s ease-in-out;
+    }
+  </style>        
+</head>
+<body class="min-h-screen flex flex-col">
+
+<!-- Top Bar -->
+<header class="flex justify-between items-center bg-white shadow-md p-3 fixed top-0 left-0 right-0 z-50">
+  <div class="flex items-center gap-4">
+    <img src="/images/logo.jpg" alt="MR Technologies Logo" class="h-16 object-contain">
+    <img src="/images/studentHome.png" alt="" style="width: 4rem;height: 4rem;">
+    <h1 class="text-2xl font-bold text-[var(--primary-color)]">Student Home</h1>
+  </div>
+  <p class="text-sm text-gray-600">
+    Welcome, <span class="font-semibold text-[var(--primary-color)]" id="username">Loading...</span>
+  </p>
+</header>
+
+<!-- Page Layout -->
+<div class="flex flex-1 pt-20">
+  <!-- Sidebar -->
+  <aside class="fixed top-[80px] left-0 w-72 bg-[var(--primary-color)] text-white" style="height: calc(100% - 80px); padding-top: 10px; z-index: 30; font-size: 20px;">
+    <nav class="flex flex-col gap-4" style="margin-top: 10%; margin-left: 10%;">
+      <a href="/dashboard" class="p-3 rounded slide-link">Dashboard</a>
+      <a href="/courses" class="p-3 rounded slide-link">Courses</a>
+      <a href="/studenthome" class="p-3 rounded slide-link">Students</a>
+      <a href="/Batch" class="p-3 rounded slide-link">Batch</a>
+      <a href="/payments" class="p-3 rounded slide-link">Finance</a>
+      <a href="/reports" class="p-3 rounded slide-link">Reports</a>
+    </nav>
+    <button onclick="logout()" class="mt-4 text-left text-red-300 hover:text-white p-3 transition" style="margin-left: 10%;">Logout</button>
+  </aside>
+
+<!-- Main Content -->
+<div class="max-w-6xl mx-auto p-8 bg-white shadow-xl rounded-2xl" style="margin-left:17rem; width: 100%;">
+  <!-- Header Buttons -->
+  <div class="flex justify-between items-center mb-8">
+  <!-- Register New Student -->
+  <button onclick="openRegistration()" 
+    class="bg-gradient-to-r from-[#495579] to-[#263159] text-white px-5 py-3 rounded-xl shadow-lg 
+           hover:from-[#5a668f] hover:to-[#1b2540] transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
+    ➕ Register New Student
+  </button>
+
+  <!-- View Student List -->
+  <a href="/studentlist" 
+    class="bg-gradient-to-r from-[#263159] to-[#251749] text-white px-5 py-3 rounded-xl shadow-lg 
+           hover:from-[#364274] hover:to-[#1b1035] transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
+    📋 View Student List
+  </a>
+
+  <!-- Excel Export -->
+  <button onclick="exportToExcel()" 
+    class="ml-4 bg-gradient-to-r from-[#495579] to-[#251749] text-white px-5 py-3 rounded-xl shadow-lg 
+           hover:from-[#5a668f] hover:to-[#1b1035] transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
+    📊 Export to Excel
+  </button>
+</div>
+
+
+  <!-- Search Input -->
+  <div class="mb-8 flex justify-center">
+    <input id="searchInput" 
+           type="text" 
+           placeholder="🔍 Search by Name or Mobile" 
+           class="w-3/4 border border-gray-300 p-4 rounded-xl shadow-sm focus:outline-none focus:ring-4 focus:ring-indigo-300 text-lg transition-all duration-300 hover:shadow-md" />
+  </div>
+  
+
+  <!-- Student Results -->
+  <div id="studentResults" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Static Example Card -->
+    
+  </div>
+</div>
+<div id="previewModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+  <div class="bg-white rounded-xl p-6 w-full max-w-2xl shadow-lg relative">
+    <button onclick="closePreview()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+    <h2 class="text-2xl font-bold text-indigo-700 mb-6 border-b pb-2">Student Preview</h2>
+    <div id="previewContent" class="space-y-2 text-gray-700 text-base leading-relaxed">
+      <!-- Filled dynamically -->
+    </div>
+    <div class="mt-6 flex justify-end">
+        <button onclick="closePreview()" class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 transition">
+          Close
+        </button>
+        </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+let allStudents = [];
+
+function openRegistration() {
+  window.location.href = "/student";
+}
+
+function editStudent(studentId) {
+  window.location.href = "/student/edit/" + studentId;
+}
+
+function deleteStudent(studentId) {
+  if (confirm("Are you sure you want to delete this student?")) {
+    fetch(`/api/students/${studentId}`, { method: "DELETE" })
+      .then(response => {
+        if (!response.ok) throw new Error("Failed to delete student.");
+        alert("✅ Student deleted successfully!");
+        loadStudents();
+      })
+      .catch(error => alert("❌ Error: " + error.message));
+  }
+}
+
+function previewStudent(studentId) {
+	  fetch(`/api/students/${studentId}/details`)
+	    .then(res => {
+	      if (!res.ok) throw new Error("Failed to fetch student details");
+	      return res.json();
+	    })
+	    .then(data => {
+	      const student = data.student;
+	      const payments = data.payments;
+
+	      // 🧾 Build payment history table
+	      let paymentsHTML = "";
+	      if (payments.length > 0) {
+	        paymentsHTML = `
+	          <h3 class="text-lg font-bold text-indigo-600 mt-6 mb-2">💳 Payment History</h3>
+	          <table class="w-full border-collapse border border-gray-200 text-sm">
+	            <thead>
+	              <tr class="bg-gray-100 text-left">
+	                <th class="border p-2">Term</th>
+	                <th class="border p-2">Amount</th>
+	                <th class="border p-2">Date</th>
+	                <th class="border p-2">Mode</th>
+	              </tr>
+	            </thead>
+	            <tbody>
+	              ${payments.map(p => `
+	                <tr>
+	                  <td class="border p-2">${p.term}</td>
+	                  <td class="border p-2">₹${p.amountPaid}</td>
+	                  <td class="border p-2">${p.paymentDate}</td>
+	                  <td class="border p-2">${p.mode || "cash"}</td>
+	                </tr>
+	              `).join("")}
+	            </tbody>
+	          </table>
+	        `;
+	      } else {
+	        paymentsHTML = `<p class="text-gray-500 mt-4">No payments recorded.</p>`;
+	      }
+
+	      const previewHTML = `
+	      	
+	    	  <div class="bg-gradient-to-br from-indigo-50 to-white rounded-lg shadow p-6 border border-gray-200 my-6 
+	            max-h-[500px] overflow-y-auto">
+	  <div class="flex items-center mb-6">
+	    <div class="flex-shrink-0 w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-700 text-3xl font-bold">
+	      ${student.name.charAt(0).toUpperCase()}
+	    </div>
+	    <div class="ml-4">
+	      <h3 class="text-xl font-bold text-indigo-700">${student.name}</h3>
+	      <p class="text-gray-600">${student.course} - Batch ${student.batch}</p>
+	    </div>
+	  </div>
+
+	  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-700">
+	    <div><span class="font-semibold">📧 Email:</span> ${student.email}</div>
+	    <div><span class="font-semibold">📞 Mobile:</span> ${student.mobile}</div>
+	    <div><span class="font-semibold">🎂 DOB:</span> ${student.dob}</div>
+	    <div><span class="font-semibold">🚻 Gender:</span> ${student.gender}</div>
+	    <div class="sm:col-span-2"><span class="font-semibold">🏠 Address:</span> ${student.address}</div>
+	    <div><span class="font-semibold">🎓 Qualification:</span> ${student.qualification}</div>
+	    <div><span class="font-semibold">📅 Joining Date:</span> ${student.joiningDate}</div>
+	    <div><span class="font-semibold">💰 Course Fee:</span> ₹${student.coursefee}</div>
+	    <div><span class="font-semibold">📉 Due Fee:</span> ₹${student.duefee}</div>
+	  </div>
+	  ${paymentsHTML}
+	</div>
+	      `;
+
+	      document.getElementById("previewContent").innerHTML = previewHTML;
+	      document.getElementById("previewModal").classList.remove("hidden");
+	    })
+	    .catch(err => alert("❌ Error: " + err.message));
+	}
+
+function renderStudents(students) {
+  const container = document.getElementById("studentResults");
+  if (students.length === 0) {
+    container.innerHTML = `<div class="text-gray-500">No students found.</div>`;
+    return;
+  }
+
+  container.innerHTML = students.map(student => `
+    <div class="bg-white border border-gray-200 rounded-2xl shadow-md p-5 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 row-animate">
+      <div class="flex justify-between items-start">
+        <div>
+          <h3 class="text-lg font-semibold text-indigo-700">${student.name}</h3>
+          <p class="text-gray-600 text-sm">📞 ${student.mobile}</p>
+          <p class="text-gray-600 text-sm">📧 ${student.email}</p>
+          <p class="text-gray-600 text-sm">🎓 ${student.course}</p>
+        </div>
+        <div class="flex flex-col gap-2">
+        <!-- Preview Button -->
+        <button onclick="previewStudent(${student.id})"
+          class="bg-[#065084] hover:bg-[#1F6E8C] text-white font-medium px-4 py-2 text-sm rounded-md shadow transition duration-200 ease-in-out transform hover:-translate-y-1 hover:shadow-xl">
+          👁 Preview 
+        </button>
+
+        <!-- Edit Button -->
+        <button onclick="editStudent(${student.id})"
+          class="bg-[#3795BD] hover:bg-[#4DA8DA] text-black font-medium px-4 py-2 text-sm rounded-md shadow transition duration-200 ease-in-out transform hover:-translate-y-1 hover:shadow-xl">
+          
+          ✏ Edit
+        </button>
+
+        <!-- Delete Button -->
+        <button onclick="deleteStudent(${student.id})"
+        	  class="bg-[#8EC5F0] hover:bg-[#8EC5F0] text-black font-medium px-4 py-2 text-sm rounded-md shadow transition duration-200 ease-in-out transform hover:-translate-y-1 hover:shadow-xl">
+        	  🗑 Delete
+        	</button>
+      </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function loadStudents() {
+	fetch("/api/students")
+    .then(res => {
+      if (!res.ok) throw new Error("Failed to fetch");
+      return res.json();
+    })
+    .then(data => {
+      allStudents = data;
+
+      // Sort by date (most recent first)
+      allStudents.sort((a, b) => new Date(b.registrationDate) - new Date(a.registrationDate));
+
+      // Show only the latest 12 initially
+      const latestStudents = allStudents.slice(0, 12);
+      renderStudents(latestStudents);
+    })
+    .catch(err => {
+      document.getElementById("studentResults").innerHTML =
+        `<div class='text-red-500'>Error fetching student data: ${err.message}</div>`;
+    });
+}
+
+document.getElementById("searchInput").addEventListener("input", function () {
+  const keyword = this.value.trim().toLowerCase();
+  const filtered = allStudents
+    .filter(student =>
+      student.name.toLowerCase().includes(keyword) ||
+      student.mobile.toString().toLowerCase().includes(keyword)
+    );
+
+  if (keyword === "") {
+    const latestStudents = allStudents.slice(0, 12);
+    renderStudents(latestStudents);
+  } else {
+    renderStudents(filtered);
+  }
+});
+
+function closePreview() {
+	  document.getElementById("previewModal").classList.add("hidden");
+	}
+
+fetch("/api/username", { credentials: 'include' })
+  .then(response => {
+    if (!response.ok) throw new Error("Not logged in");
+    return response.text();
+  })
+  .then(username => document.getElementById("username").innerText = username)
+  .catch(() => document.getElementById("username").innerText = "Guest");
+
+window.onload = loadStudents;
+
+function exportToExcel() {
+	  if (allStudents.length === 0) {
+	    alert("⚠ No student data to export!");
+	    return;
+	  }
+
+	  // Convert JSON to worksheet
+	  const worksheet = XLSX.utils.json_to_sheet(allStudents);
+
+	  // Create a new workbook
+	  const workbook = XLSX.utils.book_new();
+	  XLSX.utils.book_append_sheet(workbook, worksheet, "Students");
+
+	  // Export to file
+	  XLSX.writeFile(workbook, "students.xlsx");
+	}
+</script>
+</body>
+</html>

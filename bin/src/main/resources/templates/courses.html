@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MR Technologies - Courses</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #113C71;
+      --secondary-color: #f8f9fc;
+      --accent-color: #03306e;
+      --success-color: #16a34a;
+      --danger-color: #dc2626;
+      --text-color: #333333;
+      --muted-text: #6b7280;
+      --white: #ffffff;
+
+      --font-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      --transition-speed: 0.3s;
+      --card-radius: 12px;
+      --shadow-elevation: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: var(--font-base);
+    }
+
+    body {
+      background-color: #f0f0f0;
+    }
+
+    .slide-link {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide-link::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      transition: left var(--transition-speed) ease;
+    }
+
+    .slide-link:hover::before {
+      left: 0;
+    }
+
+    .delete-btn {
+      background: linear-gradient(135deg, #d00000, #a00000);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out;
+      box-shadow: 0px 4px 8px rgba(255, 0, 0, 0.3);
+    }
+
+    .delete-btn:hover {
+      background: linear-gradient(135deg, #ff0000, #c00000);
+      transform: scale(1.1);
+      box-shadow: 0px 6px 12px rgba(255, 0, 0, 0.5);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+<!-- Top Bar -->
+<header class="flex justify-between items-center bg-white shadow-md p-3 fixed top-0 left-0 right-0 z-50">
+  <div class="flex items-center gap-4">
+    <img src="/images/logo.jpg" alt="MR Technologies Logo" class="h-16 object-contain">
+    <img src="/images/courses.png" alt="" class="h-16 object-contain" style="width: 4rem;height: 4rem;">
+    <h1 class="text-2xl font-bold text-[var(--primary-color)]">Courses</h1>
+  </div>
+  <p class="text-sm text-gray-600">
+    Welcome, <span class="font-semibold text-[var(--primary-color)]" id="username">Loading...</span>
+  </p>
+</header>
+
+
+<div class="flex flex-1 pt-20">
+
+ <aside class="fixed top-[80px] left-0 w-72 bg-[var(--primary-color)] text-white " style="height: calc(100% - 80px); padding-top: 10px; z-index: 30; font-size: 20px;">
+    <nav class="flex flex-col gap-4" style="margin-top: 10%;margin-left: 10%;">
+      <a href="/dashboard" class="p-3 rounded slide-link">Dashboard</a>
+      <a href="/courses" class="p-3 rounded slide-link">Courses</a>
+      <a href="/studenthome" class="p-3 rounded slide-link">Students</a>
+      <a href="/Batch" class="p-3 rounded slide-link">Batch</a>
+      <a href="/payments" class="p-3 rounded slide-link">Finance</a>
+      <a href="/reports" class="p-3 rounded slide-link">Reports</a>
+    </nav>
+    <button onclick="logout()" class="mt-4 text-left text-red-300 hover:text-white p-3 transition" style="margin-left: 10%;">Logout</button>
+  </aside> 
+
+  <!-- Main Content -->
+  <main class="" style="margin-left: 400px;margin-top: 5rem;  ">
+    <div class="max-w-6xl mx-auto space-y-10">
+
+      <!-- Course Form -->
+      <div class="bg-white rounded-xl shadow-md p-8 border border-gray-200 hover:shadow-lg transition-all duration-300">
+        <h2 class="text-2xl font-bold text-center text-[var(--primary-color)] mb-6 flex items-center justify-center gap-2">
+          <i class="fas fa-book"></i> Add New Course
+        </h2>
+
+        <form id="courseForm" class="grid grid-cols-1 md:grid-cols-2 gap-6" style="font-size: 15px;">
+  <div>
+    <label for="courseid" class="block text-sm font-medium text-gray-700 mb-2">Course ID</label>
+    <input type="text" id="courseid" name="courseid" required
+      class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]">
+  </div>
+
+  <div>
+    <label for="coursename" class="block text-sm font-medium text-gray-700 mb-2">Course Name</label>
+    <input type="text" id="coursename" name="coursename" required
+      class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]">
+  </div>
+
+  <div>
+    <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">Duration (days)</label>
+    <input type="number" id="duration" name="duration" required min="1"
+      class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]">
+  </div>
+
+  <div>
+    <label for="Coursefee" class="block text-sm font-medium text-gray-700 mb-2">Course Fee</label>
+    <input type="number" id="Coursefee" name="Coursefee" required min="1"
+      class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]">
+  </div>
+
+  <!-- Add button INSIDE the form -->
+  <div class="col-span-2 text-center mt-6">
+    <button type="submit"
+      class="bg-[var(--primary-color)] hover:brightness-110 text-white px-8 py-2 rounded-full font-semibold shadow-md transition-all duration-300">
+      Add Course
+    </button>
+  </div>
+</form>
+
+<p id="message" class="text-center text-sm mt-4"></p>
+</div>
+
+      <!-- Course List -->
+      <div class="bg-white rounded-2xl shadow-md p-6 border border-gray-200 hover:shadow-xl transition-all duration-300">
+  <h2 class="text-2xl font-bold text-[var(--primary-color)] mb-6 tracking-wide">Course List</h2>
+
+  <div class="overflow-x-auto">
+  <div class="flex justify-end mb-4">
+  <button onclick="exportTableToExcel()" 
+    class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg shadow-md transition-all duration-300 flex items-center gap-2">
+    <i class="fa-solid fa-file-excel"></i> Export to Excel
+  </button>
+</div>
+  
+    <table class="min-w-full text-sm border-collapse border border-gray-300">
+      <thead class="bg-[rgba(3,48,110,0.1)] text-[rgb(3,48,110)] text-base font-semibold">
+        <tr>
+          <th class="px-5 py-3 text-left border border-gray-300"style="font-size: 20px;">Course ID</th>
+          <th class="px-5 py-3 text-left border border-gray-300"style="font-size: 20px;">Course Name</th>
+          <th class="px-5 py-3 text-left border border-gray-300"style="font-size: 20px;">Duration (Days)</th>
+          <th class="px-5 py-3 text-left border border-gray-300"style="font-size: 20px;">Course Fee</th>
+          <th class="px-5 py-3 text-center border border-gray-300"style="font-size: 20px;">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody id="courseTableBody" class="text-gray-800 text-sm">
+        <!-- Example static row (remove if filled by JS) -->
+        <!--
+        <tr class="hover:bg-gray-50 transition">
+          <td class="px-5 py-3 border border-gray-300">C101</td>
+          <td class="px-5 py-3 border border-gray-300">Java Basics</td>
+          <td class="px-5 py-3 border border-gray-300">30</td>
+          <td class="px-5 py-3 border border-gray-300">₹5000</td>
+          <td class="px-5 py-3 text-center border border-gray-300 space-x-2">
+            <button class="text-indigo-600 hover:text-indigo-800 font-medium">Edit</button>
+            <button class="text-red-500 hover:text-red-700 font-medium">Delete</button>
+          </td>
+        </tr>
+        -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+    </div>
+  </main>
+
+  <!-- Script -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  
+  <script>
+  document.getElementById("courseForm").addEventListener("submit", function (e) {
+	  e.preventDefault();
+
+	  const durationValue = parseInt(document.getElementById("duration").value);
+	  const courseFeeValue = parseFloat(document.getElementById("Coursefee").value);
+
+	  // Validation for positive numbers
+	  if (isNaN(durationValue) || durationValue <= 0) {
+	    showMessage("Duration must be a positive number.", "red");
+	    return;
+	  }
+	  if (isNaN(courseFeeValue) || courseFeeValue <= 0) {
+	    showMessage("Course Fee must be a positive number.", "red");
+	    return;
+	  }
+
+	  const courseData = {
+	    courseid: document.getElementById("courseid").value.trim(),
+	    coursename: document.getElementById("coursename").value.trim(),
+	    duration: durationValue,
+	    coursefee: courseFeeValue
+	  };
+
+	  fetch("/api/courses/add", {
+	    method: "POST",
+	    headers: { "Content-Type": "application/json" },
+	    body: JSON.stringify(courseData),
+	  })
+	    .then(response => response.json())
+	    .then(data => {
+	      showMessage("Course added successfully!", "green");
+	      document.getElementById("courseForm").reset();
+	      fetchCourses();
+	    })
+	    .catch(error => {
+	      console.error("Error adding course:", error);
+	      showMessage("Error adding course.", "red");
+	    });
+	});
+
+	function showMessage(msg, color) {
+	  const messageEl = document.getElementById("message");
+	  messageEl.textContent = msg;
+	  messageEl.style.color = color;
+	}
+
+
+    function fetchCourses() {
+      fetch("/api/courses/all")
+        .then(response => response.json())
+        .then(data => {
+          const tbody = document.getElementById("courseTableBody");
+          tbody.innerHTML = "";
+
+          data.forEach(course => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td class="px-5 py-3 border border-gray-300"style="font-size: 16px;">${course.courseid}</td>
+              <td class="px-5 py-3 border border-gray-300"style="font-size: 16px;">${course.coursename}</td>
+              <td class="px-5 py-3 border border-gray-300"style="font-size: 16px;">${course.duration}</td>
+              <td class="px-5 py-3 border border-gray-300"style="font-size: 16px;">${course.coursefee}</td>
+              <td class="px-5 py-3 border border-gray-300"style="font-size: 16px;">
+                <button class="delete-btn" onclick="deleteCourse('${course.courseid}')">Delete</button>
+              </td>`;
+            tbody.appendChild(row);
+          });
+        });
+    }
+
+    function deleteCourse(courseid) {
+      if (!confirm("Are you sure you want to delete this course?")) return;
+
+      fetch(`/api/courses/delete/${courseid}`, {
+        method: "DELETE"
+      })
+        .then(response => {
+          if (response.ok) {
+            document.getElementById("message").textContent = "Course deleted successfully!";
+            fetchCourses();
+          } else {
+            throw new Error("Delete failed");
+          }
+        })
+        .catch(error => {
+          console.error("Error deleting course:", error);
+          document.getElementById("message").textContent = "Failed to delete course.";
+        });
+    }
+
+    fetch("http://localhost:8080/api/username", {
+      credentials: 'include'
+    })
+      .then(response => {
+        if (!response.ok) throw new Error("Not logged in");
+        return response.text();
+      })
+      .then(username => {
+        document.getElementById("username").innerText = username;
+      })
+      .catch(() => {
+        document.getElementById("username").innerText = "Guest";
+      });
+
+    window.onload = fetchCourses;
+    function exportTableToExcel() {
+    	  // Get table element
+    	  const table = document.querySelector("table");
+
+    	  // Convert table to worksheet
+    	  const wb = XLSX.utils.table_to_book(table, { sheet: "Courses" });
+
+    	  // Export to Excel file
+    	  XLSX.writeFile(wb, "Course_List.xlsx");
+    	}
+
+    
+  </script>
+</body>
+</html>
+ 

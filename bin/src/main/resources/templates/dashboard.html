@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MR Technologies - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      :root {
+        --primary-color: #113c71;
+        --secondary-color: #f8f9fc;
+        --accent-color: #03306e;
+        --success-color: #16a34a;
+        --danger-color: #dc2626;
+        --text-color: #333333;
+        --muted-text: #6b7280;
+        --white: #ffffff;
+
+        --font-base: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        --transition-speed: 0.3s;
+        --card-radius: 12px;
+        --shadow-elevation: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      body {
+        opacity: 0;
+        transition: opacity 0.6s ease-in-out;
+        font-family: var(--font-base);
+        background-color: var(--secondary-color);
+        color: var(--text-color);
+        margin-top: 0px;
+      }
+
+      body.loaded {
+        opacity: 1;
+      }
+
+      @keyframes fadeInScale {
+        0% {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .animate-fadeInScale {
+        animation: fadeInScale 0.6s ease-out both;
+      }
+
+      .slide-link {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .slide-link::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        transition: left var(--transition-speed) ease;
+      }
+
+      .slide-link:hover::before {
+        left: 0;
+      }
+
+      .fade-up {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease-in-out;
+      }
+
+      .fade-up.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .graph-section {
+        display: flex;
+        width: 50%;
+        height: auto;
+        flex-direction: column;
+        gap: 1rem;
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen flex font-sans text-gray-800">
+   <!-- Top Bar -->
+<!-- Top Bar -->
+
+<header class="flex justify-between items-center bg-white shadow-md p-3 fixed top-0 left-0 right-0 z-50">
+  <div class="flex items-center gap-4">
+    <img src="/images/logo.jpg" alt="MR Technologies Logo" class="h-16 object-contain">
+    <img src="/images/Analytic hub.png" alt="" style="width: 4rem;height: 4rem;">
+    <h1 class="text-2xl font-bold text-[var(--primary-color)]">Analytic hub</h1>
+  </div>
+
+  <!-- Search + Welcome -->
+  <div class="flex items-center gap-6">
+    <!-- 🔍 Search Icon -->
+    <button id="searchToggle" class="p-2 rounded hover:bg-gray-100">
+      <i data-lucide="search" class="w-6 h-6 text-gray-600"></i>
+    </button>
+
+    <!-- Hidden Search Bar -->
+    <div id="searchBar" class="hidden">
+      <input 
+        type="text" 
+        id="searchInput" 
+        placeholder="Search by Name, ID, Phone..."
+        class="border border-gray-300 rounded-lg px-3 py-1 focus:outline-none focus:ring focus:ring-[var(--primary-color)]"
+      />
+      <button onclick="searchStudent()" class="ml-2 bg-[var(--primary-color)] text-white px-3 py-1 rounded-lg">
+        Go
+      </button>
+    </div>
+
+    <p class="text-sm text-gray-600">
+      Welcome, <span class="font-semibold text-[var(--primary-color)]" id="username">Loading...</span>
+    </p>
+  </div>
+</header>
+
+
+    <!-- Sidebar -->
+    <div class="flex flex-1 pt-20">
+  <!-- Sidebar -->
+ <aside class="fixed top-[80px] left-0 w-72 bg-[var(--primary-color)] text-white " style="height: calc(100% - 80px); padding-top: 10px; z-index: 30; font-size: 20px;">
+    <nav class="flex flex-col gap-4" style="margin-top: 10%;margin-left: 10%;">
+      <a href="/dashboard" class="p-3 rounded slide-link">Dashboard</a>
+      <a href="/courses" class="p-3 rounded slide-link">Courses</a>
+      <a href="/studenthome" class="p-3 rounded slide-link">Students</a>
+      <a href="/Batch" class="p-3 rounded slide-link">Batch</a>
+      <a href="/payments" class="p-3 rounded slide-link">Finance</a>
+      <a href="/reports" class="p-3 rounded slide-link">Reports</a>
+    </nav>
+    <button onclick="logout()" class="mt-4 text-left text-red-300 hover:text-white p-3 transition" style="margin-left: 10%;">Logout</button>
+  </aside> 
+
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col ml-72">
+      <main
+        class="p-8 flex-1 overflow-y-auto space-y-10"
+        style="background-color: var(--secondary-color);;" 
+      >
+      <!-- 🔎 Search Results Section -->
+<!-- 🔎 Search Results Section -->
+<div id="searchResultsWrapper" class="border border-gray-200 rounded-lg hidden">
+  <div class="flex justify-between items-center bg-gray-100 px-3 py-2 border-b">
+    <h3 class="font-semibold text-gray-700">Search Results</h3>
+    <button onclick="closeSearchResults()" 
+            class="text-gray-500 hover:text-red-600 text-xl font-bold">✖</button>
+  </div>
+<div id="searchResults" class="overflow-y-auto max-h-64 border border-gray-200 rounded-lg"></div>
+</div>
+<!-- 📌 Student Preview Modal -->
+<div id="studentModal"
+     class="fixed inset-0 hidden bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-xl shadow-lg p-6 w-[600px] relative">
+    <!-- Close Button -->
+    <button onclick="closeModal()" class="absolute top-3 right-3 text-gray-500 hover:text-red-500">
+      ✖
+    </button>
+
+    <h2 class="text-xl font-bold text-[var(--primary-color)] mb-4">Student Details</h2>
+    <div id="studentDetails" class="space-y-2 text-gray-700"></div>
+  </div>
+</div>
+
+      
+        <!-- Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div
+            class="bg-white p-6 rounded-xl shadow hover:shadow-xl transition animate-fadeInScale delay-300 flex items-center gap-4"
+          >
+            <i
+              data-lucide="users"
+              class="w-10 h-10"
+              style="color: var(--primary-color)"
+            ></i>
+            <div>
+              <h3
+                class="text-lg font-semibold"
+                style="color: var(--primary-color)"
+              >
+                Total Students
+              </h3>
+              <p
+                class="text-3xl mt-2 font-bold text-gray-800"
+                th:text="${totalStudents}"
+              >
+                0
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="bg-white p-6 rounded-xl shadow hover:shadow-xl transition animate-fadeInScale delay-400 flex items-center gap-4"
+          >
+            <i
+              data-lucide="wallet"
+              class="w-10 h-10"
+              style="color: var(--success-color)"
+            ></i>
+            <div>
+              <h3
+                class="text-lg font-semibold"
+                style="color: var(--primary-color)"
+              >
+                Total Fees Collected
+              </h3>
+             	 <p id="totalFees"
+                class="text-3xl mt-2 font-bold"
+                style="color: var(--block-color)"
+                th:text="'₹' + ${totalFees}"
+                >
+                ₹0
+              </p>
+            </div>
+            </div>
+          <div
+            class="bg-white p-6 rounded-xl shadow hover:shadow-xl transition animate-fadeInScale delay-500 flex items-center gap-4"
+          >
+            <i
+              data-lucide="alert-circle"
+              class="w-10 h-10"
+              style="color: var(--danger-color)"
+            ></i>
+            <div>
+              <h3
+                class="text-lg font-semibold"
+                style="color: var(--primary-color)"
+              >
+                Upcoming Due Payments
+              </h3>
+              <p id="upcomingDue"
+                class="text-3xl mt-2 font-bold"
+                style="color: var(--block-color)"
+                th:text="'₹' + ${upcomingDue}"
+              >
+                ₹0
+              </p>
+            </div>
+          </div>
+        </div>
+
+       <!-- ✅ Graphs Section (2 rows, 2 per row, same size) -->
+<!-- Graphs Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <!-- Monthly Fee Collection -->
+  <div class="bg-white p-6 rounded-xl shadow fade-up flex flex-col">
+    <h2 class="text-lg font-semibold mb-4 text-[var(--primary-color)]">
+      Monthly Fee Collection
+    </h2>
+    <div class="flex-1">
+      <canvas id="feeChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Student Enrollment Trend -->
+  <div class="bg-white p-6 rounded-xl shadow fade-up flex flex-col">
+    <h2 class="text-lg font-semibold mb-4 text-[var(--primary-color)]">
+      Student Enrollment Trend
+    </h2>
+    <div class="flex-1">
+      <canvas id="enrollmentChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Course Distribution -->
+  <div class="bg-white p-6 rounded-xl shadow fade-up flex flex-col">
+    <h2 class="text-lg font-semibold mb-4 text-[var(--primary-color)]">
+      Course Distribution
+    </h2>
+    <div class="flex-1">
+      <canvas id="courseChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Payment Status -->
+  <div class="bg-white p-6 rounded-xl shadow fade-up flex flex-col">
+    <h2 class="text-lg font-semibold mb-4 text-[var(--primary-color)]">
+      Payment Status
+    </h2>
+    <div class="flex-1">
+      <canvas id="paymentChart"></canvas>
+    </div>
+  </div>
+</div>
+
+        
+      </main>
+    </div>
+
+    <script>
+      lucide.createIcons();
+
+      // Page load transition
+      window.addEventListener("DOMContentLoaded", () => {
+        document.body.classList.add("loaded");
+      });
+
+      // Logout redirect
+      function logout() {
+        window.location.href = "/login";
+      }
+
+      // Load username
+      fetch("http://localhost:8080/api/username", { credentials: "include" })
+        .then((response) => {
+          if (!response.ok) throw new Error("Not logged in");
+          return response.text();
+        })
+        .then((username) => {
+          document.getElementById("username").innerText = username;
+        })
+        .catch(() => {
+          document.getElementById("username").innerText = "Guest";
+        });
+
+      // Scroll animation for all fade-up sections
+      const fadeUps = document.querySelectorAll(".fade-up");
+      window.addEventListener("scroll", () => {
+        fadeUps.forEach((el) => {
+          const rect = el.getBoundingClientRect();
+          if (rect.top < window.innerHeight - 100) {
+            el.classList.add("show");
+          }
+        });
+      });
+
+      // Chart.js
+      const ctx = document.getElementById("feeChart").getContext("2d");
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+          datasets: [
+            {
+              label: "Fees Collected (₹)",
+              data: [40000, 60000, 55000, 75000, 68000, 72000, 80000],
+              backgroundColor: getComputedStyle(document.documentElement)
+                .getPropertyValue("--primary-color")
+                .trim(),
+              borderRadius: 8,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          animation: { duration: 1200, easing: "easeOutBounce" },
+          scales: { y: { beginAtZero: true } },
+        },
+      });
+
+      // Enrollment Line Chart
+      const enrollmentCtx = document
+        .getElementById("enrollmentChart")
+        .getContext("2d");
+      new Chart(enrollmentCtx, {
+        type: "line",
+        data: {
+          labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+          datasets: [
+            {
+              label: "New Enrollments",
+              data: [50, 70, 65, 90, 80, 100, 120],
+              borderColor: "#113C71",
+              backgroundColor: "rgba(17,60,113,0.2)",
+              tension: 0.3,
+              fill: true,
+            },
+          ],
+        },
+        options: { responsive: true },
+      });
+
+      // Course Distribution Pie Chart
+      const courseCtx = document.getElementById("courseChart").getContext("2d");
+      new Chart(courseCtx, {
+        type: "pie",
+        data: {
+          labels: ["Java", "Python", "Web Dev", "Data Science"],
+          datasets: [
+            {
+              data: [120, 150, 90, 60],
+              backgroundColor: ["#113C71", "#16a34a", "#f59e0b", "#dc2626"],
+            },
+          ],
+        },
+        options: { responsive: true },
+      });
+
+      // Payment Status Doughnut Chart
+      const paymentCtx = document
+        .getElementById("paymentChart")
+        .getContext("2d");
+      new Chart(paymentCtx, {
+        type: "doughnut",
+        data: {
+          labels: ["Paid", "Pending", "Overdue"],
+          datasets: [
+            {
+              data: [300, 120, 50],
+              backgroundColor: ["#16a34a", "#f59e0b", "#dc2626"],
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          cutout: "70%",
+          plugins: { legend: { position: "bottom" } },
+        },
+      });
+      
+      // search bar 
+      // Toggle search bar
+document.getElementById("searchToggle").addEventListener("click", () => {
+  const bar = document.getElementById("searchBar");
+  bar.classList.toggle("hidden");
+
+  if (!bar.classList.contains("hidden")) {
+    document.getElementById("searchInput").focus();
+  }
+});
+
+// Student search (example using backend API)
+// Student search (example using backend API)
+function searchStudent() {
+  const query = document.getElementById("searchInput").value.trim();
+  if (!query) return alert("Please enter a name, ID, or phone number");
+
+  fetch(`http://localhost:8080/api/students/search?keyword=${query}`, { credentials: "include" })
+    .then(res => {
+      if (!res.ok) throw new Error("Search failed");
+      return res.json();
+    })
+    .then(data => {
+      const wrapper = document.getElementById("searchResultsWrapper");
+      const resultsDiv = document.getElementById("searchResults");
+      resultsDiv.innerHTML = "";
+
+      if (data.length === 0) {
+        resultsDiv.innerHTML = `<p class="text-red-600 p-3">No students found</p>`;
+      } else {
+        data.forEach(student => {
+          const card = document.createElement("div");
+          card.className = "bg-white p-4 rounded-lg shadow flex justify-between items-center mb-2";
+
+          card.innerHTML = `
+            <div>
+              <p class="font-semibold text-lg">${student.name}</p>
+              <p class="text-sm text-gray-600">Mobile: ${student.mobile}</p>
+              <p class="text-sm text-gray-600">Course: ${student.course}</p>
+            </div>
+            <button onclick="previewStudent(${student.id})"
+              class="bg-[var(--primary-color)] text-white px-4 py-2 rounded-lg hover:bg-blue-800">
+              Preview
+            </button>
+          `;
+          resultsDiv.appendChild(card);
+        });
+      }
+
+      wrapper.classList.remove("hidden");  // ✅ Show results box
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Error searching student");
+    });
+}
+
+// Close search results
+function closeSearchResults() {
+  document.getElementById("searchResultsWrapper").classList.add("hidden");
+}
+
+function previewStudent(id) {
+	  fetch(`http://localhost:8080/api/students/${id}`)
+	    .then(res => {
+	      if (!res.ok) throw new Error("Failed to fetch student details");
+	      return res.json();
+	    })
+	    .then(student => {
+	      const detailsDiv = document.getElementById("studentDetails");
+
+	      // Progress bar calculation
+	      const total = student.totalfee || 0;
+	      const paid = student.paidamount || 0;
+	      let percent = 0;
+	      if (total > 0) percent = Math.min((paid / total) * 100, 100);
+
+	      detailsDiv.innerHTML = `
+	        <div class="bg-white p-6 rounded-2xl shadow-lg space-y-4">
+	          <h2 class="text-xl font-bold text-gray-800 border-b pb-2">Student Details</h2>
+	          
+	          <div class="grid grid-cols-2 gap-4">
+	            <p><span class="font-semibold text-gray-600">Name:</span> ${student.name}</p>
+	            <p><span class="font-semibold text-gray-600">Email:</span> ${student.email}</p>
+	            <p><span class="font-semibold text-gray-600">Mobile:</span> ${student.mobile}</p>
+	            <p><span class="font-semibold text-gray-600">DOB:</span> ${student.dob}</p>
+	            <p><span class="font-semibold text-gray-600">Gender:</span> ${student.gender}</p>
+	            <p><span class="font-semibold text-gray-600">Course:</span> ${student.course}</p>
+	            <p><span class="font-semibold text-gray-600">Batch:</span> ${student.batch}</p>
+	            <p><span class="font-semibold text-gray-600">Status:</span> 
+	              <span class="px-2 py-1 text-sm rounded-full 
+	                ${student.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+	                ${student.status}
+	              </span>
+	            </p>
+	          </div>
+
+	          <div class="mt-4">
+	            <p class="font-semibold text-gray-700 mb-2">Fee Details</p>
+	            <div class="flex justify-between text-sm mb-1">
+	              <span>Total: ₹${student.totalfee}</span>
+	              <span>Paid: ₹${student.paidamount}</span>
+	              <span>Due: ₹${student.duefee}</span>
+	            </div>
+	            
+	            <!-- Progress Bar -->
+	            <div class="w-full bg-gray-200 rounded-full h-3">
+	              <div class="bg-blue-600 h-3 rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+	            </div>
+	            <p class="text-xs text-gray-500 mt-1">${percent.toFixed(1)}% Paid</p>
+	          </div>
+	        </div>
+	      `;
+
+	      document.getElementById("studentModal").classList.remove("hidden");
+	    })
+	    .catch(err => {
+	      console.error(err);
+	      alert("Error fetching student details");
+	    });
+	}
+
+	function closeModal() {
+	  document.getElementById("studentModal").classList.add("hidden");
+	}
+	// Total Fees Collected
+	fetch("http://localhost:8080/api/students/total-fees")
+	  .then(res => res.json())
+	  .then(totalFees => {
+	    const el = document.querySelector("#totalFees");
+	    if (el) el.innerHTML = `<b>₹${(totalFees || 0).toLocaleString('en-IN')}</b>`;
+	  })
+	  .catch(err => console.error(err));
+	// Upcoming Due Payments
+	fetch("http://localhost:8080/api/students/upcoming-due")
+	  .then(res => res.json())
+	  .then(dueAmount => {
+	    const el = document.querySelector("#upcomingDue");
+	    if (el) el.innerHTML = `<b>₹${(dueAmount || 0).toLocaleString('en-IN')}</b>`;
+	  })
+	  .catch(err => console.error(err));
+    </script>
+  </body>
+</html>

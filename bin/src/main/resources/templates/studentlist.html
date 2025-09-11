@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student List - MR Technologies</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-color: #113C71;
+      --secondary-color: #f8f9fc;
+      --accent-color: #03306e;
+      --success-color: #16a34a;
+      --danger-color: #dc2626;
+      --text-color: #333;
+      --muted-text: #6b7280;
+      --card-radius: 12px;
+      --transition-speed: 0.3s;
+    }
+
+    body {
+      background-color: #f0f0f0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .slide-link {
+      position: relative;
+      transition: background 0.3s ease;
+    }
+    .slide-link::before {
+      content: "";
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: rgba(255, 255, 255, 0.15);
+      transition: left var(--transition-speed) ease;
+    }
+    .slide-link:hover::before {
+      left: 0;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .row-animate {
+      animation: fadeSlideIn 0.4s ease-in-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Top Bar -->
+  <header class="flex justify-between items-center bg-white shadow-md p-3 fixed top-0 left-0 right-0 z-50">
+    <div class="flex items-center gap-4">
+      <img src="/images/logo.jpg" alt="MR Technologies Logo" class="h-16 object-contain">
+      <img src="/images/studentlist.png" alt="" class="w-16 h-16">
+      <h1 class="text-2xl font-bold text-[var(--primary-color)]">Student List</h1>
+    </div>
+    <p class="text-sm text-gray-600">
+      Welcome, <span class="font-semibold text-[var(--primary-color)]" id="username">Loading...</span>
+    </p>
+  </header>
+
+  <!-- Sidebar + Content -->
+ <div class="flex flex-1 pt-20">
+ <aside class="fixed top-[80px] left-0 w-72 bg-[var(--primary-color)] text-white " style="height: calc(100% - 80px); padding-top: 10px; z-index: 30; font-size: 20px;">
+    <nav class="flex flex-col gap-4" style="margin-top: 10%;margin-left: 10%;">
+      <a href="/dashboard" class="p-3 rounded slide-link">Dashboard</a>
+      <a href="/courses" class="p-3 rounded slide-link">Courses</a>
+      <a href="/studenthome" class="p-3 rounded slide-link">Students</a>
+      <a href="/Batch" class="p-3 rounded slide-link">Batch</a>
+      <a href="/payments" class="p-3 rounded slide-link">Finance</a>
+      <a href="/reports" class="p-3 rounded slide-link">Reports</a>
+    </nav>
+    <button onclick="logout()" class="mt-4 text-left text-red-300 hover:text-white p-3 transition" style="margin-left: 10%;">Logout</button>
+  </aside> 
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto bg-white shadow-xl rounded-2xl p-6 border border-gray-100" style="margin-top: 5rem; margin-left: 17rem; width: 100%;">
+      
+      <!-- Title & Count -->
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h2 class="text-3xl font-extrabold text-indigo-800 flex items-center gap-2">
+            <i class="fas fa-user-graduate text-indigo-600"></i> Student List
+          </h2>
+          <h3 class="text-lg font-semibold text-gray-700 mt-2 flex items-center gap-2">
+            <i class="fas fa-users text-indigo-500"></i> Total Students:
+            <span class="text-2xl font-bold text-indigo-700" id="studentCount">0</span>
+          </h3>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+      <!-- Pagination -->
+      <div id="pagination" class="mt-6 flex justify-center items-center space-x-2 text-sm"></div>
+        <table class="min-w-full text-sm">
+          <thead class="bg-gradient-to-r from-indigo-100 to-indigo-200">
+            <tr>
+              <th class="px-4 py-3 text-left font-semibold text-indigo-800 uppercase tracking-wide">ID</th>
+              <th class="px-4 py-3 text-left font-semibold text-indigo-800 uppercase tracking-wide">Name</th>
+              <th class="px-4 py-3 text-left font-semibold text-indigo-800 uppercase tracking-wide">Email</th>
+              <th class="px-4 py-3 text-left font-semibold text-indigo-800 uppercase tracking-wide">Mobile</th>
+              <th class="px-4 py-3 text-left font-semibold text-indigo-800 uppercase tracking-wide">Course</th>
+              <th class="px-4 py-3 text-left font-semibold text-indigo-800 uppercase tracking-wide">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="studentTable" class="divide-y divide-gray-100">
+            <!-- Dynamic Rows -->
+          </tbody>
+        </table>
+      </div>
+
+      
+
+    </main>
+  </div>
+
+  <!-- JS -->
+  <script>
+    let allStudents = [];
+    let currentPage = 1;
+    const studentsPerPage = 5;
+
+    function editStudent(id) {
+      window.location.href = "/student/edit/" + id;
+    }
+
+    function deleteStudent(id) {
+      if (!confirm("Are you sure you want to delete this student?")) return;
+      fetch(`http://localhost:8080/api/students/${id}`, { method: "DELETE" })
+        .then(res => {
+          if (!res.ok) throw new Error("Failed to delete");
+          alert("✅ Student deleted successfully");
+          fetchStudents();
+        })
+        .catch(err => alert("❌ " + err.message));
+    }
+
+    function renderStudents() {
+      const tbody = document.getElementById("studentTable");
+      tbody.innerHTML = "";
+
+      const start = (currentPage - 1) * studentsPerPage;
+      const currentStudents = allStudents.slice(start, start + studentsPerPage);
+
+      currentStudents.forEach(s => {
+        const row = document.createElement("tr");
+        row.className = "row-animate hover:bg-indigo-50 transition duration-200";
+        row.innerHTML = `
+          <td class="px-4 py-2">${s.id}</td>
+          <td class="px-4 py-2">${s.name}</td>
+          <td class="px-4 py-2">${s.email}</td>
+          <td class="px-4 py-2">${s.mobile}</td>
+          <td class="px-4 py-2">${s.course}</td>
+          <td class="px-4 py-2 space-x-2">
+            <button onclick="editStudent(${s.id})" class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 text-sm rounded">Edit</button>
+            <button onclick="deleteStudent(${s.id})" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-sm rounded">Delete</button>
+          </td>`;
+        tbody.appendChild(row);
+      });
+    }
+
+    function renderPaginationButtons() {
+      const div = document.getElementById("pagination");
+      div.innerHTML = "";
+      const totalPages = Math.ceil(allStudents.length / studentsPerPage);
+
+      const makeBtn = (label, disabled, handler, extra = "") => {
+        const btn = document.createElement("button");
+        btn.innerHTML = label;
+        btn.disabled = disabled;
+        btn.className = `px-3 py-1 rounded-lg border ${extra} ${disabled ? "bg-gray-200 text-gray-500" : "bg-indigo-100 hover:bg-indigo-200 text-indigo-700"}`;
+        btn.onclick = handler;
+        return btn;
+      };
+
+      div.appendChild(makeBtn("&laquo;", currentPage === 1, () => { currentPage = 1; renderStudents(); renderPaginationButtons(); }));
+      div.appendChild(makeBtn("&lt;", currentPage === 1, () => { currentPage--; renderStudents(); renderPaginationButtons(); }));
+
+      const input = document.createElement("input");
+      input.type = "number"; input.min = 1; input.max = totalPages;
+      input.value = currentPage;
+      input.className = "border border-gray-300 px-2 py-1 w-14 text-center rounded-lg focus:ring-2 focus:ring-indigo-400";
+      input.onchange = () => {
+        const newPage = +input.value;
+        if (newPage >= 1 && newPage <= totalPages) {
+          currentPage = newPage; renderStudents(); renderPaginationButtons();
+        } else input.value = currentPage;
+      };
+      div.appendChild(input);
+
+      const span = document.createElement("span");
+      span.textContent = ` of ${totalPages}`;
+      span.className = "text-gray-600";
+      div.appendChild(span);
+
+      div.appendChild(makeBtn("&gt;", currentPage === totalPages, () => { currentPage++; renderStudents(); renderPaginationButtons(); }));
+      div.appendChild(makeBtn("&raquo;", currentPage === totalPages, () => { currentPage = totalPages; renderStudents(); renderPaginationButtons(); }));
+    }
+
+    function fetchStudents() {
+    	  fetch("http://localhost:8080/api/students")
+    	    .then(res => res.json())
+    	    .then(data => {
+    	      allStudents = data;
+    	      renderStudents();
+    	      renderPaginationButtons();
+    	    })
+    	    .catch(err => alert("❌ Failed to load students: " + err.message));
+    	}
+
+
+    // Fetch Student Count
+    fetch("http://localhost:8080/api/students/count")
+      .then(res => res.json())
+      .then(count => document.getElementById("studentCount").textContent = count)
+      .catch(() => console.error("❌ Failed to load count"));
+
+    // Fetch Username
+    fetch("http://localhost:8080/api/username", { credentials: 'include' })
+      .then(res => res.ok ? res.text() : "Guest")
+      .then(name => document.getElementById("username").innerText = name)
+      .catch(() => document.getElementById("username").innerText = "Guest");
+
+    fetchStudents();
+  </script>
+
+</body>
+</html>
