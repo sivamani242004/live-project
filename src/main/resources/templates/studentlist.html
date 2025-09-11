@@ -104,6 +104,7 @@
               <th class="px-4 py-3 text-left font-semibold text-indigo-800 uppercase tracking-wide">Email</th>
               <th class="px-4 py-3 text-left font-semibold text-indigo-800 uppercase tracking-wide">Mobile</th>
               <th class="px-4 py-3 text-left font-semibold text-indigo-800 uppercase tracking-wide">Course</th>
+              <th class="px-4 py-3 text-left font-semibold text-indigo-800 uppercase tracking-wide">Date</th>
               <th class="px-4 py-3 text-left font-semibold text-indigo-800 uppercase tracking-wide">Actions</th>
             </tr>
           </thead>
@@ -155,6 +156,7 @@
           <td class="px-4 py-2">${s.email}</td>
           <td class="px-4 py-2">${s.mobile}</td>
           <td class="px-4 py-2">${s.course}</td>
+          <td class="px-4 py-2">${formatDate(s.joiningDate)}</td>
           <td class="px-4 py-2 space-x-2">
             <button onclick="editStudent(${s.id})" class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 text-sm rounded">Edit</button>
             <button onclick="deleteStudent(${s.id})" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-sm rounded">Delete</button>
