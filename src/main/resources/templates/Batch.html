@@ -389,12 +389,25 @@ function renderBatches(data) {
   });
 }
 function updateStatus(id, newStatus) {
-	  const batch = allBatches.find(b => b.batchid === id);
-	  if (batch) {
-	    batch.status = newStatus;  // update array
-	    renderTable(); // refresh table to reflect new status
-	  }
+	  fetch(`http://localhost:8080/api/batch/updateStatus/${id}`, {
+	    method: "PUT",
+	    headers: { "Content-Type": "application/json" },
+	    body: JSON.stringify({ status: newStatus })
+	  })
+	  .then(res => res.text())  // 👈 expect plain text, not JSON
+	  .then(msg => {
+	    console.log(msg); // "Batch, students, and payments updated successfully!"
+	    const batch = allBatches.find(b => b.batchid === id);
+	    if (batch) batch.status = newStatus;
+	    applyFilter();
+	  })
+	  .catch(err => {
+	    console.error(err);
+	    alert("Error updating status!");
+	  });
 	}
+
+
 // ✅ View batch details in modal (STATIC VIEW ONLY)
 // ✅ View batch details with students
 function viewBatch(id) {
