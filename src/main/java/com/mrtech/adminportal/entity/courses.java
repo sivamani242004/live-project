@@ -2,24 +2,25 @@ package com.mrtech.adminportal.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "courses")
 public class courses {
 
     @Id
-    private String courseid;
+    private Long courseid;  // ✅ manually set
 
     private String coursename;
     private int duration;
     private int coursefee;
 
-
-    // Getters and Setters
-    public String getCourseid() {
+    // Getters & Setters
+    public Long getCourseid() {
         return courseid;
     }
 
-    public void setCourseid(String courseid) {
+    public void setCourseid(Long courseid) {
         this.courseid = courseid;
     }
 
@@ -38,6 +39,7 @@ public class courses {
     public void setDuration(int duration) {
         this.duration = duration;
     }
+
     public int getCoursefee() {
         return coursefee;
     }

@@ -15,29 +15,24 @@
       --text-color: #333333;
       --muted-text: #6b7280;
       --white: #ffffff;
-
       --font-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       --transition-speed: 0.3s;
       --card-radius: 12px;
       --shadow-elevation: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       font-family: var(--font-base);
     }
-
     body {
       background-color: #f0f0f0;
     }
-
     .slide-link {
       position: relative;
       overflow: hidden;
     }
-
     .slide-link::before {
       content: "";
       position: absolute;
@@ -48,11 +43,9 @@
       background: rgba(255, 255, 255, 0.1);
       transition: left var(--transition-speed) ease;
     }
-
     .slide-link:hover::before {
       left: 0;
     }
-
     .delete-btn {
       background: linear-gradient(135deg, #d00000, #a00000);
       color: white;
@@ -65,7 +58,6 @@
       transition: transform 0.2s ease-in-out;
       box-shadow: 0px 4px 8px rgba(255, 0, 0, 0.3);
     }
-
     .delete-btn:hover {
       background: linear-gradient(135deg, #ff0000, #c00000);
       transform: scale(1.1);
@@ -91,6 +83,7 @@
 
 <div class="flex flex-1 pt-20">
 
+ <!-- Sidebar -->
  <aside class="fixed top-[80px] left-0 w-72 bg-[var(--primary-color)] text-white " style="height: calc(100% - 80px); padding-top: 10px; z-index: 30; font-size: 20px;">
     <nav class="flex flex-col gap-4" style="margin-top: 10%;margin-left: 10%;">
       <a href="/dashboard" class="p-3 rounded slide-link">Dashboard</a>
@@ -98,7 +91,7 @@
       <a href="/studenthome" class="p-3 rounded slide-link">Students</a>
       <a href="/Batch" class="p-3 rounded slide-link">Batch</a>
       <a href="/payments" class="p-3 rounded slide-link">Finance</a>
-      <a href="/reports" class="p-3 rounded slide-link">Reports</a>
+      <a href="/admin" class="p-3 rounded slide-link">Reports</a>
     </nav>
     <button onclick="logout()" class="mt-4 text-left text-red-300 hover:text-white p-3 transition" style="margin-left: 10%;">Logout</button>
   </aside> 
@@ -114,11 +107,6 @@
         </h2>
 
         <form id="courseForm" class="grid grid-cols-1 md:grid-cols-2 gap-6" style="font-size: 15px;">
-  <div>
-    <label for="courseid" class="block text-sm font-medium text-gray-700 mb-2">Course ID</label>
-    <input type="text" id="courseid" name="courseid" required
-      class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]">
-  </div>
 
   <div>
     <label for="coursename" class="block text-sm font-medium text-gray-700 mb-2">Course Name</label>
@@ -138,7 +126,7 @@
       class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]">
   </div>
 
-  <!-- Add button INSIDE the form -->
+  <!-- Add button -->
   <div class="col-span-2 text-center mt-6">
     <button type="submit"
       class="bg-[var(--primary-color)] hover:brightness-110 text-white px-8 py-2 rounded-full font-semibold shadow-md transition-all duration-300">
@@ -165,28 +153,16 @@
     <table class="min-w-full text-sm border-collapse border border-gray-300">
       <thead class="bg-[rgba(3,48,110,0.1)] text-[rgb(3,48,110)] text-base font-semibold">
         <tr>
-          <th class="px-5 py-3 text-left border border-gray-300"style="font-size: 20px;">Course ID</th>
-          <th class="px-5 py-3 text-left border border-gray-300"style="font-size: 20px;">Course Name</th>
-          <th class="px-5 py-3 text-left border border-gray-300"style="font-size: 20px;">Duration (Days)</th>
-          <th class="px-5 py-3 text-left border border-gray-300"style="font-size: 20px;">Course Fee</th>
-          <th class="px-5 py-3 text-center border border-gray-300"style="font-size: 20px;">Actions</th>
+          <th class="px-5 py-3 text-left border border-gray-300" style="font-size: 20px;">Course ID</th>
+          <th class="px-5 py-3 text-left border border-gray-300" style="font-size: 20px;">Course Name</th>
+          <th class="px-5 py-3 text-left border border-gray-300" style="font-size: 20px;">Duration (Days)</th>
+          <th class="px-5 py-3 text-left border border-gray-300" style="font-size: 20px;">Course Fee</th>
+          <th class="px-5 py-3 text-center border border-gray-300" style="font-size: 20px;">Actions</th>
         </tr>
       </thead>
 
       <tbody id="courseTableBody" class="text-gray-800 text-sm">
-        <!-- Example static row (remove if filled by JS) -->
-        <!--
-        <tr class="hover:bg-gray-50 transition">
-          <td class="px-5 py-3 border border-gray-300">C101</td>
-          <td class="px-5 py-3 border border-gray-300">Java Basics</td>
-          <td class="px-5 py-3 border border-gray-300">30</td>
-          <td class="px-5 py-3 border border-gray-300">₹5000</td>
-          <td class="px-5 py-3 text-center border border-gray-300 space-x-2">
-            <button class="text-indigo-600 hover:text-indigo-800 font-medium">Edit</button>
-            <button class="text-red-500 hover:text-red-700 font-medium">Delete</button>
-          </td>
-        </tr>
-        -->
+        <!-- Filled dynamically -->
       </tbody>
     </table>
   </div>
@@ -206,7 +182,7 @@
 	  const durationValue = parseInt(document.getElementById("duration").value);
 	  const courseFeeValue = parseFloat(document.getElementById("Coursefee").value);
 
-	  // Validation for positive numbers
+	  // Validation
 	  if (isNaN(durationValue) || durationValue <= 0) {
 	    showMessage("Duration must be a positive number.", "red");
 	    return;
@@ -217,7 +193,6 @@
 	  }
 
 	  const courseData = {
-	    courseid: document.getElementById("courseid").value.trim(),
 	    coursename: document.getElementById("coursename").value.trim(),
 	    duration: durationValue,
 	    coursefee: courseFeeValue
@@ -247,47 +222,55 @@
 	}
 
 
-    function fetchCourses() {
-      fetch("/api/courses/all")
-        .then(response => response.json())
-        .then(data => {
-          const tbody = document.getElementById("courseTableBody");
-          tbody.innerHTML = "";
+	function fetchCourses() {
+		  fetch("http://localhost:8080/api/courses/all")  // full path to backend
+		    .then(response => response.json())
+		    .then(data => {
+		      const tbody = document.getElementById("courseTableBody");
+		      tbody.innerHTML = "";
 
-          data.forEach(course => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-              <td class="px-5 py-3 border border-gray-300"style="font-size: 16px;">${course.courseid}</td>
-              <td class="px-5 py-3 border border-gray-300"style="font-size: 16px;">${course.coursename}</td>
-              <td class="px-5 py-3 border border-gray-300"style="font-size: 16px;">${course.duration}</td>
-              <td class="px-5 py-3 border border-gray-300"style="font-size: 16px;">${course.coursefee}</td>
-              <td class="px-5 py-3 border border-gray-300"style="font-size: 16px;">
-                <button class="delete-btn" onclick="deleteCourse('${course.courseid}')">Delete</button>
-              </td>`;
-            tbody.appendChild(row);
-          });
-        });
-    }
+		      if (data.length === 0) {
+		        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-gray-500">No courses available</td></tr>`;
+		        return;
+		      }
 
-    function deleteCourse(courseid) {
-      if (!confirm("Are you sure you want to delete this course?")) return;
+		      data.forEach(course => {
+		        const row = document.createElement("tr");
+		        row.innerHTML = `
+		          <td class="px-5 py-3 border border-gray-300" style="font-size: 16px;">${course.courseid}</td>
+		          <td class="px-5 py-3 border border-gray-300" style="font-size: 16px;">${course.coursename}</td>
+		          <td class="px-5 py-3 border border-gray-300" style="font-size: 16px;">${course.duration}</td>
+		          <td class="px-5 py-3 border border-gray-300" style="font-size: 16px;">${course.coursefee}</td>
+		          <td class="px-5 py-3 border border-gray-300 text-center" style="font-size: 16px;">
+		            <button class="delete-btn" onclick="deleteCourse(${course.courseid})">Delete</button>
+		          </td>`;
+		        tbody.appendChild(row);
+		      });
+		    })
+		    .catch(error => {
+		      console.error("Error fetching courses:", error);
+		    });
+		}
 
-      fetch(`/api/courses/delete/${courseid}`, {
-        method: "DELETE"
-      })
-        .then(response => {
-          if (response.ok) {
-            document.getElementById("message").textContent = "Course deleted successfully!";
-            fetchCourses();
-          } else {
-            throw new Error("Delete failed");
-          }
-        })
-        .catch(error => {
-          console.error("Error deleting course:", error);
-          document.getElementById("message").textContent = "Failed to delete course.";
-        });
-    }
+
+	function deleteCourse(courseid) {
+		  if (!confirm("Are you sure you want to delete this course?")) return;
+
+		  fetch(`http://localhost:8080/api/courses/delete/${courseid}`, { method: "DELETE" })
+		    .then(response => {
+		      if (response.ok) {
+		        showMessage("Course deleted successfully!", "green");
+		        fetchCourses();
+		      } else {
+		        throw new Error("Delete failed");
+		      }
+		    })
+		    .catch(error => {
+		      console.error("Error deleting course:", error);
+		      showMessage("Failed to delete course.", "red");
+		    });
+		}
+
 
     fetch("http://localhost:8080/api/username", {
       credentials: 'include'
@@ -304,19 +287,12 @@
       });
 
     window.onload = fetchCourses;
+
     function exportTableToExcel() {
-    	  // Get table element
-    	  const table = document.querySelector("table");
-
-    	  // Convert table to worksheet
-    	  const wb = XLSX.utils.table_to_book(table, { sheet: "Courses" });
-
-    	  // Export to Excel file
-    	  XLSX.writeFile(wb, "Course_List.xlsx");
-    	}
-
-    
+      const table = document.querySelector("table");
+      const wb = XLSX.utils.table_to_book(table, { sheet: "Courses" });
+      XLSX.writeFile(wb, "Course_List.xlsx");
+    }
   </script>
 </body>
 </html>
- 

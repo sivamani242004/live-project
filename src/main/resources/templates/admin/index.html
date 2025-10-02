@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MR Technologies Financial Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://unpkg.com/pptxgenjs@3.11.0/dist/pptxgen.min.js"></script>
+
+</head>
+<body>
+    <div class="dashboard-container">
+      <!-- Header -->
+        <header class="dashboard-header">
+            <div class="container">
+                <h1><i class="fas fa-chart-line"></i>MR Technologies Financial Dashboard</h1>
+
+                <button id="downloadPDF" class="pdf-btn">
+                    <i class="fas fa-file-pdf"></i> Download PDF Report
+                </button>
+
+                <button id="downloadPPT" class="ppt-btn">
+                    <i class="fas fa-file-powerpoint"></i> Download PPT Report
+                </button>
+
+                <div class="period-indicator">
+                    <i class="fas fa-calendar-alt"></i>
+                    May – September 2025
+                </div>
+            </div>
+        </header>
+
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <div class="container">
+                <!-- Key Metrics Overview -->
+                <section class="metrics-overview">
+                    <h2>Key Financial Metrics</h2>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-rupee-sign"></i>
+                            </div>
+                            <div class="metric-content">
+                                <h3>Total Income</h3>
+                                <p class="metric-value">--</p>
+                                <span class="metric-subtitle">Auto from CSV</span>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon expense">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="metric-content">
+                                <h3>Total Expenses</h3>
+                                <p class="metric-value expense">--</p>
+                                <span class="metric-subtitle">Auto from CSV</span>
+                            </div>
+                        </div>
+                       <div class="metric-card">
+                            <div class="metric-icon loss">
+                                <i class="fas fa-scale-balanced"></i>
+                            </div>
+                            <div class="metric-content">
+                                <h3>Net Result</h3>
+                                <p class="metric-value loss">--</p>
+                                <span class="metric-subtitle">Auto from CSV</span>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <div class="metric-content">
+                                <h3>Average Monthly Income</h3>
+                                <p class="metric-value">--</p>
+                                <span class="metric-subtitle">Per month</span>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon success">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="metric-content">
+                                <h3>Best Month</h3>
+                                <p class="metric-value success">--</p>
+                                <span class="metric-subtitle">From CSV</span>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="metric-content">
+                                <h3>Worst Month</h3>
+                                <p class="metric-value warning">--</p>
+                                <span class="metric-subtitle">From CSV</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Financial Trends -->
+                <section class="trends-section">
+                    <h2>Financial Trends Analysis</h2>
+                    <div class="trends-grid">
+                        <div class="chart-container">
+                            <h3>Income vs Expenditure Trend</h3>
+                            <div class="chart-wrapper" style="position: relative; height: 300px;">
+                                <canvas id="trendChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Monthly Profit/Loss (Actual + Forecast)</h3>
+                            <div class="chart-wrapper" style="position: relative; height: 300px;">
+                                <canvas id="profitLossChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-container full-width">
+                            <h3>Profit/Loss Forecast Trend</h3>
+                            <div class="chart-wrapper" style="position: relative; height: 350px;">
+                                <canvas id="profitLossForecastChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Expense Analysis -->
+                <section class="expense-analysis">
+                    <h2>Expense Analysis</h2>
+                    <div class="analysis-grid">
+                        <div class="chart-container full-width">
+                            <h3>Monthly Expense Breakdown</h3>
+                            <div class="chart-wrapper" style="position: relative; height: 350px;">
+                                <canvas id="expenseBreakdownChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Average Expense Distribution</h3>
+                            <div class="chart-wrapper" style="position: relative; height: 300px;">
+                                <canvas id="expenseDistributionChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="expense-summary">
+                            <h3>Expense Summary</h3>
+                            <div class="expense-item">
+                                <span class="expense-label">Running Expenses</span>
+                                <span class="expense-amount">--</span>
+                            </div>
+                            <div class="expense-item">
+                                <span class="expense-label">Salaries</span>
+                                <span class="expense-amount">--</span>
+                            </div>
+                            <div class="expense-item">
+                                <span class="expense-label">Trainer Share</span>
+                                <span class="expense-amount">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Data Table -->
+                <section class="data-table-section">
+                    <h2>Detailed Monthly Data</h2>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Income</th>
+                                    <th>Running Expenses</th>
+                                    <th>Salaries</th>
+                                    <th>Trainer Share</th>
+                                    <th>Total Expenditure</th>
+                                    <th>Profit/Loss</th>
+                                    <th>Profit Margin</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dataTableBody">
+                                <!-- Populated dynamically from app.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Insights Panel -->
+                <section class="insights-panel">
+                    <h2>Key Insights & Recommendations</h2>
+                    <div class="insights-grid" id="insightsPanel">
+                        <!-- Will be dynamically populated -->
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="dashboard-footer">
+            <div class="container">
+                <p>&copy; 2025 Training Business Dashboard. Data auto-updated from CSV + AI Forecast.</p>
+            </div>
+        </footer>
+    </div>
+<!-- app.js -->
+   <script src="/js/app1.js"></script>
+<!-- downloadPDF -->
+   <script>
+    document.getElementById("downloadPDF").addEventListener("click", async () => {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF("p", "mm", "a4");
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+
+        // ---- Cover Page ----
+        pdf.setFontSize(22);
+        pdf.setTextColor(40, 40, 40);
+        pdf.text("MR Technologies Financial Dashboard", pageWidth / 2, 60, { align: "center" });
+
+        pdf.setFontSize(14);
+        pdf.setTextColor(100);
+        pdf.text("Comprehensive Report", pageWidth / 2, 80, { align: "center" });
+
+        const today = new Date().toLocaleDateString();
+        pdf.setFontSize(12);
+        pdf.text(`Generated on: ${today}`, pageWidth / 2, 95, { align: "center" });
+
+        // Reserve page for TOC
+        const tocPage = pdf.internal.getNumberOfPages() + 1; 
+        pdf.addPage();
+
+        const tocEntries = [];
+
+        // ---- Dashboard Sections ----
+        const sections = [
+            { selector: ".metrics-overview", title: "Key Financial Metrics" },
+            { selector: ".trends-section", title: "Financial Trends Analysis" },
+            { selector: ".expense-analysis", title: "Expense Analysis" },
+            { selector: ".data-table-section", title: "Detailed Monthly Data" },
+            { selector: ".insights-panel", title: "Key Insights & Recommendations" }
+        ];
+
+        for (let i = 0; i < sections.length; i++) {
+            const element = document.querySelector(sections[i].selector);
+            if (!element) continue;
+
+            const canvas = await html2canvas(element, { scale: 2, useCORS: true, backgroundColor: "#ffffff" });
+            const imgData = canvas.toDataURL("image/png", 1.0);
+
+            const pageNum = pdf.internal.getNumberOfPages() + 1; // where section will be
+            tocEntries.push({ title: sections[i].title, page: pageNum });
+
+            pdf.addPage();
+            pdf.setFontSize(16);
+            pdf.text(sections[i].title, 14, 15);
+
+            const imgWidth = pageWidth - 20;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            pdf.addImage(imgData, "PNG", 10, 25, imgWidth, imgHeight);
+        }
+
+        // ---- Fill TOC Page ----
+        pdf.setPage(tocPage);
+        pdf.setFontSize(20);
+        pdf.setTextColor(30, 30, 30);
+        pdf.text("Table of Contents", pageWidth / 2, 40, { align: "center" });
+
+        pdf.setFontSize(14);
+        pdf.setTextColor(60, 60, 60);
+        let tocY = 70;
+        tocEntries.forEach(entry => {
+            pdf.text(entry.title, 30, tocY);
+            pdf.text(`${entry.page}`, pageWidth - 30, tocY, { align: "right" });
+            tocY += 12;
+        });
+
+        // ---- Add Page Numbers ----
+        const totalPages = pdf.internal.getNumberOfPages();
+        for (let i = 1; i <= totalPages; i++) {
+            pdf.setPage(i);
+            pdf.setFontSize(10);
+            pdf.setTextColor(120, 120, 120);
+            pdf.text(
+                `Page ${i} of ${totalPages}`,
+                pageWidth / 2,
+                pageHeight - 10,
+                { align: "center" }
+            );
+        }
+
+        // ---- Save PDF ----
+        pdf.save("Training_Business_Dashboard.pdf");
+    });
+    </script>
+
+<!-- downloadPPT -->
+   <script>
+    document.getElementById("downloadPPT").addEventListener("click", async () => {
+        try {
+            const pptx = new PptxGenJS();
+
+            // ---- Cover Slide ----
+            let cover = pptx.addSlide();
+            cover.addText("MR Technologies Financial Dashboard", {
+                x: 0.5, y: 2, w: 8, h: 1,
+                fontSize: 28, bold: true, align: "center", color: "363636"
+            });
+            cover.addText("Comprehensive Report", {
+                x: 0.5, y: 3, w: 8, h: 1,
+                fontSize: 18, align: "center", color: "666666"
+            });
+            cover.addText(`Generated on: ${new Date().toLocaleDateString()}`, {
+                x: 0.5, y: 4, w: 8, h: 0.5,
+                fontSize: 12, align: "center", color: "888888"
+            });
+
+            // ---- Sections to Capture ----
+            const sections = [
+                { selector: ".metrics-overview", title: "Key Financial Metrics", scale: 5 },
+                { selector: ".trends-section", title: "Financial Trends Analysis", scale: 3 },
+                { selector: ".expense-analysis", title: "Expense Analysis", scale: 4 },
+                { selector: ".data-table-section", title: "Detailed Monthly Data", scale: 5 },
+                { selector: ".insights-panel", title: "Key Insights & Recommendations", scale: 4 }
+            ];
+
+            for (let s of sections) {
+                const element = document.querySelector(s.selector);
+                if (!element) continue;
+
+                // Higher resolution capture (different scale depending on content)
+                const canvas = await html2canvas(element, {
+                    scale: s.scale || 4,
+                    useCORS: true,
+                    backgroundColor: "#ffffff"
+                });
+
+                // Save as JPEG for sharper output
+                const imgData = canvas.toDataURL("image/jpeg", 1.0);
+
+                // Maintain proportions
+                const imgWidth = 8.5; // PPT slide width (inches)
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                let slide = pptx.addSlide();
+                slide.addText(s.title, {
+                    x: 0.5, y: 0.3,
+                    fontSize: 18, bold: true, color: "2F5597"
+                });
+
+                // Cap max height so slide layout looks good
+                slide.addImage({
+                    data: imgData,
+                    x: 0.5,
+                    y: 1,
+                    w: imgWidth,
+                    h: imgHeight > 5 ? 5 : imgHeight
+                });
+            }
+
+            // ---- Save PPTX ----
+            await pptx.writeFile("Training_Business_Dashboard.pptx");
+
+        } catch (err) {
+            console.error("Error generating PPT:", err);
+            alert("PPT generation failed. Check console for details.");
+        }
+    });
+    </script>
+
+
+</body>
+</html>
