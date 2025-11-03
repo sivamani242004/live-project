@@ -9,8 +9,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class AdminPortalApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AdminPortalApplication.class, args);
-//		 SpringApplication.run(AdminPortalApplication.class, args);
+//		SpringApplication.run(AdminPortalApplication.class, args);
+		 SpringApplication.run(AdminPortalApplication.class, args);
 	}
   
 }

@@ -8,6 +8,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.Month;
 import java.util.List;
 
@@ -20,14 +22,16 @@ public class FinanceReportService {
     @Autowired
     private FinanceReportRepository financeReportRepository;
 
-    // 🔁 Runs automatically every 3 seconds
+    // ✅ Auto-generate report daily at midnight
     @Transactional
-    @Scheduled(fixedRate = 3000)
+    @Scheduled(cron = "0 0 0 * * ?")
     public void generateMonthlyFinanceReport() {
-        // Step 1: Clear old data first
+        System.out.println("🟢 Starting finance report generation...");
+
+        // Step 1: Clear old data
         financeReportRepository.deleteAll();
 
-        // Step 2: Fetch fresh monthly income summary from payments
+        // Step 2: Fetch fresh data
         List<Object[]> results = paymentRepository.findMonthlyIncomeSummary();
 
         if (results == null || results.isEmpty()) {
@@ -35,7 +39,7 @@ public class FinanceReportService {
             return;
         }
 
-        // Step 3: Insert recalculated finance report
+        // Step 3: Calculate and insert reports
         for (Object[] row : results) {
             int year = ((Number) row[0]).intValue();
             int monthNumber = ((Number) row[1]).intValue();
@@ -44,25 +48,57 @@ public class FinanceReportService {
             String monthName = Month.of(monthNumber).name();
             String formattedMonth = monthName.substring(0, 1) + monthName.substring(1).toLowerCase();
 
+            // 💰 Dynamic or sample logic for calculations (can be replaced with DB logic later)
+            double runningExpenses = totalIncome * 0.35;  // 35% of income
+            double salaries = totalIncome * 0.28;         // 28% of income
+            double trainerShare = totalIncome * 0.22;     // 22% of income
+            double expenditure = runningExpenses + salaries + trainerShare;
+            double profitOrLoss = totalIncome - expenditure;
+
+            // Save report
             FinanceReport report = new FinanceReport();
             report.setYear(year);
             report.setMonth(formattedMonth);
             report.setIncome(totalIncome);
-
-            double trainerShare = 1000;
-            double expenditure = 1000;
-            double salaries = 1000;
-
-            double profitOrLoss = totalIncome - (trainerShare + expenditure + salaries);
-
+            report.setRunningExpenses(runningExpenses);
+            report.setSalaries(salaries);
             report.setTrainerShare(trainerShare);
             report.setExpenditure(expenditure);
-            report.setSalaries(salaries);
             report.setProfitOrLoss(profitOrLoss);
 
             financeReportRepository.save(report);
         }
 
-        System.out.println("✅ Finance report auto-refreshed at " + java.time.LocalTime.now());
+        // Step 4: Export to CSV
+        exportFinanceDataToCsv();
+
+        System.out.println("✅ Finance report generated & exported at " + java.time.LocalTime.now());
+    }
+
+    // ✅ Export finance data to CSV file
+    private void exportFinanceDataToCsv() {
+        String filePath = "src/main/resources/data/financial_data.csv";
+        List<FinanceReport> reports = financeReportRepository.findAll();
+
+        try (FileWriter writer = new FileWriter(filePath)) {
+            writer.write("Year,Month,Income,Running Expenses,Salaries,Trainer Share,Expenditure,Profit/Loss\n");
+
+            for (FinanceReport report : reports) {
+                writer.write(String.format("%d,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n",
+                        report.getYear(),
+                        report.getMonth(),
+                        report.getIncome(),
+                        report.getRunningExpenses(),
+                        report.getSalaries(),
+                        report.getTrainerShare(),
+                        report.getExpenditure(),
+                        report.getProfitOrLoss()
+                ));
+            }
+
+            System.out.println("💾 Exported finance data to: " + filePath);
+        } catch (IOException e) {
+            System.err.println("❌ Error exporting finance data: " + e.getMessage());
+        }
     }
 }
