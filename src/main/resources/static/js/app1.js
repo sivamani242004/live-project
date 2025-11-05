@@ -1,9 +1,19 @@
 // app.js
 document.addEventListener("DOMContentLoaded", () => {
-    Papa.parse("financial_data.csv", {
+	// ✅ If already loaded before -> use cache (instant load)
+	   const cached = localStorage.getItem("financeData");
+	   if (cached) {
+	       processLoadedData(JSON.parse(cached));
+	       return;
+	   }
+    Papa.parse("static/financial_data.csv", {
         download: true,
         header: true,
+		fastMode: true,
+		worker: true,
         complete: function(results) {
+			localStorage.setItem("financeData", JSON.stringify(results.data));
+			           processLoadedData(results.data);
             const data = results.data.filter(row => row.Month && row.Income);
 
             // Convert numeric fields
@@ -18,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ProfitLoss: parseInt(row["Profit/Loss"]?.replace(/[₹, ]/g, "")) || 0
             }));
 
-            console.log("Sample row after cleaning:", cleanData[0]); // debug
+             console.log("Sample row:", cleanData[0]); // debug
 
             // ---- Metrics ----
             const totalIncome = cleanData.reduce((s, r) => s + r.Income, 0);

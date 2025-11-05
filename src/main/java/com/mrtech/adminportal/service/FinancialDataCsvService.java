@@ -15,7 +15,7 @@ public class FinancialDataCsvService {
     public List<FinancialData> loadFinancialData() {
         List<FinancialData> list = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                new ClassPathResource("data/financial_data.csv").getInputStream()))) {
+                new ClassPathResource("static/financial_data.csv").getInputStream()))) {
 
             String line;
             br.readLine(); // skip header

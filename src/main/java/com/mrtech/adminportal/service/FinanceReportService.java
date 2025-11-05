@@ -77,7 +77,7 @@ public class FinanceReportService {
 
     // ✅ Export finance data to CSV file
     private void exportFinanceDataToCsv() {
-        String filePath = "src/main/resources/data/financial_data.csv";
+        String filePath = "src/main/resources/static/financial_data.csv";
         List<FinanceReport> reports = financeReportRepository.findAll();
 
         try (FileWriter writer = new FileWriter(filePath)) {
