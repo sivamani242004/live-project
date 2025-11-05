@@ -224,5 +224,79 @@ public class StudentController {
     public ResponseEntity<List<Student>> getStudentsByBatch(@PathVariable String batchId) {
         return ResponseEntity.ok(studentRepository.findByBatch(batchId));
     }
+    
+    
+    @GetMapping("/enrollment-trend")
+    public Map<String, Object> getEnrollmentTrend() {
+        LocalDate today = LocalDate.now();
+        LocalDate startDate = today.minusMonths(6).withDayOfMonth(1);
+
+        List<Student> students = studentRepository.findAllStudents();
+
+        // 🗓️ Map of YearMonth → Count
+        Map<java.time.YearMonth, Long> monthlyData = new HashMap<>();
+
+        for (Student s : students) {
+            String joinDateStr = s.getJoiningDate();
+
+            if (joinDateStr != null && !joinDateStr.isEmpty()) {
+                try {
+                    LocalDate joinDate;
+
+                    // Handle ISO or plain date strings
+                    if (joinDateStr.contains("T")) {
+                        joinDate = LocalDate.parse(joinDateStr.substring(0, 10));
+                    } else {
+                        joinDate = LocalDate.parse(joinDateStr);
+                    }
+
+                    if (!joinDate.isBefore(startDate)) {
+                        java.time.YearMonth ym = java.time.YearMonth.from(joinDate);
+                        monthlyData.merge(ym, 1L, Long::sum);
+                    }
+                } catch (Exception e) {
+                    System.err.println("⚠️ Invalid joiningDate for " + s.getName() + ": " + joinDateStr);
+                }
+            }
+        }
+
+        // ✅ Sort by YearMonth chronologically
+        List<java.time.YearMonth> sortedMonths = new ArrayList<>(monthlyData.keySet());
+        sortedMonths.sort(Comparator.naturalOrder());
+
+        // ✅ Format for frontend
+        List<String> labels = sortedMonths.stream()
+                .map(ym -> ym.getMonth().name().substring(0, 3) + " " + ym.getYear())
+                .toList();
+
+        List<Long> data = sortedMonths.stream()
+                .map(monthlyData::get)
+                .toList();
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("labels", labels);
+        response.put("data", data);
+        return response;
+    }
+
+    
+    @GetMapping("/course-distribution")
+    public Map<String, Object> getCourseDistribution() {
+        List<Object[]> results = studentRepository.getCourseWiseCount();
+
+        List<String> labels = new ArrayList<>();
+        List<Long> data = new ArrayList<>();
+
+        for (Object[] row : results) {
+            labels.add((String) row[0]);
+            data.add((Long) row[1]);
+        }
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("labels", labels);
+        response.put("data", data);
+        return response;
+    }
+
 
 }

@@ -2,12 +2,10 @@ package com.mrtech.adminportal.repository;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.mrtech.adminportal.entity.Student;
 
 public interface StudentRepository extends JpaRepository<Student, Integer> {
@@ -30,7 +28,7 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
 
     // 🔹 Find all students in a batch
     List<Student> findByBatch(String batch);
-    
+
     // 🔹 Bulk update student status by batch
     @Modifying
     @Transactional
@@ -40,4 +38,12 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
     // 🔹 Total upcoming due
     @Query("SELECT SUM(s.duefee) FROM Student s WHERE s.duefee > 0")
     Double getTotalUpcomingDue();
+
+    // ✅ Safe fallback for enrollment trend (manual filtering in controller)
+    @Query("SELECT s FROM Student s")
+    List<Student> findAllStudents();
+    
+    @Query("SELECT s.course, COUNT(s) FROM Student s GROUP BY s.course ORDER BY s.course")
+    List<Object[]> getCourseWiseCount();
 }
+
