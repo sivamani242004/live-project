@@ -339,66 +339,155 @@
       });
 
       // Chart.js
-      const ctx = document.getElementById("feeChart").getContext("2d");
-      new Chart(ctx, {
-        type: "bar",
-        data: {
-          labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
-          datasets: [
-            {
-              label: "Fees Collected (₹)",
-              data: [40000, 60000, 55000, 75000, 68000, 72000, 80000],
-              backgroundColor: getComputedStyle(document.documentElement)
-                .getPropertyValue("--primary-color")
-                .trim(),
-              borderRadius: 8,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          animation: { duration: 1200, easing: "easeOutBounce" },
-          scales: { y: { beginAtZero: true } },
-        },
-      });
+      // Fetch monthly fee data from backend
+fetch("http://localhost:8080/api/finance/monthly-fees")
+  .then(res => res.json())
+  .then(data => {
+    const labels = data.labels || [];
+    const values = data.data || [];
+
+    new Chart(document.getElementById("feeChart"), {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Fees Collected (₹)",
+          data: values,
+          backgroundColor: getComputedStyle(document.documentElement)
+            .getPropertyValue("--primary-color").trim(),
+          borderRadius: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        animation: { duration: 1200, easing: "easeOutBounce" },
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+  });
+
 
       // Enrollment Line Chart
-      const enrollmentCtx = document
-        .getElementById("enrollmentChart")
-        .getContext("2d");
-      new Chart(enrollmentCtx, {
-        type: "line",
-        data: {
-          labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
-          datasets: [
-            {
-              label: "New Enrollments",
-              data: [50, 70, 65, 90, 80, 100, 120],
-              borderColor: "#113C71",
-              backgroundColor: "rgba(17,60,113,0.2)",
-              tension: 0.3,
-              fill: true,
-            },
-          ],
-        },
-        options: { responsive: true },
-      });
+     // 🟦 Student Enrollment Trend Chart (Dynamic)
+fetch("http://localhost:8080/api/students/enrollment-trend")
+  .then(res => res.json())
+  .then(data => {
+    const labels = data.labels || [];
+    const values = data.data || [];
+
+    new Chart(document.getElementById("enrollmentChart"), {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "New Enrollments",
+          data: values,
+          borderColor: "#113C71",
+          backgroundColor: "rgba(17,60,113,0.2)",
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } },
+        plugins: { legend: { display: true, position: "top" } }
+      }
+    });
+  })
+  .catch(err => console.error("Error loading enrollment trend:", err));
 
       // Course Distribution Pie Chart
-      const courseCtx = document.getElementById("courseChart").getContext("2d");
-      new Chart(courseCtx, {
-        type: "pie",
-        data: {
-          labels: ["Java", "Python", "Web Dev", "Data Science"],
-          datasets: [
-            {
-              data: [120, 150, 90, 60],
-              backgroundColor: ["#113C71", "#16a34a", "#f59e0b", "#dc2626"],
-            },
+    // 🎓 Course Distribution Chart (Horizontal Bar)
+// 🎓 Improved Course Distribution Chart (Horizontal Bar + Medium Bar Width + Multi-color)
+fetch("http://localhost:8080/api/students/course-distribution")
+  .then(res => res.json())
+  .then(data => {
+    const labels = data.labels || [];
+    const values = data.data || [];
+
+    // Sort descending (highest enrollments first)
+    const combined = labels.map((label, i) => ({ label, value: values[i] }));
+    combined.sort((a, b) => b.value - a.value);
+
+    const sortedLabels = combined.map(item => item.label);
+    const sortedValues = combined.map(item => item.value);
+
+    const ctx = document.getElementById("courseChart").getContext("2d");
+
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: sortedLabels,
+        datasets: [{
+          label: "Student Count",
+          data: sortedValues,
+          backgroundColor: [
+            "#1D4ED8", // blue
+            "#10B981", // green
+            "#F59E0B", // yellow
+            "#EF4444", // red
+            "#8B5CF6", // purple
+            "#0EA5E9", // sky
+            "#F97316", // orange
+            "#84CC16"  // lime
           ],
+          borderRadius: 10,
+          barThickness: 20 // ✅ medium bar thickness
+        }]
+      },
+      options: {
+        indexAxis: "y", // ✅ Horizontal Bars
+        responsive: true,
+        maintainAspectRatio: false, // ✅ prevent full-width stretching
+        aspectRatio: 2.2, // ✅ controls width-to-height ratio
+        layout: {
+          padding: { top: 10, bottom: 10, left: 10, right: 20 }
         },
-        options: { responsive: true },
-      });
+        scales: {
+          x: {
+            beginAtZero: true,
+            ticks: {
+              color: "#374151",
+              font: { size: 13, weight: "500" }
+            },
+            grid: { color: "#E5E7EB" }
+          },
+          y: {
+            ticks: {
+              color: "#111827",
+              font: { size: 14, weight: "600" }
+            },
+            grid: { display: false }
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: "rgba(17, 60, 113, 0.9)",
+            titleFont: { size: 13, weight: "bold" },
+            bodyFont: { size: 12 },
+            callbacks: {
+              label: ctx => `${ctx.formattedValue} Students`
+            }
+          },
+          title: {
+            display: true,
+            text: "Course-Wise Student Distribution",
+            color: "#113C71",
+            font: { size: 16, weight: "bold" },
+            padding: { bottom: 10 }
+          }
+        },
+        animation: {
+          duration: 1200,
+          easing: "easeOutCubic"
+        }
+      }
+    });
+  })
+  .catch(err => console.error("Error loading course data:", err));
+
 
       // Payment Status Doughnut Chart
       const paymentCtx = document
