@@ -25,5 +25,17 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     @Transactional
     @Query("UPDATE Payment p SET p.statusDisplay = :status WHERE p.batchCode = :batchCode")
     int updateStatusByBatch(@Param("batchCode") String batchCode, @Param("status") String status);
+    
+    @Query(value = """
+            SELECT 
+                YEAR(p.payment_date) AS year,
+                MONTH(p.payment_date) AS month,
+                SUM(p.amount_paid) AS totalIncome
+            FROM payments p
+            WHERE p.payment_date IS NOT NULL
+            GROUP BY YEAR(p.payment_date), MONTH(p.payment_date)
+            ORDER BY YEAR(p.payment_date), MONTH(p.payment_date)
+            """, nativeQuery = true)
+        List<Object[]> findMonthlyIncomeSummary();
 }
 
