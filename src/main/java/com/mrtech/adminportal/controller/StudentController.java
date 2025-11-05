@@ -12,6 +12,7 @@ import com.mrtech.adminportal.entity.Student;
 import com.mrtech.adminportal.repository.PaymentRepository;
 import com.mrtech.adminportal.repository.StudentRepository;
 import com.mrtech.adminportal.service.StudentService;
+import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequestMapping("/api/students")
@@ -228,12 +229,15 @@ public class StudentController {
     
     @GetMapping("/enrollment-trend")
     public Map<String, Object> getEnrollmentTrend() {
+
         LocalDate today = LocalDate.now();
         LocalDate startDate = today.minusMonths(6).withDayOfMonth(1);
 
+        DateTimeFormatter dmy = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter ymd = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
         List<Student> students = studentRepository.findAllStudents();
 
-        // 🗓️ Map of YearMonth → Count
         Map<java.time.YearMonth, Long> monthlyData = new HashMap<>();
 
         for (Student s : students) {
@@ -243,28 +247,29 @@ public class StudentController {
                 try {
                     LocalDate joinDate;
 
-                    // Handle ISO or plain date strings
-                    if (joinDateStr.contains("T")) {
-                        joinDate = LocalDate.parse(joinDateStr.substring(0, 10));
+                    // If date contains '-', detect format length
+                    if (joinDateStr.matches("\\d{2}-\\d{2}-\\d{4}")) {
+                        joinDate = LocalDate.parse(joinDateStr, dmy); // dd-MM-yyyy
+                    } else if (joinDateStr.matches("\\d{4}-\\d{2}-\\d{2}.*")) {
+                        joinDate = LocalDate.parse(joinDateStr.substring(0, 10), ymd); // yyyy-MM-dd
                     } else {
-                        joinDate = LocalDate.parse(joinDateStr);
+                        throw new Exception("Unknown format");
                     }
 
                     if (!joinDate.isBefore(startDate)) {
                         java.time.YearMonth ym = java.time.YearMonth.from(joinDate);
                         monthlyData.merge(ym, 1L, Long::sum);
                     }
+
                 } catch (Exception e) {
                     System.err.println("⚠️ Invalid joiningDate for " + s.getName() + ": " + joinDateStr);
                 }
             }
         }
 
-        // ✅ Sort by YearMonth chronologically
         List<java.time.YearMonth> sortedMonths = new ArrayList<>(monthlyData.keySet());
         sortedMonths.sort(Comparator.naturalOrder());
 
-        // ✅ Format for frontend
         List<String> labels = sortedMonths.stream()
                 .map(ym -> ym.getMonth().name().substring(0, 3) + " " + ym.getYear())
                 .toList();
@@ -276,9 +281,9 @@ public class StudentController {
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("labels", labels);
         response.put("data", data);
+
         return response;
     }
-
     
     @GetMapping("/course-distribution")
     public Map<String, Object> getCourseDistribution() {

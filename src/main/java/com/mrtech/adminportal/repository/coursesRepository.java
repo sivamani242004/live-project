@@ -6,6 +6,7 @@ import com.mrtech.adminportal.entity.courses;
 
 public interface coursesRepository extends JpaRepository<courses, Long> {
 
-    @Query("SELECT COALESCE(MAX(c.courseid), 0) FROM courses c")
-    Long findMaxCourseId();
+	@Query("SELECT MAX(c.courseid) FROM courses c")
+	Long findMaxCourseId();
+
 }

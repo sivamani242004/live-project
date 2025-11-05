@@ -300,6 +300,7 @@
         
       </main>
     </div>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
     <script>
       lucide.createIcons();
@@ -398,93 +399,93 @@ fetch("http://localhost:8080/api/students/enrollment-trend")
   .catch(err => console.error("Error loading enrollment trend:", err));
 
       // Course Distribution Pie Chart
-    // 🎓 Course Distribution Chart (Horizontal Bar)
-// 🎓 Improved Course Distribution Chart (Horizontal Bar + Medium Bar Width + Multi-color)
 fetch("http://localhost:8080/api/students/course-distribution")
   .then(res => res.json())
   .then(data => {
     const labels = data.labels || [];
     const values = data.data || [];
 
-    // Sort descending (highest enrollments first)
-    const combined = labels.map((label, i) => ({ label, value: values[i] }));
-    combined.sort((a, b) => b.value - a.value);
+    // Sort by highest value
+    const items = labels.map((l, i) => ({ label: l, value: values[i] }))
+                        .sort((a, b) => b.value - a.value);
 
-    const sortedLabels = combined.map(item => item.label);
-    const sortedValues = combined.map(item => item.value);
+    const sortedLabels = items.map(i => i.label);
+    const sortedValues = items.map(i => i.value);
 
     const ctx = document.getElementById("courseChart").getContext("2d");
+
+    // 🎨 Gradient Generator
+    function createGradient(ctx, color1, color2) {
+      const gradient = ctx.createLinearGradient(0, 0, 300, 0);
+      gradient.addColorStop(0, color1);
+      gradient.addColorStop(1, color2);
+      return gradient;
+    }
+
+    const gradientColors = [
+      createGradient(ctx, "#4F46E5", "#60A5FA"),
+      createGradient(ctx, "#059669", "#34D399"),
+      createGradient(ctx, "#D97706", "#FBBF24"),
+      createGradient(ctx, "#DC2626", "#F87171"),
+      createGradient(ctx, "#7C3AED", "#C084FC"),
+      createGradient(ctx, "#0EA5E9", "#38BDF8"),
+      createGradient(ctx, "#EA580C", "#FDBA74"),
+      createGradient(ctx, "#65A30D", "#A3E635"),
+    ];
 
     new Chart(ctx, {
       type: "bar",
       data: {
         labels: sortedLabels,
         datasets: [{
-          label: "Student Count",
+          label: "Enrollments",
           data: sortedValues,
-          backgroundColor: [
-            "#1D4ED8", // blue
-            "#10B981", // green
-            "#F59E0B", // yellow
-            "#EF4444", // red
-            "#8B5CF6", // purple
-            "#0EA5E9", // sky
-            "#F97316", // orange
-            "#84CC16"  // lime
-          ],
-          borderRadius: 10,
-          barThickness: 20 // ✅ medium bar thickness
+          backgroundColor: gradientColors,
+          borderRadius: 12,
+          barThickness: 24
         }]
       },
       options: {
-        indexAxis: "y", // ✅ Horizontal Bars
+        indexAxis: "y",
         responsive: true,
-        maintainAspectRatio: false, // ✅ prevent full-width stretching
-        aspectRatio: 2.2, // ✅ controls width-to-height ratio
-        layout: {
-          padding: { top: 10, bottom: 10, left: 10, right: 20 }
-        },
+        maintainAspectRatio: false,
         scales: {
-          x: {
-            beginAtZero: true,
-            ticks: {
-              color: "#374151",
-              font: { size: 13, weight: "500" }
-            },
-            grid: { color: "#E5E7EB" }
-          },
-          y: {
-            ticks: {
-              color: "#111827",
-              font: { size: 14, weight: "600" }
-            },
-            grid: { display: false }
-          }
+          x: { beginAtZero: true, grid: { color: "#E5E7EB" } },
+          y: { grid: { display: false } }
         },
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: "rgba(17, 60, 113, 0.9)",
-            titleFont: { size: 13, weight: "bold" },
-            bodyFont: { size: 12 },
+            backgroundColor: "#1E293B",
+            titleColor: "#F1F5F9",
+            bodyColor: "#CBD5E1",
+            bodyFont: { weight: "600" },
             callbacks: {
-              label: ctx => `${ctx.formattedValue} Students`
+              label: ctx => `${ctx.raw} Students`
             }
           },
-          title: {
-            display: true,
-            text: "Course-Wise Student Distribution",
-            color: "#113C71",
-            font: { size: 16, weight: "bold" },
-            padding: { bottom: 10 }
+          datalabels: {
+            anchor: "end",
+            align: "right",
+            font: { size: 13, weight: "bold" },
+            color: "#1E293B",
+            formatter: v => v
           }
         },
         animation: {
-          duration: 1200,
-          easing: "easeOutCubic"
+          duration: 1300,
+          easing: "easeOutQuart"
+        },
+        hover: {
+          mode: "nearest",
+          onHover: (e, elements) => {
+            e.native.target.style.cursor = elements.length ? "pointer" : "default";
+          }
         }
-      }
+      },
+      plugins: [ChartDataLabels]
     });
+
   })
   .catch(err => console.error("Error loading course data:", err));
 
