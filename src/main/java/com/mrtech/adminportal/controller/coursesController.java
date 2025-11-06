@@ -19,10 +19,12 @@ public class coursesController {
     @PostMapping("/add")
     public courses addCourse(@RequestBody courses course) {
         Long maxId = courseRepo.findMaxCourseId();
-        course.setCourseid(maxId + 1);  // set next ID manually
+        if (maxId == null) {
+            maxId = 0L; // ✅ Handle empty table case
+        }
+        course.setCourseid(maxId + 1);
         return courseRepo.save(course);
     }
-
     // ✅ Get all courses
     @GetMapping("/all")
     public List<courses> getAllCourses() {

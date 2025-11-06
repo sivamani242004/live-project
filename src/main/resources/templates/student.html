@@ -546,31 +546,31 @@
  
  // Populate course dropdown from backend
  let courseMap = new Map(); // Store courseName → duration mapping
-fetch("http://localhost:8080/api/courses/all")
-  .then((response) => response.json())
-  .then((courses) => {
-    const dropdown = document.getElementById("courseDropdown");
-    dropdown.innerHTML = '<option value="">Select</option>'; // clear & reset
+ document.addEventListener("DOMContentLoaded", () => {
 
-    courses.forEach((course) => {
-    	courseMap.set(course.coursename, {
-    		  duration: course.duration,
-    		  coursefee: course.coursefee,
-    		});
+	  fetch("http://localhost:8080/api/courses/all")
+	    .then((response) => response.json())
+	    .then((courses) => {
+	      const dropdown = document.getElementById("courseDropdown");
+	      dropdown.innerHTML = '<option value="">Select</option>';
 
-    	
-      const option = document.createElement("option");
-      option.value = course.coursename; // ✅ Send course name instead
-      option.textContent = `${course.coursename}`;
+	      courses.forEach((course) => {
+	        courseMap.set(course.coursename, {
+	          duration: course.duration,
+	          coursefee: course.coursefee,
+	        });
 
-      dropdown.appendChild(option);
-    });
-  })
-  .catch((err) => {
-    console.error("Failed to load courses", err);
-    document.getElementById("courseDropdown").innerHTML =
-      '<option value="">Failed to load courses</option>';
-  });
+	        dropdown.innerHTML += `<option value="${course.coursename}">${course.coursename}</option>`;
+	      });
+	    })
+	    .catch((err) => {
+	      console.error("Failed to load courses", err);
+	      document.getElementById("courseDropdown").innerHTML =
+	        '<option value="">Failed to load courses</option>';
+	    });
+
+	});
+
 //Listen to course selection and auto-fill duration & fee
 document.getElementById("courseDropdown").addEventListener("change", function () {
   const selectedCourse = this.value;
