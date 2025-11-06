@@ -31,26 +31,40 @@ public class FinanceReportController {
     // ✅ New API for Dashboard (latest 7 months)
     @GetMapping("/monthly-fees")
     public Map<String, Object> getMonthlyFees() {
-        // Fetch all finance reports
         List<FinanceReport> reports = financeReportRepository.findAll();
 
-        // Use TreeMap to keep keys sorted alphabetically by month
-        Map<String, Double> monthlyData = new LinkedHashMap<>();
+        Map<YearMonth, Double> monthlyData = new TreeMap<>();
 
-        // ✅ Group income by month (String value like "September", "October", etc.)
         for (FinanceReport r : reports) {
-            String key = r.getMonth().trim(); // Directly use the stored text
-            monthlyData.merge(key, r.getIncome(), Double::sum);
+            try {
+                String monthName = r.getMonth(); // January
+                int year = r.getYear();         // 2025
+
+                YearMonth ym = YearMonth.of(year, java.time.Month.valueOf(monthName.toUpperCase()));
+
+                monthlyData.merge(ym, r.getIncome(), Double::sum);
+            } catch (Exception e) {
+                System.out.println("⚠️ Invalid month in DB: " + r.getMonth());
+            }
         }
 
-        // ✅ Convert to list and keep only the latest 7 entries
-        List<String> allMonths = new ArrayList<>(monthlyData.keySet());
-        int size = allMonths.size();
-        List<String> last7Months = allMonths.subList(Math.max(size - 7, 0), size);
+        List<YearMonth> sorted = new ArrayList<>(monthlyData.keySet());
+        int size = sorted.size();
+        List<YearMonth> last7 = sorted.subList(Math.max(size - 7, 0), size);
+
+        List<String> labels = new ArrayList<>();
+        List<Double> values = new ArrayList<>();
+
+        for (YearMonth ym : last7) {
+            labels.add(ym.getMonth().name().substring(0, 1).toUpperCase() + ym.getMonth().name().substring(1).toLowerCase());
+            values.add(monthlyData.get(ym));
+        }
 
         Map<String, Object> response = new LinkedHashMap<>();
-        response.put("labels", last7Months);
-        response.put("data", last7Months.stream().map(monthlyData::get).toList());
+        response.put("labels", labels);
+        response.put("data", values);
+
         return response;
     }
+
 }
