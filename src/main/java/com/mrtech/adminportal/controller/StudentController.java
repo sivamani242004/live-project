@@ -11,6 +11,7 @@ import com.mrtech.adminportal.entity.Payment;
 import com.mrtech.adminportal.entity.Student;
 import com.mrtech.adminportal.repository.PaymentRepository;
 import com.mrtech.adminportal.repository.StudentRepository;
+import com.mrtech.adminportal.service.FinanceReportService;
 import com.mrtech.adminportal.service.StudentService;
 import java.time.format.DateTimeFormatter;
 
@@ -21,6 +22,10 @@ public class StudentController {
 
     @Autowired
     private StudentRepository studentRepository;
+    
+    @Autowired
+    private FinanceReportService financeReportService;
+
 
     @Autowired
     private PaymentRepository paymentRepository;
@@ -60,7 +65,8 @@ public class StudentController {
         payment.setStatusDisplay(savedStudent.getStatus());
 
         paymentRepository.save(payment);
-
+     // ✅ Auto update Finance Report here
+        financeReportService.generateMonthlyFinanceReport();
         return ResponseEntity.status(201).body(savedStudent);
     }
 

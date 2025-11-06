@@ -3,6 +3,7 @@ package com.mrtech.adminportal.controller;
 import com.mrtech.adminportal.entity.courses;
 import com.mrtech.adminportal.repository.coursesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,34 +16,35 @@ public class coursesController {
     @Autowired
     private coursesRepository courseRepo;
 
-    // ✅ Add new course (manual ID generation)
+    // ✅ Add Course
     @PostMapping("/add")
-    public courses addCourse(@RequestBody courses course) {
+    public ResponseEntity<courses> addCourse(@RequestBody courses course) {
         Long maxId = courseRepo.findMaxCourseId();
-        if (maxId == null) {
-            maxId = 0L; // ✅ Handle empty table case
-        }
-        course.setCourseid(maxId + 1);
-        return courseRepo.save(course);
+        course.setCourseid((maxId == null ? 0L : maxId) + 1);
+        return ResponseEntity.ok(courseRepo.save(course));
     }
-    // ✅ Get all courses
+
+    // ✅ Get All Courses
     @GetMapping("/all")
-    public List<courses> getAllCourses() {
-        return courseRepo.findAll();
+    public ResponseEntity<List<courses>> getAllCourses() {
+        return ResponseEntity.ok(courseRepo.findAll());
     }
 
-    // ✅ Delete course by ID
+    // ✅ Delete Course
     @DeleteMapping("/delete/{id}")
-    public void deleteCourse(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
         courseRepo.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 
-    // ✅ Get only course names
+    // ✅ Get Course Names Only
     @GetMapping("/names")
-    public List<String> getCourseNames() {
-        return courseRepo.findAll()
-                         .stream()
-                         .map(courses::getCoursename)
-                         .toList();
+    public ResponseEntity<List<String>> getCourseNames() {
+        return ResponseEntity.ok(
+                courseRepo.findAll()
+                        .stream()
+                        .map(courses::getCoursename)
+                        .toList()
+        );
     }
 }
