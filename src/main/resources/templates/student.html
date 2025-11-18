@@ -537,7 +537,12 @@
       if (!res.ok) throw new Error("Failed to register");
       return res.json();
     })
-    .then((data) => alert("✅ Student Registered Successfully!"))
+    .then((data) => {
+  alert("✅ Student Registered Successfully!");
+  window.location.href = "/studenthome"; // <-- Redirect here
+})
+
+ 
     .catch((err) => alert("❌ Error: " + err.message));
 });
 

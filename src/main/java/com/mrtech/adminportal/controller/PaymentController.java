@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.mrtech.adminportal.service.FinanceReportService;
 
 import com.mrtech.adminportal.entity.Payment;
 import com.mrtech.adminportal.entity.Student;
@@ -20,6 +21,10 @@ public class PaymentController {
 
     @Autowired
     private PaymentRepository paymentRepository;
+    
+    @Autowired
+    private FinanceReportService financeReportService;
+
 
     @Autowired
     private StudentRepository studentRepository;
@@ -46,6 +51,8 @@ public class PaymentController {
                 // ✅ Save updated student back to DB
                 studentRepository.save(student);
             }
+         // ✅ Auto update Finance Report here
+            financeReportService.generateMonthlyFinanceReport();
 
             return ResponseEntity.ok(savedPayment);
         } catch (Exception e) {
