@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MR Technologies Financial Dashboard</title>
+
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Removed PapaParse (no CSV) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://unpkg.com/pptxgenjs@3.11.0/dist/pptxgen.min.js"></script>
+</head>
+<body>
+  <div class="dashboard-container">
+    <header class="dashboard-header">
+      <div class="container">
+        <h1><i class="fas fa-chart-line"></i> MR Technologies Financial Dashboard</h1>
+
+        <button id="downloadPDF" class="pdf-btn"><i class="fas fa-file-pdf"></i> Download PDF Report</button>
+        <button id="downloadPPT" class="ppt-btn"><i class="fas fa-file-powerpoint"></i> Download PPT Report</button>
+
+        <div class="period-indicator"><i class="fas fa-calendar-alt"></i> May – September 2025</div>
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <div class="container">
+        <!-- Metrics -->
+        <section class="metrics-overview">
+          <h2>Key Financial Metrics</h2>
+          <div class="metrics-grid">
+            <div class="metric-card" id="metricTotalIncome">
+              <div class="metric-icon"><i class="fas fa-rupee-sign"></i></div>
+              <div class="metric-content">
+                <h3>Total Income</h3>
+                <p class="metric-value">--</p>
+                <span class="metric-subtitle">Auto from DB</span>
+              </div>
+            </div>
+
+            <div class="metric-card" id="metricTotalExpenditure">
+              <div class="metric-icon expense"><i class="fas fa-credit-card"></i></div>
+              <div class="metric-content">
+                <h3>Total Expenses</h3>
+                <p class="metric-value expense">--</p>
+                <span class="metric-subtitle">Auto from DB</span>
+              </div>
+            </div>
+
+            <div class="metric-card" id="metricNetResult">
+              <div class="metric-icon loss"><i class="fas fa-scale-balanced"></i></div>
+              <div class="metric-content">
+                <h3>Net Result</h3>
+                <p class="metric-value loss">--</p>
+                <span class="metric-subtitle">Auto from DB</span>
+              </div>
+            </div>
+
+            <div class="metric-card" id="metricAvgIncome">
+              <div class="metric-icon"><i class="fas fa-calculator"></i></div>
+              <div class="metric-content">
+                <h3>Average Monthly Income</h3>
+                <p class="metric-value">--</p>
+                <span class="metric-subtitle">Per month</span>
+              </div>
+            </div>
+
+            <div class="metric-card" id="metricBestMonth">
+              <div class="metric-icon success"><i class="fas fa-trophy"></i></div>
+              <div class="metric-content">
+                <h3>Best Month</h3>
+                <p class="metric-value success">--</p>
+                <span class="metric-subtitle">From DB</span>
+              </div>
+            </div>
+
+            <div class="metric-card" id="metricWorstMonth">
+              <div class="metric-icon warning"><i class="fas fa-exclamation-triangle"></i></div>
+              <div class="metric-content">
+                <h3>Worst Month</h3>
+                <p class="metric-value warning">--</p>
+                <span class="metric-subtitle">From DB</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Trends -->
+        <section class="trends-section">
+          <h2>Financial Trends Analysis</h2>
+          <div class="trends-grid">
+            <div class="chart-container">
+              <h3>Income vs Expenditure Trend</h3>
+              <div class="chart-wrapper" style="height:300px;"><canvas id="trendChart"></canvas></div>
+            </div>
+
+            <div class="chart-container">
+              <h3>Monthly Profit/Loss (Actual + Forecast)</h3>
+              <div class="chart-wrapper" style="height:300px;"><canvas id="profitLossChart"></canvas></div>
+            </div>
+
+            <div class="chart-container full-width">
+              <h3>Profit/Loss Forecast Trend</h3>
+              <div class="chart-wrapper" style="height:350px;"><canvas id="profitLossForecastChart"></canvas></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Expense Analysis -->
+        <section class="expense-analysis">
+          <h2>Expense Analysis</h2>
+          <div class="analysis-grid">
+            <div class="chart-container full-width">
+              <h3>Monthly Expense Breakdown</h3>
+              <div class="chart-wrapper" style="height:350px;"><canvas id="expenseBreakdownChart"></canvas></div>
+            </div>
+
+            <div class="chart-container">
+              <h3>Average Expense Distribution</h3>
+              <div class="chart-wrapper" style="height:300px;"><canvas id="expenseDistributionChart"></canvas></div>
+            </div>
+
+            <div class="expense-summary">
+              <h3>Expense Summary</h3>
+              <div class="expense-item"><span class="expense-label">Running Expenses</span><span class="expense-amount">--</span></div>
+              <div class="expense-item"><span class="expense-label">Salaries</span><span class="expense-amount">--</span></div>
+              <div class="expense-item"><span class="expense-label">Trainer Share</span><span class="expense-amount">--</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Data Table -->
+        <section class="data-table-section">
+          <h2>Detailed Monthly Data</h2>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Month</th><th>Income</th><th>Running Expenses</th><th>Salaries</th><th>Trainer Share</th><th>Total Expenditure</th><th>Profit/Loss</th><th>Profit Margin</th>
+                </tr>
+              </thead>
+              <tbody id="dataTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Insights -->
+        <section class="insights-panel">
+          <h2>Key Insights & Recommendations</h2>
+          <div class="insights-grid" id="insightsPanel"></div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="dashboard-footer">
+      <div class="container"><p>&copy; 2025 Training Business Dashboard. Data auto-updated from DB + AI Forecast.</p></div>
+    </footer>
+  </div>
+
+  <!-- Inline app script (can be moved to /js/app1.js if you prefer) -->
+  <script>
+  // app1.js - Fetch from /api/finance/reports (DB) and render charts
+document.addEventListener("DOMContentLoaded", () => {
+  const cached = localStorage.getItem("financeData");
+  if (cached) {
+    try { processLoadedData(JSON.parse(cached)); return; }
+    catch(e) { console.warn("Corrupt cache, refetching"); 
+    localStorage.removeItem("financeData");
+    location.reload();
+ }
+  }
+
+  fetch("http://localhost:8080/api/finance/reports")
+    .then(response => {
+      if (!response.ok) throw new Error("Failed to fetch: " + response.status + " " + response.statusText);
+      return response.json();
+    })
+    .then(results => {
+      localStorage.setItem("financeData", JSON.stringify(results));
+      processLoadedData(results);
+    })
+    .catch(err => { console.error("Error loading finance reports:", err); });
+});
+
+// Helpers
+const parseMoney = v => {
+  if (v === null || v === undefined) return 0;
+  if (typeof v === "number") return v;
+  const cleaned = String(v).replace(/[₹, ]/g, "");
+  const n = parseFloat(cleaned);
+  return Number.isFinite(n) ? n : 0;
+};
+const safePercent = (num, denom, decimals = 1) => (!denom || denom === 0) ? "0.0" : ((num/denom)*100).toFixed(decimals);
+function nextMonthNames(lastMonthName, count = 3) {
+  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const idx = months.findIndex(m => m.toLowerCase() === String(lastMonthName).toLowerCase());
+  let start = idx >= 0 ? idx : (new Date()).getMonth();
+  const out = [];
+  for (let i = 1; i <= count; i++) out.push(months[(start + i) % 12]);
+  return out;
+}
+
+// Core
+function processLoadedData(rawRows) {
+  if (!Array.isArray(rawRows) || rawRows.length === 0) { console.warn("No data available"); return; }
+
+  // NORMALIZE rows into numeric fields and consistent keys
+  const cleanData = rawRows.map((r, i) => {
+    // Accept both spaced and non-spaced keys defensively
+    const Year = r.Year || r.year || null;
+    const Month = r.Month || r.month || "";
+    const Income = parseMoney(r.Income);
+    const RunningExpenses = parseMoney(
+    		  r["Running Expenses"] ?? r.RunningExpenses ?? 0
+    		);
+
+    		const Salaries = parseMoney(r.Salaries ?? 0);
+
+    		const TrainerShare = parseMoney(
+    		  r["Trainer Share"] ?? r.TrainerShare ?? 0
+    		);
+
+    		const Expenditure = parseMoney(
+    		  r.Expenditure ?? 
+    		  r["Expenditure"] ??
+    		  (RunningExpenses + Salaries + TrainerShare)
+    		);
+
+    		const ProfitLoss = parseMoney(
+    		  r["Profit/Loss"] ?? r.ProfitLoss ?? (Income - Expenditure)
+    		);
+    // Month number: try provided MonthNum first, then infer from Month name, fallback to index
+    let MonthNum = null;
+    if (r.MonthNum || r.monthNum) MonthNum = Number(r.MonthNum ?? r.monthNum);
+    if (!MonthNum) {
+      const months = {"JANUARY":1,"FEBRUARY":2,"MARCH":3,"APRIL":4,"MAY":5,"JUNE":6,"JULY":7,"AUGUST":8,"SEPTEMBER":9,"OCTOBER":10,"NOVEMBER":11,"DECEMBER":12};
+      const mm = String(Month || "").toUpperCase().trim();
+      MonthNum = months[mm] || (i + 1);
+    }
+
+    return {
+      Year: Year,
+      Month: Month,
+      MonthNum: Number(MonthNum),
+      Income: Number(Income),
+      RunningExpenses: Number(RunningExpenses),
+      Salaries: Number(Salaries),
+      TrainerShare: Number(TrainerShare),
+      Expenditure: Number(Expenditure),
+      ProfitLoss: Number(ProfitLoss)
+    };
+  });
+
+  // Sort by Year and MonthNum in case backend ordering is different
+  cleanData.sort((a,b) => {
+    if (a.Year !== b.Year) return (a.Year || 0) - (b.Year || 0);
+    return (a.MonthNum || 0) - (b.MonthNum || 0);
+  });
+
+  // now use cleanData consistently (was previously an undefined variable)
+  const totalIncome = cleanData.reduce((s,r) => s + (r.Income || 0), 0);
+  const totalExpenditure = cleanData.reduce((s,r) => s + (r.Expenditure || 0), 0);
+  const netResult = cleanData.reduce((s,r) => s + (r.ProfitLoss || 0), 0);
+  const avgIncome = cleanData.length ? Math.round(totalIncome / cleanData.length) : 0;
+  const bestMonth = cleanData.reduce((a,b) => (a.ProfitLoss > b.ProfitLoss ? a : b), cleanData[0]);
+  const worstMonth = cleanData.reduce((a,b) => (a.ProfitLoss < b.ProfitLoss ? a : b), cleanData[0]);
+
+  // DOM updates
+  const setText = (id, value, subtitle) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const mv = el.querySelector(".metric-value");
+    if (mv) mv.textContent = value;
+    if (subtitle) { const ms = el.querySelector(".metric-subtitle"); if (ms) ms.textContent = subtitle; }
+  };
+
+  setText("metricTotalIncome", `₹${totalIncome.toLocaleString('en-IN')}`);
+  setText("metricTotalExpenditure", `₹${totalExpenditure.toLocaleString('en-IN')}`);
+
+  const netEl = document.getElementById("metricNetResult");
+  if (netEl) {
+    const mv = netEl.querySelector(".metric-value");
+    if (mv) {
+      mv.textContent = `₹${netResult.toLocaleString('en-IN')}`;
+      mv.classList.remove("loss","success");
+      mv.classList.add(netResult < 0 ? "loss" : "success");
+    }
+  }
+
+  setText("metricAvgIncome", `₹${avgIncome.toLocaleString('en-IN')}`);
+  setText("metricBestMonth", bestMonth.Month || "-", `₹${bestMonth.ProfitLoss.toLocaleString('en-IN')} profit`);
+  setText("metricWorstMonth", worstMonth.Month || "-", `₹${worstMonth.ProfitLoss.toLocaleString('en-IN')} loss`);
+
+    // Charts, table, insights
+    forecastProfitLoss(cleanData);
+  }
+
+  // Forecast + Charts
+  function forecastProfitLoss(data) {
+    const x = data.map(r => r.MonthNum);
+    const y = data.map(r => r.ProfitLoss);
+    const n = x.length;
+    const sumX = x.reduce((a,b)=>a+b,0), sumY = y.reduce((a,b)=>a+b,0);
+    const sumXY = x.reduce((a,b,i)=>a + b * y[i],0), sumX2 = x.reduce((a,b)=>a + b*b,0);
+    const denom = (n * sumX2 - sumX * sumX);
+    const slope = denom !== 0 ? (n * sumXY - sumX * sumY) / denom : 0;
+    const intercept = (sumY - slope * sumX) / n || 0;
+
+    const futureMonthNames = nextMonthNames(data[data.length - 1].Month, 3);
+    const lastMonthNum = data[data.length - 1].MonthNum;
+    const futureMonths = futureMonthNames.map((name, idx) => ({
+    	  name,
+    	  num: lastMonthNum + idx + 1
+    	}));
+    const predictions = futureMonths.map(m => ({ Month: m.name, ProfitLoss: Math.round(slope * m.num + intercept) }));
+
+    // table
+    const tbody = document.getElementById("dataTableBody");
+    if (tbody) {
+      let html = "";
+      data.forEach(r => {
+        html += `<tr>
+          <td>${r.Month}</td>
+          <td>₹${r.Income.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+          <td>₹${r.RunningExpenses.toLocaleString('en-IN')}</td>
+          <td>₹${r.Salaries.toLocaleString('en-IN')}</td>
+          <td>₹${r.TrainerShare.toLocaleString('en-IN')}</td>
+          <td>₹${r.Expenditure.toLocaleString('en-IN')}</td>
+          <td>₹${r.ProfitLoss.toLocaleString('en-IN', {
+        	  minimumFractionDigits: 2,
+        	  maximumFractionDigits: 2
+        	})}</td>
+
+          <td>${safePercent(r.ProfitLoss, r.Income, 1)}%</td>
+        </tr>`;
+      });
+
+      predictions.forEach(p => {
+        html += `<tr style="background:#f0f8ff; font-weight:bold;">
+          <td>${p.Month} (Forecast)</td>
+          <td colspan="5" style="text-align:center;">AI Predicted</td>
+          <td>${p.ProfitLoss >= 0 ? "₹" + p.ProfitLoss.toLocaleString('en-IN') : `<span style='color:red'>₹${p.ProfitLoss.toLocaleString('en-IN')}</span>`}</td>
+          <td>--</td>
+        </tr>`;
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    // charts data alignment
+    const labels = data.map(r => r.Month).concat(predictions.map(p => p.Month));
+    const actualPLAll = data.map(r => r.ProfitLoss).concat(Array(predictions.length).fill(null));
+    const forecastPLAll = Array(data.length).fill(null).concat(predictions.map(p => p.ProfitLoss));
+
+    try {
+      // trendChart
+      const trendEl = document.getElementById("trendChart");
+      if (trendEl) {
+        new Chart(trendEl, {
+          type: "line",
+          data: { labels: data.map(r => r.Month), datasets: [{ label: "Income", data: data.map(r => r.Income), borderColor: "green", fill: false }, { label: "Expenditure", data: data.map(r => r.Expenditure), borderColor: "red", fill: false }] },
+          options: { responsive: true, plugins: { legend: { position: "top" } } }
+        });
+      }
+
+      // profitLossChart (bar)
+      const plEl = document.getElementById("profitLossChart");
+      if (plEl) {
+        new Chart(plEl, {
+          type: "bar",
+          data: { labels, datasets: [{ label: "Actual Profit/Loss", data: actualPLAll, backgroundColor: data.map(d => d.ProfitLoss >= 0 ? "green" : "red") }, { label: "Forecast Profit/Loss", data: forecastPLAll, backgroundColor: "rgba(0,123,255,0.5)" }] },
+          options: { responsive: true, plugins: { legend: { position: "top" } } }
+        });
+      }
+
+      // profitLossForecastChart (line)
+      const plTrendEl = document.getElementById("profitLossForecastChart");
+      if (plTrendEl) {
+        new Chart(plTrendEl, {
+          type: "line",
+          data: { labels, datasets: [{ label: "Actual Profit/Loss", data: data.map(r => r.ProfitLoss).concat(Array(predictions.length).fill(null)), borderColor: "green", fill: true, tension: 0.3 }, { label: "Forecast Profit/Loss", data: Array(data.length).fill(null).concat(predictions.map(p => p.ProfitLoss)), borderColor: "blue", fill: true, borderDash: [5,5], tension: 0.3 }] },
+          options: { responsive: true, plugins: { legend: { position: "top" }, tooltip: { callbacks: { label: ctx => ctx.raw !== null ? `₹${ctx.raw.toLocaleString('en-IN')}` : "" } } }, scales: { y: { title: { display: true, text: "Profit/Loss (₹)" }, ticks: { callback: v => "₹" + Number(v).toLocaleString('en-IN') } } } }
+        });
+      }
+
+      // expenseBreakdown
+      const expEl = document.getElementById("expenseBreakdownChart");
+      if (expEl) {
+        new Chart(expEl, {
+          type: "bar",
+          data: { labels: data.map(r => r.Month), datasets: [{ label: "Running Expenses", data: data.map(r => r.RunningExpenses), backgroundColor: "rgba(255,99,132,0.7)" }, { label: "Salaries", data: data.map(r => r.Salaries), backgroundColor: "rgba(54,162,235,0.7)" }, { label: "Trainer Share", data: data.map(r => r.TrainerShare), backgroundColor: "rgba(255,206,86,0.7)" }] },
+          options: { responsive: true, plugins: { legend: { position: "top" } }, scales: { x: { stacked: true }, y: { stacked: true, title: { display: true, text: "Expenses (₹)" } } } }
+        });
+      }
+
+      // expenseDistribution
+      const distEl = document.getElementById("expenseDistributionChart");
+      if (distEl) {
+        const avgRunning = data.reduce((s, r) => s + r.RunningExpenses, 0) / data.length;
+        const avgSalaries = data.reduce((s, r) => s + r.Salaries, 0) / data.length;
+        const avgTrainer = data.reduce((s, r) => s + r.TrainerShare, 0) / data.length;
+        new Chart(distEl, {
+          type: "doughnut",
+          data: { labels: ["Running Expenses","Salaries","Trainer Share"], datasets: [{ data: [avgRunning, avgSalaries, avgTrainer], backgroundColor: ["rgba(255,99,132,0.7)","rgba(54,162,235,0.7)","rgba(255,206,86,0.7)"] }] },
+          options: { responsive: true, plugins: { legend: { position: "bottom" }, tooltip: { callbacks: { label: ctx => `₹${ctx.raw.toLocaleString('en-IN')}` } } } }
+        });
+      }
+    } catch (e) {
+      console.error("Chart error:", e);
+    }
+
+    // expense summary
+    const totalRunning = data.reduce((s, r) => s + r.RunningExpenses, 0);
+    const totalSalaries = data.reduce((s, r) => s + r.Salaries, 0);
+    const totalTrainer = data.reduce((s, r) => s + r.TrainerShare, 0);
+    const expenseItems = document.querySelectorAll(".expense-summary .expense-item .expense-amount");
+    if (expenseItems.length >= 3) {
+      expenseItems[0].textContent = `₹${totalRunning.toLocaleString('en-IN')}`;
+      expenseItems[1].textContent = `₹${totalSalaries.toLocaleString('en-IN')}`;
+      expenseItems[2].textContent = `₹${totalTrainer.toLocaleString('en-IN')}`;
+    }
+
+    // insights
+    generateInsights(data, predictions);
+  }
+
+  // Insights
+  function generateInsights(data, predictions) {
+    const insightsPanel = document.getElementById("insightsPanel");
+    if (!insightsPanel) return;
+    insightsPanel.innerHTML = "";
+
+    const lastIncome = data[data.length - 1].Income || 0;
+    const firstIncome = data[0].Income || 0;
+    const incomeDrop = firstIncome ? Math.round(((firstIncome - lastIncome) / firstIncome) * 100) : 0;
+    const maxExpense = Math.max(...data.map(r => r.RunningExpenses));
+    const avgExpense = data.reduce((s, r) => s + r.RunningExpenses, 0) / data.length;
+    const bestMonth = cleanData.reduce((a, b) =>
+    Number(a.ProfitLoss) > Number(b.ProfitLoss) ? a : b
+  );
+
+  const worstMonth = cleanData.reduce((a, b) =>
+    Number(a.ProfitLoss) < Number(b.ProfitLoss) ? a : b
+  );
+
+
+    const addInsight = (type, icon, title, message) => {
+      insightsPanel.innerHTML += `<div class="insight-card ${type}"><div class="insight-icon"><i class="fas ${icon}"></i></div><div class="insight-content"><h3>${title}</h3><p>${message}</p></div></div>`;
+    };
+
+    if (incomeDrop > 20) addInsight("critical","fa-arrow-trend-down","Income Decline", `Income dropped by ${incomeDrop}% from ${data[0].Month} (₹${firstIncome.toLocaleString('en-IN')}) to ${data[data.length - 1].Month} (₹${lastIncome.toLocaleString('en-IN')}).`);
+    if (maxExpense > avgExpense * 1.5) addInsight("warning","fa-chart-bar","Expense Volatility", `Running expenses peaked at ₹${maxExpense.toLocaleString('en-IN')}, indicating volatility.`);
+    addInsight("success","fa-trophy","Best Month", `${bestMonth.Month} with profit of ₹${bestMonth.ProfitLoss.toLocaleString('en-IN')}.`);
+    addInsight("warning","fa-exclamation-triangle","Worst Month", `${worstMonth.Month} with loss of ₹${worstMonth.ProfitLoss.toLocaleString('en-IN')}.`);
+    const futureTrend = predictions.map(p => p.ProfitLoss);
+    if (futureTrend.every(v => v > 0)) addInsight("success","fa-lightbulb","Positive Outlook","AI forecast shows profits in all upcoming months.");
+    else if (futureTrend.every(v => v < 0)) addInsight("critical","fa-bolt","Negative Forecast","AI forecast predicts continued losses.");
+    else addInsight("info","fa-balance-scale","Mixed Forecast","AI forecast suggests mixed results; focus on stabilizing revenue.");
+  }
+  </script>
+
+  <!-- PDF export script (separate to keep inline script shorter) -->
+  <script>
+  document.getElementById("downloadPDF").addEventListener("click", async () => {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF("p","mm","a4");
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    pdf.setFontSize(22); pdf.setTextColor(40,40,40); pdf.text("MR Technologies Financial Dashboard", pageWidth/2, 60, {align:"center"});
+    pdf.setFontSize(14); pdf.setTextColor(100); pdf.text("Comprehensive Report", pageWidth/2, 80, {align:"center"});
+    pdf.setFontSize(12); pdf.text(`Generated on: ${new Date().toLocaleDateString()}`, pageWidth/2, 95, {align:"center"});
+
+    const tocPage = pdf.internal.getNumberOfPages() + 1;
+    pdf.addPage();
+    const tocEntries = [];
+    const sections = [
+      { selector: ".metrics-overview", title: "Key Financial Metrics" },
+      { selector: ".trends-section", title: "Financial Trends Analysis" },
+      { selector: ".expense-analysis", title: "Expense Analysis" },
+      { selector: ".data-table-section", title: "Detailed Monthly Data" },
+      { selector: ".insights-panel", title: "Key Insights & Recommendations" }
+    ];
+
+    for (let s of sections) {
+      const element = document.querySelector(s.selector);
+      if (!element) continue;
+      const canvas = await html2canvas(element, { scale: 2, useCORS: true, backgroundColor: "#ffffff" });
+      const imgData = canvas.toDataURL("image/png", 1.0);
+      const pageNum = pdf.internal.getNumberOfPages() + 1;
+      tocEntries.push({ title: s.title, page: pageNum });
+      pdf.addPage();
+      pdf.setFontSize(16); pdf.text(s.title, 14, 15);
+      const imgWidth = pageWidth - 20;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      pdf.addImage(imgData, "PNG", 10, 25, imgWidth, imgHeight);
+    }
+
+    // Fill TOC
+    pdf.setPage(tocPage);
+    pdf.setFontSize(20); pdf.setTextColor(30,30,30); pdf.text("Table of Contents", pageWidth/2, 40, {align:"center"});
+    pdf.setFontSize(14); pdf.setTextColor(60,60,60);
+    let tocY = 70;
+    tocEntries.forEach(entry => {
+      pdf.text(entry.title, 30, tocY);
+      pdf.text(`${entry.page}`, pageWidth - 30, tocY, {align: "right"});
+      tocY += 12;
+    });
+
+    // Page numbers
+    const totalPages = pdf.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      pdf.setPage(i);
+      pdf.setFontSize(10); pdf.setTextColor(120,120,120);
+      pdf.text(`Page ${i} of ${totalPages}`, pageWidth/2, pageHeight - 10, {align: "center"});
+    }
+
+    pdf.save("Training_Business_Dashboard.pdf");
+  });
+  </script>
+
+  <!-- PPT export -->
+  <script>
+  document.getElementById("downloadPPT").addEventListener("click", async () => {
+    try {
+      const pptx = new PptxGenJS();
+      let cover = pptx.addSlide();
+      cover.addText("MR Technologies Financial Dashboard", { x:0.5, y:2, w:8, h:1, fontSize:28, bold:true, align:"center", color:"363636" });
+      cover.addText("Comprehensive Report", { x:0.5, y:3, w:8, h:1, fontSize:18, align:"center", color:"666666" });
+      cover.addText(`Generated on: ${new Date().toLocaleDateString()}`, { x:0.5, y:4, w:8, h:0.5, fontSize:12, align:"center", color:"888888" });
+
+      const sections = [
+        { selector: ".metrics-overview", title: "Key Financial Metrics", scale: 5 },
+        { selector: ".trends-section", title: "Financial Trends Analysis", scale: 3 },
+        { selector: ".expense-analysis", title: "Expense Analysis", scale: 4 },
+        { selector: ".data-table-section", title: "Detailed Monthly Data", scale: 5 },
+        { selector: ".insights-panel", title: "Key Insights & Recommendations", scale: 4 }
+      ];
+
+      for (let s of sections) {
+        const element = document.querySelector(s.selector);
+        if (!element) continue;
+        const canvas = await html2canvas(element, { scale: s.scale || 4, useCORS: true, backgroundColor: "#ffffff" });
+        const imgData = canvas.toDataURL("image/jpeg", 1.0);
+        const imgWidth = 8.5;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let slide = pptx.addSlide();
+        slide.addText(s.title, { x:0.5, y:0.3, fontSize:18, bold:true, color:"2F5597" });
+        slide.addImage({ data: imgData, x:0.5, y:1, w: imgWidth, h: imgHeight > 5 ? 5 : imgHeight });
+      }
+
+      await pptx.writeFile("Training_Business_Dashboard.pptx");
+    } catch (err) {
+      console.error("Error generating PPT:", err);
+      alert("PPT generation failed. Check console for details.");
+    }
+  });
+  </script>
+</body>
+</html>
