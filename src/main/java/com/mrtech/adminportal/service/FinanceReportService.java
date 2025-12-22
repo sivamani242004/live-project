@@ -16,8 +16,6 @@ import java.util.List;
 @Service
 public class FinanceReportService {
 
-
-
     @Autowired
     private PaymentRepository paymentRepository;
 
@@ -29,7 +27,6 @@ public class FinanceReportService {
     @Scheduled(cron = "0 0 0 * * ?")
     public void generateMonthlyFinanceReport() {
         System.out.println("🟢 Starting finance report generation...");
-
         // Step 1: Clear old data
         financeReportRepository.deleteAll();
 
@@ -50,23 +47,22 @@ public class FinanceReportService {
             String monthName = Month.of(monthNumber).name();
             String formattedMonth = monthName.substring(0, 1) + monthName.substring(1).toLowerCase();
 
-            // 💰 Dynamic or sample logic for calculations (can be replaced with DB logic later)
             double runningExpenses = totalIncome * 0.35;  // 35% of income
             double salaries = totalIncome * 0.28;         // 28% of income
             double trainerShare = totalIncome * 0.22;     // 22% of income
             double expenditure = runningExpenses + salaries + trainerShare;
             double profitOrLoss = totalIncome - expenditure;
 
-            // Save report
+            // Save report (rounded values)
             FinanceReport report = new FinanceReport();
             report.setYear(year);
             report.setMonth(formattedMonth);
-            report.setIncome(totalIncome);
-            report.setRunningExpenses(runningExpenses);
-            report.setSalaries(salaries);
-            report.setTrainerShare(trainerShare);
-            report.setExpenditure(expenditure);
-            report.setProfitOrLoss(profitOrLoss);
+            report.setIncome(round(totalIncome, 2));
+            report.setRunningExpenses(round(runningExpenses, 2));
+            report.setSalaries(round(salaries, 2));
+            report.setTrainerShare(round(trainerShare, 2));
+            report.setExpenditure(round(expenditure, 2));
+            report.setProfitOrLoss(round(profitOrLoss, 2));
 
             financeReportRepository.save(report);
         }
@@ -75,6 +71,15 @@ public class FinanceReportService {
         exportFinanceDataToCsv();
 
         System.out.println("✅ Finance report generated & exported at " + java.time.LocalTime.now());
+    }
+
+    // rounding helper
+    private static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return tmp / (double) factor;
     }
 
     // ✅ Export finance data to CSV file
